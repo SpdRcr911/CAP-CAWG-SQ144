@@ -4,15 +4,15 @@ namespace CAPSquadron_SPA.Services;
 
 public class MemberService : IMemberService
 {
-    private readonly HttpClient _httpClient;
+    private readonly ApiClient _apiClient;
 
-    public MemberService(HttpClient httpClient)
+    public MemberService(ApiClient apiClient)
     {
-        _httpClient = httpClient;
+        _apiClient = apiClient;
     }
 
     public async Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<int>>("/api/Flight/unassigned-or-commanders-or-sergeants") ?? [];
+        return await _apiClient.GetUnassignedOrCommandersOrSergeantsAsync();
     }
 }
