@@ -13,7 +13,31 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Member>().HasIndex(m => m.CAPID).IsUnique();
-        modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique(); // Add unique constraint
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            entity.SetTableName(entity.GetTableName()?.ToSnakeCase() ?? string.Empty);
+
+            foreach (var property in entity.GetProperties())
+            {
+                property.SetColumnName(property.GetColumnName()?.ToSnakeCase() ?? string.Empty);
+            }
+
+            foreach (var key in entity.GetKeys())
+            {
+                key.SetName(key.GetName()?.ToSnakeCase() ?? string.Empty);
+            }
+
+            foreach (var fk in entity.GetForeignKeys())
+            {
+                fk.SetConstraintName(fk.GetConstraintName()?.ToSnakeCase() ?? string.Empty);
+            }
+
+            foreach (var index in entity.GetIndexes())
+            {
+                index.SetDatabaseName(index.GetDatabaseName()?.ToSnakeCase() ?? string.Empty);
+            }
+        }
+
+        modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
     }
 }
