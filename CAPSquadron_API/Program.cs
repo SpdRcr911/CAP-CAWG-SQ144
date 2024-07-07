@@ -35,6 +35,7 @@ builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
 builder.Services.AddScoped<IProcessDataService<MemberCsvModel>, MemberService>();
 builder.Services.AddScoped<IRetrieveDataService<Achievement>, AchievementService>();
 builder.Services.AddScoped<IProcessDataService<AchievementCsvModel>, AchievementService>();
+builder.Services.AddScoped<IFlightService, FlightService>();
 
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
