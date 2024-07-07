@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<docs>
+	<achievement>
+		<controller>
+			 <summary>Initializes a new instance of the <see cref="AchievementController"/> class.</summary>
+			 <param name="xlsxParsingService">The service for parsing XLSX files.</param>
+			 <param name="retrieveDataService">The service for retrieving data.</param>
+			 <param name="processDataService">The service for processing data.</param>
+		</controller>
+		<getAchievements>
+			<summary>Gets the list of all achievements.</summary>
+			<returns>A list of achievements.</returns>
+			<response code="200">Returns the list of achievements.</response>
+		</getAchievements>
+		<uploadFile>
+			 <summary>Uploads a CSV file to update achievement data.</summary>
+			 <param name="file">The CSV file containing achievement data.</param>
+			 <returns>A success message if the file is processed correctly.</returns>
+			 <response code="200">File successfully uploaded and processed.</response>		
+		</uploadFile>
+	</achievement>
+</docs>
