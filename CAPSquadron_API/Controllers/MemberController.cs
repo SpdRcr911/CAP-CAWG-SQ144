@@ -7,6 +7,7 @@ namespace CAPSquadron_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Produces("application/json")]
 public class MemberController(ICsvParsingService csvParsingService, IRetrieveDataService<Member> retrieveDataService, IProcessDataService<MemberCsvModel> processDataService) : ControllerBase
 {
     private readonly ICsvParsingService _csvParsingService = csvParsingService;
@@ -17,7 +18,8 @@ public class MemberController(ICsvParsingService csvParsingService, IRetrieveDat
     /// Gets the list of all members.
     /// </summary>
     /// <returns>A list of members.</returns>
-    [HttpGet]
+    [HttpGet(Name = nameof(GetMembers))]
+    [ProducesResponseType<List<Member>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMembers()
     {
         var members = await _retrieveDataService.GetAsync();
@@ -25,13 +27,17 @@ public class MemberController(ICsvParsingService csvParsingService, IRetrieveDat
     }
 
     /// <summary>
-    /// Uploads a CSV file to update member data. bab
-    /// eService report found in 'Personnel' > 'Attendance Log' > 'Attendance Sign-Sheet (Blank)' > SELECT: Unit, Member Type ALL, Report Format CSV
+    /// Uploads a CSV file to update member data.
     /// </summary>
+    /// <remarks>
+    /// eService report found in 'Personnel' > 'Attendance Log' > 'Attendance Sign-Sheet (Blank)' > SELECT: Unit, Member Type ALL, Report Format CSV
+    /// </remarks>
     /// <param name="file">The CSV file containing member data.</param>
     /// <returns>A success message if the file is processed correctly.</returns>
-    [HttpPost("upload")]
-    public async Task<IActionResult> UploadFile(IFormFile file)
+    [HttpPost("upload",Name = nameof(UploadMemberFile))]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UploadMemberFile(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {

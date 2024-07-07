@@ -6,27 +6,37 @@ namespace CAPSquadron_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AchievementController(IXlsxParsingService xlsxParsingService, IRetrieveDataService<Achievement> retrieveDataService, IProcessDataService<AchievementCsvModel> processDataService) : ControllerBase
+[Produces("application/json")]
+public class AchievementController : ControllerBase
 {
-    private readonly IXlsxParsingService _xlsxParsingService = xlsxParsingService;
-    private readonly IRetrieveDataService<Achievement> _retrieveDataService = retrieveDataService;
-    private readonly IProcessDataService<AchievementCsvModel> _processDataService = processDataService;
+    private readonly IXlsxParsingService _xlsxParsingService;
+    private readonly IRetrieveDataService<Achievement> _retrieveDataService;
+    private readonly IProcessDataService<AchievementCsvModel> _processDataService;
+
+    /// <include file='CAPSquadron_API.xml' path='docs/achievement/controller/*'/>
+    public AchievementController(IXlsxParsingService xlsxParsingService, IRetrieveDataService<Achievement> retrieveDataService, IProcessDataService<AchievementCsvModel> processDataService)
+    {
+        _xlsxParsingService = xlsxParsingService;
+        _retrieveDataService = retrieveDataService;
+        _processDataService = processDataService;
+    }
 
 
-    [HttpGet]
-    public async Task<IActionResult> GetMembers()
+    /// <include file='CAPSquadron_API.xml' path='docs/achievement/getAchievements/*'/>
+    [HttpGet(Name = nameof(GetAchievements))]
+    [ProducesResponseType<List<Achievement>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAchievements()
     {
         var members = await _retrieveDataService.GetAsync();
         return Ok(members);
     }
 
-    /// <summary>
-    /// Uploads a CSV file to update achievement data.
-    /// </summary>
-    /// <param name="file">The CSV file containing achievement data.</param>
-    /// <returns>A success message if the file is processed correctly.</returns>
-    [HttpPost("upload")]
-    public async Task<IActionResult> UploadFile(IFormFile file)
+    /// <include file='CAPSquadron_API.xml' path='docs/achievement/uploadFile/*'/>
+    [HttpPost("upload", Name = nameof(UploadAchievementFile))]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadAchievementFile(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {

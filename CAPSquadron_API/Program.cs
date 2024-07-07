@@ -3,6 +3,7 @@ using CAPSquadron_API.Models;
 using CAPSquadron_API.Schemas;
 using CAPSquadron_API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +13,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo 
+    {
+        Version = "v1",
+        Title = "CAP Squadron 144 API",
+        Description = "APIs for viewing information cadet squadron 144"
+    });
+
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
+    options.IncludeXmlComments((string?)Path.Combine(AppContext.BaseDirectory, xmlFile));
 
     options.SchemaFilter<SwaggerSchemaFilter>();
 });

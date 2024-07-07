@@ -1,0 +1,28 @@
+﻿@page "/members"
+@using CAPSquadron_SPA.Services
+@inject IMemberService MemberService
+
+<h3>Members</h3>
+
+@if (memberCapIds == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var capId in memberCapIds)
+        {
+            <li>@capId</li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<int>? memberCapIds;
+
+    protected override async Task OnInitializedAsync()
+    {
+        memberCapIds = await MemberService.GetUnassignedOrCommandersOrSergeantsAsync();
+    }
+}
