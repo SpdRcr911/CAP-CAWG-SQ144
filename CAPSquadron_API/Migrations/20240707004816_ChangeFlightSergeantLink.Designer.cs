@@ -3,6 +3,7 @@ using System;
 using CAPSquadron_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CAPSquadron_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240707004816_ChangeFlightSergeantLink")]
+    partial class ChangeFlightSergeantLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,10 +249,6 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("flight_id");
 
-                    b.Property<int?>("FlightSergeantForFlightId")
-                        .HasColumnType("integer")
-                        .HasColumnName("flight_sergeant_for_flight_id");
-
                     b.Property<DateTime?>("InactiveDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("inactive_date");
@@ -284,12 +283,15 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("safety_current");
 
+                    b.Property<int?>("flight_sergeant_for_flight_id")
+                        .HasColumnType("integer");
+
                     b.HasKey("CAPID")
                         .HasName("pk_members");
 
                     b.HasIndex("FlightId");
 
-                    b.HasIndex("FlightSergeantForFlightId");
+                    b.HasIndex("flight_sergeant_for_flight_id");
 
                     b.ToTable("members");
                 });
@@ -311,14 +313,12 @@ namespace CAPSquadron_API.Migrations
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("CAPSquadron_API.Models.Flight", "FlightSergeantForFlight")
+                    b.HasOne("CAPSquadron_API.Models.Flight", null)
                         .WithMany("FlightSergeants")
-                        .HasForeignKey("FlightSergeantForFlightId")
+                        .HasForeignKey("flight_sergeant_for_flight_id")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Flight");
-
-                    b.Navigation("FlightSergeantForFlight");
                 });
 
             modelBuilder.Entity("CAPSquadron_API.Models.Flight", b =>
