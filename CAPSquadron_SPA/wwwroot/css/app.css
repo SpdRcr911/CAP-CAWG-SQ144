@@ -101,3 +101,16 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    flex: 1 1 auto;
+}
+
+.card-text {
+    flex-grow: 1;
+}

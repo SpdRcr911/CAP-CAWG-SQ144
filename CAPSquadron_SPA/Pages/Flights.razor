@@ -1,10 +1,8 @@
 ﻿@page "/flights"
-
-@using CAPSquadron_SPA.Services
-
 @inject IFlightService FlightService
 @inject NavigationManager Navigation
 
+@using CAPSquadron_SPA.Services
 
 <h3>Flights</h3>
 
@@ -17,28 +15,30 @@ else
     <div class="row">
         @foreach (var flight in flights.OrderBy(flt => flt.Name))
         {
-            <div class="col-md-4">
-                <div class="card mb-4">
+            <div class="col-md-4 d-flex align-items-stretch">
+                <div class="card mb-4 flex-fill">
                     <div class="card-body">
-                        <h5 class="card-title">@flight.Name</h5>
+                        <h5 class="card-title">
+
+                            <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);">@flight.Name</a>
+                        </h5>
                         <p class="card-text">
-                            <strong>Flight Commander:</strong> @flight.FlightCommander?.Name (@flight.FlightCommander?.Rank)<br>
+                            <strong>Flight Commander:</strong>@flight.FlightCommander?.Rank @flight.FlightCommander?.Name <br>
                             <strong>Flight Sergeants:</strong>
                             <ul>
                                 @foreach (var sergeant in flight.FlightSergeants)
                                 {
-                                    <li>@sergeant.Name (@sergeant.Rank)</li>
+                                    <li>@sergeant.Rank @sergeant.Name</li>
                                 }
                             </ul>
                             <strong>Members:</strong>
                             <ul>
-                                @foreach (var member in flight.Members)
+                                @foreach (var member in flight.Members.ToList().OrderBy(m=> m.Rank).ThenBy(m => m.Name))
                                 {
-                                    <li>@member.Name (@member.Rank)</li>
+                                    <li>@member.Rank @member.Name </li>
                                 }
                             </ul>
                         </p>
-                        <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@ else
 }
 
 @code {
-    private IEnumerable<FlightDto>? flights;
+    private IEnumerable<FlightDto> flights;
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,3 +59,4 @@ else
         Navigation.NavigateTo($"/flights/{flightId}");
     }
 }
+
