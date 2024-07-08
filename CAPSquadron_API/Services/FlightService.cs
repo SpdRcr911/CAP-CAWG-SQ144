@@ -17,19 +17,38 @@ public class FlightService : IFlightService
     public async Task<IEnumerable<FlightDto>> GetFlightsAsync()
     {
         return await _context.Flights
+            .Include(f => f.FlightCommander)
+            .Include(f => f.FlightSergeants)
+            .Include(f => f.Members)
             .Select(f => new FlightDto
             {
                 Id = f.Id,
                 Name = f.Name,
-                FlightCommanderId = f.FlightCommanderCAPID,
-                FlightSergeantIds = f.FlightSergeants.Select(fs => fs.CAPID).ToList(),
-                MemberIds = f.Members.Select(m => m.CAPID).ToList()
+                FlightCommander = f.FlightCommander == null ? null : new FlightMemberDto
+                {
+                    Capid = f.FlightCommander.CAPID,
+                    Name = f.FlightCommander.Name,
+                    Rank = f.FlightCommander.Rank
+                },
+                FlightSergeants = f.FlightSergeants.Select(fs => new FlightMemberDto
+                {
+                    Capid = fs.CAPID,
+                    Name = fs.Name,
+                    Rank = fs.Rank
+                }).ToList(),
+                Members = f.Members.Select(m => new FlightMemberDto
+                {
+                    Capid = m.CAPID,
+                    Name = m.Name,
+                    Rank = m.Rank
+                }).ToList()
             }).ToListAsync();
     }
 
     public async Task<FlightDto> GetFlightAsync(int id)
     {
         var flight = await _context.Flights
+            .Include(f => f.FlightCommander)
             .Include(f => f.FlightSergeants)
             .Include(f => f.Members)
             .FirstOrDefaultAsync(f => f.Id == id) ?? throw new NotFoundException($"Flight with ID {id} was not found.");
@@ -38,9 +57,24 @@ public class FlightService : IFlightService
         {
             Id = flight.Id,
             Name = flight.Name,
-            FlightCommanderId = flight.FlightCommanderCAPID,
-            FlightSergeantIds = flight.FlightSergeants.Select(fs => fs.CAPID).ToList(),
-            MemberIds = flight.Members.Select(m => m.CAPID).ToList()
+            FlightCommander = flight.FlightCommander == null ? null : new FlightMemberDto
+            {
+                Capid = flight.FlightCommander.CAPID,
+                Name = flight.FlightCommander.Name,
+                Rank = flight.FlightCommander.Rank
+            },
+            FlightSergeants = flight.FlightSergeants.Select(fs => new FlightMemberDto
+            {
+                Capid = fs.CAPID,
+                Name = fs.Name,
+                Rank = fs.Rank
+            }).ToList(),
+            Members = flight.Members.Select(m => new FlightMemberDto
+            {
+                Capid = m.CAPID,
+                Name = m.Name,
+                Rank = m.Rank
+            }).ToList()
         };
     }
 
@@ -49,9 +83,9 @@ public class FlightService : IFlightService
         var flight = new Flight
         {
             Name = flightDto.Name,
-            FlightCommanderCAPID = flightDto.FlightCommanderId,
-            FlightSergeants = await _context.Members.Where(m => flightDto.FlightSergeantIds.Contains(m.CAPID)).ToListAsync(),
-            Members = await _context.Members.Where(m => flightDto.MemberIds.Contains(m.CAPID)).ToListAsync(),
+            FlightCommanderCAPID = flightDto.FlightCommander?.Capid,
+            FlightSergeants = await GetMembersAsync(flightDto.FlightSergeants),// await _context.Members.Where(m => flightDto.FlightSergeants.Select(fs => fs.Capid).Contains(m.CAPID)).ToListAsync(),
+            Members = await GetMembersAsync(flightDto.Members)// await _context.Members.Where(m => flightDto.Members.Select(m => m.Capid).Contains(m.CAPID)).ToListAsync(),
         };
 
         _context.Flights.Add(flight);
@@ -69,12 +103,13 @@ public class FlightService : IFlightService
             .FirstOrDefaultAsync(f => f.Id == id) ?? throw new NotFoundException($"Flight with ID {id} was not found.");
 
         flight.Name = flightDto.Name;
-        flight.FlightCommanderCAPID = flightDto.FlightCommanderId;
+        flight.FlightCommanderCAPID = flightDto.FlightCommander?.Capid;
 
         // Update Flight Sergeants
-        var newFlightSergeants = await _context.Members
-            .Where(m => flightDto.FlightSergeantIds.Contains(m.CAPID))
-            .ToListAsync();
+        var newFlightSergeants = await GetMembersAsync(flightDto.FlightSergeants);
+            //await _context.Members
+            //.Where(m => flightDto.FlightSergeants.Select(fs => fs.Capid).Contains(m.CAPID))
+            //.ToListAsync();
 
         flight.FlightSergeants.Clear();
         foreach (var sergeant in newFlightSergeants)
@@ -83,9 +118,10 @@ public class FlightService : IFlightService
         }
 
         // Update Members
-        var newMembers = await _context.Members
-            .Where(m => flightDto.MemberIds.Contains(m.CAPID))
-            .ToListAsync();
+        var newMembers = await GetMembersAsync(flightDto.Members);
+            //await _context.Members
+            //.Where(m => flightDto.Members.Select(m => m.Capid).Contains(m.CAPID))
+            //.ToListAsync();
 
         flight.Members.Clear();
         foreach (var member in newMembers)
@@ -133,4 +169,14 @@ public class FlightService : IFlightService
         return capIds;
     }
 
+    private async Task<List<Member>> GetMembersAsync(IEnumerable<FlightMemberDto>? memberDtos)
+    {
+        if (memberDtos == null)
+        {
+            return [];
+        }
+
+        var memberIds = memberDtos.Select(m => m.Capid).ToList();
+        return await _context.Members.Where(m => memberIds.Contains(m.CAPID)).ToListAsync();
+    }
 }
