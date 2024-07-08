@@ -2,17 +2,6 @@
 @using CAPSquadron_SPA.Services
 @inject IFlightService FlightService
 @inject NavigationManager Navigation
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private FlightDto? flight;
-
-    protected override async Task OnInitializedAsync()
-    {
-        flight = await FlightService.GetFlightByIdAsync(Id);
-    }
-}
 
 <h3>Flight Details</h3>
 
@@ -23,9 +12,33 @@
 else
 {
     <div>
-        <p>Name: @flight.Name</p>
-        <p>Flight Commander: @flight.FlightCommanderId</p>
-        <p>Flight Sergeants: @string.Join(", ", flight.FlightSergeantIds)</p>
-        <p>Members: @string.Join(", ", flight.MemberIds)</p>
+        <p><strong>Name:</strong> @flight.Name</p>
+        <p><strong>Flight Commander:</strong> @flight.FlightCommander?.Name (@flight.FlightCommander?.Rank)</p>
+        <p><strong>Flight Sergeants:</strong></p>
+        <ul>
+            @foreach (var sergeant in flight.FlightSergeants)
+            {
+                <li>@sergeant.Name (@sergeant.Rank)</li>
+            }
+        </ul>
+        <p><strong>Members:</strong></p>
+        <ul>
+            @foreach (var member in flight.Members)
+            {
+                <li>@member.Name (@member.Rank)</li>
+            }
+        </ul>
     </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private FlightDto flight;
+
+    protected override async Task OnInitializedAsync()
+    {
+        flight = await FlightService.GetFlightByIdAsync(Id);
+    }
 }

@@ -19,22 +19,21 @@
 
 namespace CAPSquadron_SPA.Services
 {
-    using System.Runtime.Serialization;
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ApiClient
+    public partial class ApiClient 
     {
-#pragma warning disable 8618
+        #pragma warning disable 8618
         private string _baseUrl;
-#pragma warning restore 8618
+        #pragma warning restore 8618
 
         private System.Net.Http.HttpClient _httpClient;
         private static System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings, true);
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ApiClient(string baseUrl, System.Net.Http.HttpClient httpClient)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             BaseUrl = baseUrl;
             _httpClient = httpClient;
@@ -1014,7 +1013,7 @@ namespace CAPSquadron_SPA.Services
                     var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
                     if (field != null)
                     {
-                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute))
+                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
                             as System.Runtime.Serialization.EnumMemberAttribute;
                         if (attribute != null)
                         {
@@ -1026,13 +1025,13 @@ namespace CAPSquadron_SPA.Services
                     return converted == null ? string.Empty : converted;
                 }
             }
-            else if (value is bool)
+            else if (value is bool) 
             {
                 return System.Convert.ToString((bool)value, cultureInfo).ToLowerInvariant();
             }
             else if (value is byte[])
             {
-                return System.Convert.ToBase64String((byte[])value);
+                return System.Convert.ToBase64String((byte[]) value);
             }
             else if (value is string[])
             {
@@ -1237,14 +1236,28 @@ namespace CAPSquadron_SPA.Services
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("flightCommanderId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? FlightCommanderId { get; set; }
+        [Newtonsoft.Json.JsonProperty("flightCommander", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FlightMemberDto FlightCommander { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("flightSergeantIds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<int> FlightSergeantIds { get; set; }
+        [Newtonsoft.Json.JsonProperty("flightSergeants", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<FlightMemberDto> FlightSergeants { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("memberIds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<int> MemberIds { get; set; }
+        [Newtonsoft.Json.JsonProperty("members", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<FlightMemberDto> Members { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FlightMemberDto
+    {
+        [Newtonsoft.Json.JsonProperty("capid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Capid { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("rank", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Rank { get; set; }
 
     }
 
@@ -1343,12 +1356,12 @@ namespace CAPSquadron_SPA.Services
     public partial class FileParameter
     {
         public FileParameter(System.IO.Stream data)
-            : this(data, null, null)
+            : this (data, null, null)
         {
         }
 
         public FileParameter(System.IO.Stream data, string fileName)
-            : this(data, fileName, null)
+            : this (data, fileName, null)
         {
         }
 
@@ -1405,10 +1418,10 @@ namespace CAPSquadron_SPA.Services
 
 }
 
-#pragma warning restore 108
-#pragma warning restore 114
-#pragma warning restore 472
-#pragma warning restore 612
+#pragma warning restore  108
+#pragma warning restore  114
+#pragma warning restore  472
+#pragma warning restore  612
 #pragma warning restore 1573
 #pragma warning restore 1591
 #pragma warning restore 8073

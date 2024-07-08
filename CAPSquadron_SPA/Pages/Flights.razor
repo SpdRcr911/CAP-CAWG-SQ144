@@ -1,7 +1,10 @@
 ﻿@page "/flights"
+
 @using CAPSquadron_SPA.Services
+
 @inject IFlightService FlightService
 @inject NavigationManager Navigation
+
 
 <h3>Flights</h3>
 
@@ -11,12 +14,36 @@
 }
 else
 {
-    <ul>
-        @foreach (var flight in flights)
+    <div class="row">
+        @foreach (var flight in flights.OrderBy(flt => flt.Name))
         {
-            <li @onclick="() => NavigateToFlight(flight.Id)">@flight.Name</li>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@flight.Name</h5>
+                        <p class="card-text">
+                            <strong>Flight Commander:</strong> @flight.FlightCommander?.Name (@flight.FlightCommander?.Rank)<br>
+                            <strong>Flight Sergeants:</strong>
+                            <ul>
+                                @foreach (var sergeant in flight.FlightSergeants)
+                                {
+                                    <li>@sergeant.Name (@sergeant.Rank)</li>
+                                }
+                            </ul>
+                            <strong>Members:</strong>
+                            <ul>
+                                @foreach (var member in flight.Members)
+                                {
+                                    <li>@member.Name (@member.Rank)</li>
+                                }
+                            </ul>
+                        </p>
+                        <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
         }
-    </ul>
+    </div>
 }
 
 @code {
