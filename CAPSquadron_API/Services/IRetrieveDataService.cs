@@ -3,5 +3,7 @@
 
 public interface IRetrieveDataService<T> where T : class
 {
-    Task<List<T>> GetAsync();
+    Task<IEnumerable<T>> GetAsync();
+    Task<T> GetAsync(int id);
+    Task<IEnumerable<T>> GetAsync(IEnumerable<int> ids);
 }

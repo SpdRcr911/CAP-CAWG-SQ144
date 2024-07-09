@@ -42,13 +42,13 @@ public class CadetTrackerService : ICadetTrackerService
     private string BuildQuery(string? additionalCondition = null)
     {
         var baseQuery = @"
-                SELECT capid, name_last AS ""LastName"", name_first AS ""FirstName"",
-                next_approval_date AS ""NextApprovalDate"", 
-                CASE WHEN lead_lab_date_p is not null THEN true ELSE false END AS ""LeadershipTask1"",
+                SELECT capid, name_last AS ""LastName"", name_first AS ""FirstName"", email AS ""Email"",
+                next_approval_date AS ""NextApprovalDate"", achv_name AS ""AchievementName"",
+                CASE WHEN lead_lab_date_p is not null or leadership_interactive_date is not null THEN true ELSE false END AS ""LeardToLead"",
                 CASE WHEN achv_name = 'Billy Mitchell' THEN null
-                    WHEN drill_date is not null THEN true ELSE false END AS ""LeadershipTask2"",
+                    WHEN drill_date is not null THEN true ELSE false END AS ""DrillAndCeremonies"",
                 CASE WHEN achv_name = 'Achievement 1' OR achv_name = 'Wright Brothers' THEN null
-                    WHEN aedate_p is not null THEN true ELSE false END AS ""Aerospace"",
+                    WHEN aedate_p is not null or aeinteractive_date is not null THEN true ELSE false END AS ""Aerospace"",
                 CASE WHEN phy_fit_test is not null THEN true ELSE false END AS ""Fitness"",
                 CASE WHEN achv_name = 'Wright Brothers' OR achv_name = 'Billy Mitchell' THEN null
                     WHEN character_development is not null THEN true ELSE false END AS ""Character"",
@@ -56,10 +56,14 @@ public class CadetTrackerService : ICadetTrackerService
                     WHEN achv_name = 'Achievement 1' AND welcome_course_date is null THEN false
                     ELSE null
                 END AS ""SpecialRequirement"",
-                lead_lab_score AS ""LeadLabScore"", lead_lab_date_p AS ""LeadLabDate"",
+				CASE WHEN leadership_interactive_date is not null and aeinteractive_date is not null THEN true ELSE false END AS ""HonorCredit"",
+                lead_lab_score AS ""LeadLabScore"", lead_lab_date_p AS ""LeadLabDate"", leadership_interactive_date AS ""LeadInteractiveDate"",
+                aedate_p AS ""AEDate"", aescore AS ""AEScore"", aemodule_or_test AS ""AEModuleOrTest"", aeinteractive_date AS ""AEInteractiveDate"", aeinteractive_module AS ""AEInteractiveModule"",
                 drill_score AS ""DrillScore"", drill_date AS ""DrillDate"",
-                aedate_p AS ""Aedate"", aescore AS ""Aescore"", aemodule_or_test AS ""AemoduleOrTest"",
-                phy_fit_test AS ""PhyFitTest""
+                phy_fit_test AS ""PhyFitTest"",
+                character_development AS ""CharacterDevelopmentDate"",
+                welcome_course_date AS ""WelcomeCourseDate"",
+		        last_modified AS ""LastModified""
                 FROM public.achievements
                 WHERE apr_date is null";
 
