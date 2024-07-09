@@ -9,6 +9,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 
 builder.Services.AddScoped(sp =>
 {

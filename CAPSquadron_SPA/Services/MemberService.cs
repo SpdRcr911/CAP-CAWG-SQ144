@@ -1,18 +1,24 @@
-﻿using System.Net.Http.Json;
+﻿namespace CAPSquadron_SPA.Services;
 
-namespace CAPSquadron_SPA.Services;
-
-public class MemberService : IMemberService
+public class MemberService(ApiClient apiClient) : IMemberService
 {
-    private readonly ApiClient _apiClient;
-
-    public MemberService(ApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
-
     public async Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync()
     {
-        return await _apiClient.GetUnassignedOrCommandersOrSergeantsAsync();
+        return await apiClient.GetUnassignedOrCommandersOrSergeantsAsync();
+    }
+
+    public async Task<Member> GetMemberAsync(int capid)
+    {
+        return await apiClient.GetMemberAsync(capid);
+    }
+
+    public async Task<IEnumerable<Member>> GetMembersAsync()
+    {
+        return await apiClient.GetMembersAsync();
+    }
+
+    public async Task<ICollection<Member>> GetMembersAsync(IEnumerable<int> ids)
+    {
+        return await apiClient.GetMembersByCapidsAsync(ids);
     }
 }
