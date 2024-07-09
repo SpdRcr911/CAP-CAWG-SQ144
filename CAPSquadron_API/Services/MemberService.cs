@@ -1,4 +1,5 @@
 ﻿using CAPSquadron_API.Data;
+using CAPSquadron_API.Exceptions;
 using CAPSquadron_API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +9,19 @@ public class MemberService(AppDbContext context) : IRetrieveDataService<Member>,
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<List<Member>> GetAsync()
+    public async Task<IEnumerable<Member>> GetAsync()
     {
         return await _context.Members.ToListAsync();
+    }
+
+    public async Task<Member> GetAsync(int capid)
+    {
+        return await _context.Members.FirstOrDefaultAsync(m => m.CAPID == capid) ?? throw new NotFoundException("Member not found.");
+    }
+
+    public async Task<IEnumerable<Member>> GetAsync(IEnumerable<int> capid)
+    {
+        return await _context.Members.Where(m => capid.Contains(m.CAPID)).ToListAsync() ?? throw new NotFoundException("Member not found.");
     }
 
     public async Task ProcessAsync(IEnumerable<MemberCsvModel> membersCsv)

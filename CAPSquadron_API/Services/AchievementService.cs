@@ -1,4 +1,5 @@
 ﻿using CAPSquadron_API.Data;
+using CAPSquadron_API.Exceptions;
 using CAPSquadron_API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -8,9 +9,18 @@ namespace CAPSquadron_API.Services;
 public class AchievementService(AppDbContext context) : IRetrieveDataService<Achievement>, IProcessDataService<AchievementCsvModel>
 {
     private readonly AppDbContext _context = context;
-    public async Task<List<Achievement>> GetAsync()
+    public async Task<IEnumerable<Achievement>> GetAsync()
     {
         return await _context.Achievements.ToListAsync();
+    }
+    public async Task<Achievement> GetAsync(int id)
+    {
+        return await _context.Achievements.FirstOrDefaultAsync(a => a.Id == id) ?? throw new NotFoundException("Achievement not found.");
+    }
+
+    public async Task<IEnumerable<Achievement>> GetAsync(IEnumerable<int> ids)
+    {
+        return await _context.Achievements.Where(a => ids.Contains(a.Id)).ToListAsync() ?? throw new NotFoundException("Achievement not found.");
     }
 
     public async Task ProcessAsync(IEnumerable<AchievementCsvModel> achievementsCsv)
@@ -36,7 +46,7 @@ public class AchievementService(AppDbContext context) : IRetrieveDataService<Ach
                     AEDateP = TryParseDate(record.AEDateP),
                     AEScore = record.AEScore,
                     AEModuleOrTest = record.AEModuleOrTest ?? string.Empty,
-                    CharacterDevelopment = record.CharacterDevelopment ?? string.Empty,
+                    CharacterDevelopment = TryParseDate(record.CharacterDevelopment),
                     ActivePart = activePart,
                     ActiveParticipationDate = TryParseDate(record.ActiveParticipationDate),
                     CadetOath = cadetOath,
@@ -57,7 +67,7 @@ public class AchievementService(AppDbContext context) : IRetrieveDataService<Ach
                     AEInteractiveDate = TryParseDate(record.AEInteractiveDate),
                     AEInteractiveModule = record.AEInteractiveModule ?? string.Empty,
                     LeadershipInteractiveDate = TryParseDate(record.LeadershipInteractiveDate),
-                    LastModified = DateOnly.FromDateTime(DateTime.UtcNow)
+                    LastModified = DateTime.UtcNow
                 };
                 _context.Achievements.Add(achievement);
             }
@@ -78,7 +88,7 @@ public class AchievementService(AppDbContext context) : IRetrieveDataService<Ach
                 achievement.AEDateP = TryParseDate(record.AEDateP);
                 achievement.AEScore = record.AEScore;
                 achievement.AEModuleOrTest = record.AEModuleOrTest ?? string.Empty;
-                achievement.CharacterDevelopment = record.CharacterDevelopment ?? string.Empty;
+                achievement.CharacterDevelopment = TryParseDate(record.CharacterDevelopment);
                 achievement.ActivePart = activePart;
                 achievement.ActiveParticipationDate = TryParseDate(record.ActiveParticipationDate);
                 achievement.CadetOath = cadetOath;
@@ -99,7 +109,7 @@ public class AchievementService(AppDbContext context) : IRetrieveDataService<Ach
                 achievement.AEInteractiveDate = TryParseDate(record.AEInteractiveDate);
                 achievement.AEInteractiveModule = record.AEInteractiveModule ?? string.Empty;
                 achievement.LeadershipInteractiveDate = TryParseDate(record.LeadershipInteractiveDate);
-                achievement.LastModified = DateOnly.FromDateTime(DateTime.UtcNow);
+                achievement.LastModified = DateTime.UtcNow;
                 _context.Achievements.Update(achievement);
             }
         }

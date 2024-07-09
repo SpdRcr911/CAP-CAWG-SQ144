@@ -43,12 +43,15 @@ builder.Services.AddScoped<IProcessDataService<MemberCsvModel>, MemberService>()
 builder.Services.AddScoped<IRetrieveDataService<Achievement>, AchievementService>();
 builder.Services.AddScoped<IProcessDataService<AchievementCsvModel>, AchievementService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
-
+builder.Services.AddDbContext<QueryDbContext>(options =>
+    options.UseNpgsql(connectionString));
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

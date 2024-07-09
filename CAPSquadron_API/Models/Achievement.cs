@@ -46,7 +46,7 @@ public class Achievement(string nameLast, string nameFirst, string email, string
 
     public string? AEModuleOrTest { get; set; }
 
-    public string? CharacterDevelopment { get; set; }
+    public DateOnly? CharacterDevelopment { get; set; }
 
     public bool ActivePart { get; set; }
 
@@ -88,5 +88,5 @@ public class Achievement(string nameLast, string nameFirst, string email, string
 
     public DateOnly? LeadershipInteractiveDate { get; set; }
 
-    public DateOnly LastModified { get; set; }
+    public DateTimeOffset LastModified { get; set; }
 }

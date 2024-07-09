@@ -80,8 +80,8 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("date")
                         .HasColumnName("cadet_oath_date");
 
-                    b.Property<string>("CharacterDevelopment")
-                        .HasColumnType("text")
+                    b.Property<DateOnly?>("CharacterDevelopment")
+                        .HasColumnType("date")
                         .HasColumnName("character_development");
 
                     b.Property<DateOnly?>("DrillDate")
@@ -105,8 +105,8 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("date")
                         .HasColumnName("join_date");
 
-                    b.Property<DateOnly>("LastModified")
-                        .HasColumnType("date")
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_modified");
 
                     b.Property<DateOnly?>("LeadLabDateP")

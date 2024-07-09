@@ -34,7 +34,7 @@ namespace CAPSquadron_API.Migrations
                     aedate_p = table.Column<DateOnly>(type: "date", nullable: true),
                     aescore = table.Column<int>(type: "integer", nullable: true),
                     aemodule_or_test = table.Column<string>(type: "text", nullable: true),
-                    character_development = table.Column<string>(type: "text", nullable: true),
+                    character_development = table.Column<DateOnly>(type: "date", nullable: true),
                     active_part = table.Column<bool>(type: "boolean", nullable: false),
                     active_participation_date = table.Column<DateOnly>(type: "date", nullable: true),
                     cadet_oath = table.Column<bool>(type: "boolean", nullable: false),
@@ -55,7 +55,7 @@ namespace CAPSquadron_API.Migrations
                     aeinteractive_date = table.Column<DateOnly>(type: "date", nullable: true),
                     aeinteractive_module = table.Column<string>(type: "text", nullable: true),
                     leadership_interactive_date = table.Column<DateOnly>(type: "date", nullable: true),
-                    last_modified = table.Column<DateOnly>(type: "date", nullable: false)
+                    last_modified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,9 +91,9 @@ namespace CAPSquadron_API.Migrations
                     last_modified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     inactive_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     flight_id = table.Column<int>(type: "integer", nullable: true),
+                    flight_sergeant_for_flight_id = table.Column<int>(type: "integer", nullable: true),
                     is_executive_staff = table.Column<bool>(type: "boolean", nullable: false),
-                    is_on_leave = table.Column<bool>(type: "boolean", nullable: false),
-                    flight_sergeant_capid = table.Column<int>(type: "integer", nullable: true)
+                    is_on_leave = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,8 +105,8 @@ namespace CAPSquadron_API.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_members_flights_flight_sergeant_capid",
-                        column: x => x.flight_sergeant_capid,
+                        name: "FK_members_flights_flight_sergeant_for_flight_id",
+                        column: x => x.flight_sergeant_for_flight_id,
                         principalTable: "flights",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -129,9 +129,9 @@ namespace CAPSquadron_API.Migrations
                 column: "flight_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_members_flight_sergeant_capid",
+                name: "IX_members_flight_sergeant_for_flight_id",
                 table: "members",
-                column: "flight_sergeant_capid");
+                column: "flight_sergeant_for_flight_id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_flights_members_flight_commander_capid",

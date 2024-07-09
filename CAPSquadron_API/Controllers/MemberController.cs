@@ -27,6 +27,30 @@ public class MemberController(ICsvParsingService csvParsingService, IRetrieveDat
     }
 
     /// <summary>
+    /// Gets a member.
+    /// </summary>
+    /// <returns>A member.</returns>
+    [HttpGet("{capid}", Name = nameof(GetMember))]
+    [ProducesResponseType<Member>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMember(int capid)
+    {
+        var members = await _retrieveDataService.GetAsync(capid);
+        return Ok(members);
+    }
+
+    /// <summary>
+    /// Gets a list of members from a list of CAPIDs.
+    /// </summary>
+    /// <returns>A list of members.</returns>
+    [HttpPost("capids", Name = nameof(GetMembersByCapids))]
+    [ProducesResponseType<IEnumerable<Member>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMembersByCapids([FromBody] IEnumerable<int> capids)
+    {
+        var cadetTrackerData = await _retrieveDataService.GetAsync(capids);
+        return Ok(cadetTrackerData);
+    }
+
+    /// <summary>
     /// Uploads a CSV file to update member data.
     /// </summary>
     /// <remarks>
