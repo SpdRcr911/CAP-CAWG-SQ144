@@ -8,11 +8,4 @@ public class Flight
 
     [Required]
     public string Name { get; set; } = string.Empty;
-
-    public int? FlightCommanderCAPID { get; set; }
-    public Member? FlightCommander { get; set; }
-
-    public ICollection<Member> FlightSergeants { get; set; } = [];
-
-    public ICollection<Member> Members { get; set; } = [];
 }
