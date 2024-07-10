@@ -95,4 +95,11 @@ public class FlightController : ControllerBase
         var capIds = await _flightService.GetUnassignedOrCommandersOrSergeantsAsync();
         return Ok(capIds);
     }
+
+    [HttpGet("{id}/details")]
+    public async Task<ActionResult<FlightDetailDto>> GetFlightDetails(int id)
+    {
+        var flightDetails = await _flightService.GetFlightDetailAsync(id);
+        return Ok(flightDetails);
+    }
 }

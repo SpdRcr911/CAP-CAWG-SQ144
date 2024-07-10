@@ -45,7 +45,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<FlightMember>()
             .HasOne(fm => fm.Flight)
-            .WithMany()
+            .WithMany(f => f.FlightMembers)
             .HasForeignKey(fm => fm.FlightId);
 
         modelBuilder.Entity<FlightMember>()

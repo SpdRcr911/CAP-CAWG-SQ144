@@ -149,4 +149,44 @@ public class FlightService : IFlightService
 
         return allCapIds.Except(assignedCapIds);
     }
+
+    public async Task<FlightDetailDto> GetFlightDetailAsync(int id)
+    {
+        var flight = await _context.Flights
+            .Include(f => f.FlightMembers)
+            .ThenInclude(fm => fm.Member)
+            .FirstOrDefaultAsync(f => f.Id == id) ?? throw new NotFoundException($"Flight with ID {id} was not found.");
+
+        var flightDetail = new FlightDetailDto
+        {
+            Id = flight.Id,
+            Name = flight.Name,
+            FlightCommander = flight.FlightMembers
+                .Where(fm => fm.IsFlightCommander)
+                .Select(fm => new FlightMemberDto
+                {
+                    Capid = fm.CAPID,
+                    Name = fm.Member?.Name,
+                    Rank = fm.Member?.Rank
+                }).FirstOrDefault(),
+            FlightSergeants = flight.FlightMembers
+                .Where(fm => fm.IsFlightSergeant)
+                .Select(fm => new FlightMemberDto
+                {
+                    Capid = fm.CAPID,
+                    Name = fm.Member?.Name,
+                    Rank = fm.Member?.Rank
+                }).ToList(),
+            Members = flight.FlightMembers
+                .Where(fm => !fm.IsFlightCommander && !fm.IsFlightSergeant)
+                .Select(fm => new FlightMemberDto
+                {
+                    Capid = fm.CAPID,
+                    Name = fm.Member?.Name,
+                    Rank = fm.Member?.Rank
+                }).ToList()
+        };
+
+        return flightDetail;
+    }
 }

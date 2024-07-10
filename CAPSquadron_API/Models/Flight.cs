@@ -8,4 +8,6 @@ public class Flight
 
     [Required]
     public string Name { get; set; } = string.Empty;
+
+    public ICollection<FlightMember> FlightMembers { get; set; } = new List<FlightMember>();
 }
