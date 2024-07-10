@@ -68,8 +68,7 @@ namespace CAPSquadron_API.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    flight_commander_capid = table.Column<int>(type: "integer", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,28 +87,42 @@ namespace CAPSquadron_API.Migrations
                     eo_completed = table.Column<bool>(type: "boolean", nullable: false),
                     opsec_completed = table.Column<bool>(type: "boolean", nullable: false),
                     safety_current = table.Column<bool>(type: "boolean", nullable: false),
-                    last_modified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    inactive_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    flight_id = table.Column<int>(type: "integer", nullable: true),
-                    flight_sergeant_for_flight_id = table.Column<int>(type: "integer", nullable: true),
+                    last_modified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    inactive_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     is_executive_staff = table.Column<bool>(type: "boolean", nullable: false),
                     is_on_leave = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_members", x => x.capid);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "flight_members",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    flight_id = table.Column<int>(type: "integer", nullable: false),
+                    capid = table.Column<int>(type: "integer", nullable: false),
+                    is_flight_commander = table.Column<bool>(type: "boolean", nullable: false),
+                    is_flight_sergeant = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_flight_members", x => x.id);
                     table.ForeignKey(
-                        name: "FK_members_flights_flight_id",
+                        name: "fk_flight_members_flights_flight_id",
                         column: x => x.flight_id,
                         principalTable: "flights",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_members_flights_flight_sergeant_for_flight_id",
-                        column: x => x.flight_sergeant_for_flight_id,
-                        principalTable: "flights",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "fk_flight_members_members_member_capid",
+                        column: x => x.capid,
+                        principalTable: "members",
+                        principalColumn: "capid",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -119,44 +132,30 @@ namespace CAPSquadron_API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_flights_flight_commander_capid",
-                table: "flights",
-                column: "flight_commander_capid");
+                name: "IX_flight_members_capid",
+                table: "flight_members",
+                column: "capid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_members_flight_id",
-                table: "members",
+                name: "ix_flight_members_flight_id",
+                table: "flight_members",
                 column: "flight_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_members_flight_sergeant_for_flight_id",
-                table: "members",
-                column: "flight_sergeant_for_flight_id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_flights_members_flight_commander_capid",
-                table: "flights",
-                column: "flight_commander_capid",
-                principalTable: "members",
-                principalColumn: "capid",
-                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_flights_members_flight_commander_capid",
-                table: "flights");
-
             migrationBuilder.DropTable(
                 name: "achievements");
 
             migrationBuilder.DropTable(
-                name: "members");
+                name: "flight_members");
 
             migrationBuilder.DropTable(
                 name: "flights");
+
+            migrationBuilder.DropTable(
+                name: "members");
         }
     }
 }

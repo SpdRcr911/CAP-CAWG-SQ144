@@ -129,3 +129,15 @@ code {
     .hexagon-segment.completed {
         fill: #1b6ec2;
     }
+
+.progress-container {
+    position: relative;
+    width: 300px;
+    background-color: #e9ecef;
+}
+
+img[alt="Progress"], img[alt="Overdue"] {
+    position: absolute;
+    top: 0;
+    height: 100%;
+}

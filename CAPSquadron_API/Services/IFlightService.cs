@@ -10,4 +10,5 @@ public interface IFlightService
     Task<FlightDto> UpdateFlightAsync(int id, FlightDto flightDto);
     Task DeleteFlightAsync(int id);
     Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync();
+    Task<FlightDetailDto> GetFlightDetailAsync(int id);
 }

@@ -7,14 +7,17 @@ namespace CAPSquadron_API.Data;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Member> Members { get; set; }
     public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<Member> Members { get; set; }
     public DbSet<Flight> Flights { get; set; }
+    public DbSet<FlightMember> FlightMembers { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
             entity.SetTableName(entity.GetTableName()?.ToSnakeCase() ?? string.Empty);
@@ -40,23 +43,15 @@ public class AppDbContext : DbContext
             }
         }
 
-        modelBuilder.Entity<Flight>()
-            .HasOne(f => f.FlightCommander)
+        modelBuilder.Entity<FlightMember>()
+            .HasOne(fm => fm.Flight)
+            .WithMany(f => f.FlightMembers)
+            .HasForeignKey(fm => fm.FlightId);
+
+        modelBuilder.Entity<FlightMember>()
+            .HasOne(fm => fm.Member)
             .WithMany()
-            .HasForeignKey(f => f.FlightCommanderCAPID)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Flight>()
-            .HasMany(f => f.Members)
-            .WithOne(m => m.Flight)
-            .HasForeignKey(m => m.FlightId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<Flight>()
-            .HasMany(f => f.FlightSergeants)
-            .WithOne(m => m.FlightSergeantForFlight)
-            .HasForeignKey(m => m.FlightSergeantForFlightId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(fm => fm.CAPID);
 
         modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
     }
