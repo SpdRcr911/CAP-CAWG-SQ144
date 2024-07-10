@@ -1,0 +1,59 @@
+@code {
+    [Parameter]
+    public DateTime NextPromotionDate { get; set; }
+
+    private double ProgressPercentage => CalculateProgressPercentage();
+    private int OverdueDays => CalculateOverdueDays();
+    private int DaysUntilNextPromotion => CalculateDaysUntilNextPromotion();
+    private int DaysSinceNextPromotion => CalculateDaysSinceNextPromotion();
+
+    private double CalculateProgressPercentage()
+    {
+        DateTime startDate = NextPromotionDate.AddDays(-56); // 8 weeks before the next promotion date
+        DateTime currentDate = DateTime.Now;
+
+        double totalDuration = (NextPromotionDate - startDate).TotalDays;
+        double elapsedDuration = (currentDate - startDate).TotalDays;
+
+        double percentage = (elapsedDuration / totalDuration) * 100;
+        return Math.Max(0, Math.Min(percentage, 100)); // Clamp percentage between 0 and 100
+    }
+
+    private int CalculateOverdueDays()
+    {
+        DateTime currentDate = DateTime.Now;
+        if (currentDate > NextPromotionDate)
+        {
+            return (int)((currentDate - NextPromotionDate).TotalDays * 2); // Each overdue day equals 2 pixels
+        }
+        return 0;
+    }
+
+    private int CalculateDaysUntilNextPromotion()
+    {
+        DateTime currentDate = DateTime.Now;
+        if (currentDate <= NextPromotionDate)
+        {
+            return (NextPromotionDate - currentDate).Days;
+        }
+        return 0;
+    }
+
+    private int CalculateDaysSinceNextPromotion()
+    {
+        DateTime currentDate = DateTime.Now;
+        if (currentDate > NextPromotionDate)
+        {
+            return (currentDate - NextPromotionDate).Days;
+        }
+        return 0;
+    }
+}
+
+<div class="progress-container" style="position: relative; width: 112px; height: 15px; background-color: #e9ecef;">
+    <img src="/green.png" alt="Progress" style="height: 100%; width: @ProgressPercentage%;" title="@DaysUntilNextPromotion days until next promotion" />
+    @if (OverdueDays > 0)
+    {
+            <img src="/warning.png" alt="Overdue" style="height: 100%; width: @(OverdueDays)px; position: absolute; left: @ProgressPercentage%;" title="@DaysSinceNextPromotion days since next promotion" />
+    }
+</div>

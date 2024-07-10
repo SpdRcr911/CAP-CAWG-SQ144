@@ -67,7 +67,7 @@
                                         <a class="nav-link" href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a></td>
                                     <td>@cadet.LastName</td>
                                     <td>@cadet.FirstName</td>
-                                    <td>@cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()</td>
+                                                    <td>@cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()<PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" /></td>
                                     <td><div>Learn To Lead: @DisplayTask(cadet.LeardToLead,cadet.LeadLabDate)</div>
                                         <div>Drill And Ceremonies: @DisplayTask(cadet.DrillAndCeremonies,cadet.DrillDate)</div>
                                         <div>Aerospace: @DisplayTask(cadet.Aerospace,cadet.AeDate)</div>
