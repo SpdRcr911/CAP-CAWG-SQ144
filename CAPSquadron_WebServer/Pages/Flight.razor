@@ -1,0 +1,96 @@
+﻿@page "/flights/{FlightId:int}"
+@using CAPSquadron_WebServer.Services
+
+@inject IFlightService FlightService
+@inject ICadetTrackerService CadetTrackerService
+@inject NavigationManager Navigation
+
+@code {
+    [Parameter]
+    public int FlightId { get; set; }
+
+    private FlightDto? flight;
+    private List<PersonalCadetTrackerDto>? cadetTrackers;
+    private IEnumerable<Member>? members;
+    private Member? flightCommander;
+    private IEnumerable<Member>? flightSergeants;
+
+    protected override async Task OnInitializedAsync()
+    {
+        flight = await FlightService.GetFlightByIdAsync(FlightId);
+
+        var capids = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
+        capids.Add(flight.FlightCommanderId!.Value);
+
+        cadetTrackers = (await CadetTrackerService.GetCadetTrackerByCapidsAsync(capids)).ToList();
+
+    }
+
+    private string DisplayTask(bool? taskCompleted, DateTimeOffset? dateCompleted)
+    {
+        if (taskCompleted.HasValue && dateCompleted.HasValue)
+            return dateCompleted.Value.LocalDateTime.ToShortDateString();
+        
+        return "-";
+    }
+}
+@if (flight is not null)
+{
+    <h3>@flight.Name</h3>
+    <h4>Flight Commander: @flightCommander?.Name (@flightCommander?.Rank)</h4>
+
+    @if (cadetTrackers is not null)
+    {
+        <div class="flight-details">
+            @foreach (var group in cadetTrackers.GroupBy(ct => ct.AchievementName))
+            {
+                <div class="achievement-group">
+                    <h5>@group.Key</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>CAPID</th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Next Approval Date</th>
+                                <th>Tasks</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cadet in group)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="nav-link" href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a></td>
+                                    <td>@cadet.LastName</td>
+                                    <td>@cadet.FirstName</td>
+                                    <td>
+                                        @cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()
+                                        <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
+                                    </td>
+                                    <td>
+                                        <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
+                                                    Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
+                                                    DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
+                                                    Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
+                                                    Character="@cadet.Character"
+                                                    NextApprovalDate="@cadet.NextApprovalDate" />
+                                    </td>
+                                    <td>
+                                        <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    }
+    <style>
+        .flight-details .achievement-group {
+            margin-bottom: 20px;
+        }
+    </style>
+}
