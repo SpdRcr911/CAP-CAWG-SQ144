@@ -65,6 +65,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.MapGet("/healthy", () =>
+{
+    return Results.Ok();
+});
+app.MapGet("/", () =>
+{
+    return Results.Ok("Healthy");
+});
 
 app.UseHttpsRedirection();
 
