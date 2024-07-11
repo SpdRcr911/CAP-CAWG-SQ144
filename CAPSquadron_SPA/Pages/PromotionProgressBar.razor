@@ -4,8 +4,6 @@
 
     private double ProgressPercentage => CalculateProgressPercentage();
     private int OverdueDays => CalculateOverdueDays();
-    private int DaysUntilNextPromotion => CalculateDaysUntilNextPromotion();
-    private int DaysSinceNextPromotion => CalculateDaysSinceNextPromotion();
 
     private double CalculateProgressPercentage()
     {
@@ -29,31 +27,25 @@
         return 0;
     }
 
-    private int CalculateDaysUntilNextPromotion()
+    private string NextPromotionDifference(DateTime NextPromotionDate)
     {
         DateTime currentDate = DateTime.Now;
-        if (currentDate <= NextPromotionDate)
-        {
-            return (NextPromotionDate - currentDate).Days;
-        }
-        return 0;
-    }
+        var diff = (NextPromotionDate - currentDate).Days;
 
-    private int CalculateDaysSinceNextPromotion()
-    {
-        DateTime currentDate = DateTime.Now;
-        if (currentDate > NextPromotionDate)
+        return diff switch
         {
-            return (currentDate - NextPromotionDate).Days;
-        }
-        return 0;
+            > 0 => $"{diff} days until next promotion date",
+            < 0 => $"{Math.Abs(diff)} days past your promition date",
+            0 => "can promote today"
+        };
+
     }
 }
 
 <div class="progress-container" style="position: relative; width: 112px; height: 15px; background-color: #e9ecef;">
-    <img src="/green.png" alt="Progress" style="height: 100%; width: @ProgressPercentage%;" title="@DaysUntilNextPromotion days until next promotion" />
+    <img src="/green.png" alt="Progress" style="height: 100%; width: @ProgressPercentage%;" title="@NextPromotionDifference(NextPromotionDate)" />
     @if (OverdueDays > 0)
     {
-            <img src="/warning.png" alt="Overdue" style="height: 100%; width: @(OverdueDays)px; position: absolute; left: @ProgressPercentage%;" title="@DaysSinceNextPromotion days since next promotion" />
+        <img src="/warning.png" alt="Overdue" style="height: 100%; width: @(OverdueDays)px; position: absolute; left: @ProgressPercentage%;" title="@NextPromotionDifference(NextPromotionDate)" />
     }
 </div>

@@ -67,41 +67,20 @@
                                         <a class="nav-link" href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a></td>
                                     <td>@cadet.LastName</td>
                                     <td>@cadet.FirstName</td>
-                                                    <td>@cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()<PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" /></td>
-                                    <td><div>Learn To Lead: @DisplayTask(cadet.LeardToLead,cadet.LeadLabDate)</div>
-                                        <div>Drill And Ceremonies: @DisplayTask(cadet.DrillAndCeremonies,cadet.DrillDate)</div>
-                                        <div>Aerospace: @DisplayTask(cadet.Aerospace,cadet.AeDate)</div>
-                                        <div>Fitness: @DisplayTask(cadet.Fitness,cadet.PhyFitTest)</div>
-                                        <div>Character Development: @cadet.Character</div>
-                                        <div>Time in Grade: @(cadet.NextApprovalDate.HasValue && cadet.NextApprovalDate.Value <= DateTime.Now ? cadet.NextApprovalDate.Value.LocalDateTime.ToShortDateString() : "-")</div>
+                                    <td>
+                                        @cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()
+                                        <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
                                     </td>
                                     <td>
-                                        <svg viewBox="0 0 100 100" class="hexagon">
-                                            <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 z"
-                                                  class="hexagon-segment @(cadet.LeardToLead ?? true ? "completed" : "")">
-                                                <title>Leadership</title>
-                                            </path>
-                                            <path d="M50,50 L93.3,25 A50,50 0 0,1 93.3,75 z"
-                                                  class="hexagon-segment @(cadet.Aerospace ?? true ? "completed" : "")">
-                                                <title>Aerospace</title>
-                                            </path>
-                                            <path d="M50,50 L93.3,75 A50,50 0 0,1 50,100 z"
-                                                  class="hexagon-segment @(cadet.DrillAndCeremonies ?? true ? "completed" : "")">
-                                                <title>Drill</title>
-                                            </path>
-                                            <path d="M50,50 L50,100 A50,50 0 0,1 6.7,75 z"
-                                                  class="hexagon-segment @(cadet.Fitness ?? true ? "completed" : "")">
-                                                <title>Fitness</title>
-                                            </path>
-                                            <path d="M50,50 L6.7,75 A50,50 0 0,1 6.7,25 z"
-                                                  class="hexagon-segment @(cadet.Character ?? true ? "completed" : "")">
-                                                <title>Character</title>
-                                            </path>
-                                            <path d="M50,50 L6.7,25 A50,50 0 0,1 50,0 z"
-                                                  class="hexagon-segment @(cadet.NextApprovalDate.HasValue && cadet.NextApprovalDate.Value <= DateTime.Now ? "completed" : "")">
-                                                <title>Time in Grade</title>
-                                            </path>
-                                        </svg>
+                                        <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
+                                                    Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
+                                                    DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
+                                                    Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
+                                                    Character="@cadet.Character"
+                                                    NextApprovalDate="@cadet.NextApprovalDate" />
+                                    </td>
+                                    <td>
+                                        <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
                                     </td>
                                 </tr>
                             }

@@ -1,0 +1,44 @@
+﻿@page "/hexagon"
+@using System
+
+@code {
+    [Parameter]
+    public bool? LearnToLead { get; set; }
+    [Parameter]
+    public bool? Aerospace { get; set; }
+    [Parameter]
+    public bool? DrillAndCeremonies { get; set; }
+    [Parameter]
+    public bool? Fitness { get; set; }
+    [Parameter]
+    public bool? Character { get; set; }
+    [Parameter]
+    public DateTimeOffset? NextApprovalDate { get; set; }
+}
+
+<svg viewBox="0 0 100 100" class="hexagon">
+    <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 z"
+          class="hexagon-segment @(LearnToLead ?? true ? "completed" : "")">
+        <title>Leadership</title>
+    </path>
+    <path d="M50,50 L93.3,25 A50,50 0 0,1 93.3,75 z"
+          class="hexagon-segment @(Aerospace ?? true ? "completed" : "")">
+        <title>Aerospace</title>
+    </path>
+    <path d="M50,50 L93.3,75 A50,50 0 0,1 50,100 z"
+          class="hexagon-segment @(DrillAndCeremonies ?? true ? "completed" : "")">
+        <title>Drill</title>
+    </path>
+    <path d="M50,50 L50,100 A50,50 0 0,1 6.7,75 z"
+          class="hexagon-segment @(Fitness ?? true ? "completed" : "")">
+        <title>Fitness</title>
+    </path>
+    <path d="M50,50 L6.7,75 A50,50 0 0,1 6.7,25 z"
+          class="hexagon-segment @(Character ?? true ? "completed" : "")">
+        <title>Character</title>
+    </path>
+    <path d="M50,50 L6.7,25 A50,50 0 0,1 50,0 z"
+          class="hexagon-segment @(NextApprovalDate.HasValue && NextApprovalDate.Value <= DateTime.Now ? "completed" : "")">
+        <title>Time in Grade</title>
+    </path>
+</svg>
