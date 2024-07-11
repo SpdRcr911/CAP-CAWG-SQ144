@@ -35,13 +35,9 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
-builder.WebHost.ConfigureKestrel(options =>
+builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    options.ListenAnyIP(5000); // HTTP port
-    // options.ListenAnyIP(5001, listenOptions =>
-    // {
-    //     listenOptions.UseHttps("/etc/ssl/dev_/mycert.crt", "/etc/ssl/mycert/mycert.key");
-    // });
+    serverOptions.ListenAnyIP(5203); 
 });
 
 // Register services
