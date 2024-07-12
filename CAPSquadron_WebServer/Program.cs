@@ -8,13 +8,14 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
-builder.Services.AddScoped(sp =>
-{
-    var webAPIBaseAddress = "http://localhost:5203/";
-    var httpClient = new HttpClient { BaseAddress = new Uri(webAPIBaseAddress) };
-    return new ApiClient("http://localhost:5203/", httpClient); // Change the base URL as necessary
-});
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddScoped<IFileHandler, AttendanceFileHandler>();
+builder.Services.AddScoped<IFileHandlerFactory, FileHandlerFactory>();
+builder.Services.AddLogging();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ApiClient>(sp => new ApiClient(Environment.GetEnvironmentVariable("ApiClientBaseUrl"), sp.GetRequiredService<HttpClient>()));
 
 var app = builder.Build();
 
