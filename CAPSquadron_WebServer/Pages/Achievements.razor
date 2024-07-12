@@ -1,5 +1,7 @@
 ﻿@page "/achievements"
 @using CAPSquadron_WebServer.Services
+@using CAPSquadron_WebServer.Services.CadetTracker
+
 @inject ICadetTrackerService CadetTrackerService
 @inject NavigationManager Navigation
 
@@ -22,6 +24,7 @@
         return "-";
     }
 }
+<FileUpload CurrentContext="achievements" />
 
 @if (cadetTrackers is not null)
 {
@@ -34,8 +37,7 @@
                     <thead>
                         <tr>
                             <th>CAPID</th>
-                            <th>Last Name</th>
-                            <th>First Name</th>
+                            <th>Name</th>
                             <th>Next Approval Date</th>
                             <th>Tasks</th>
                             <th></th>
@@ -48,8 +50,7 @@
                                 <td>
                                     <a class="nav-link" href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a>
                                 </td>
-                                <td>@cadet.LastName</td>
-                                <td>@cadet.FirstName</td>
+                                <td>@cadet.LastName, @cadet.FirstName</td>
                                 <td>
                                     @cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()
                                     <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />

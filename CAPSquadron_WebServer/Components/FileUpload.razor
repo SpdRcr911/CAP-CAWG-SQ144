@@ -1,24 +1,56 @@
-﻿@using CAPSquadron_WebServer.Services
+﻿@using CAPSquadron_WebServer.Services;
+@using CAPSquadron_WebServer.Services.FileHandling
+
 @inject IFileUploadService FileUploadService
 
-<div>
-    <InputFile OnChange="HandleFileSelected" />
-    @if (validationMessage is not null)
+<div class="file-upload-container">
+    @if (!isUploadVisible)
     {
-        <p style="color: red;">@validationMessage</p>
+        <a class="icon-link" @onclick="ShowUpload">
+            <span class="oi oi-pencil me-2" aria-hidden="true"></span> Update Data
+        </a>
     }
-    <button @onclick="SubmitFile" disabled="@(selectedFile is null)">Upload</button>
-    @if (uploadMessage is not null)
+    else
     {
-        <p style="color: @(uploadSuccess ? "green" : "red");">@uploadMessage</p>
+        <div>
+            <InputFile OnChange="HandleFileSelected" />
+            @if (validationMessage is not null)
+            {
+                <p style="color: red;">@validationMessage</p>
+            }
+            <button class="btn btn-primary" @onclick="SubmitFile" disabled="@(selectedFile is null)">Upload</button>
+            <button class="btn btn-secondary" @onclick="HideUpload">Cancel</button>
+            @if (uploadMessage is not null)
+            {
+                <p style="color: @(uploadSuccess ? "green" : "red");">@uploadMessage</p>
+            }
+        </div>
     }
 </div>
+
 
 @code {
     private IBrowserFile? selectedFile;
     private string? validationMessage;
     private string? uploadMessage;
     private bool uploadSuccess;
+    private bool isUploadVisible = false;
+    [Parameter]
+    public string? CurrentContext { get; set; } = string.Empty;
+
+    private void ShowUpload()
+    {
+        isUploadVisible = true;
+    }
+
+    private void HideUpload()
+    {
+        isUploadVisible = false;
+        validationMessage = null;
+        uploadMessage = null;
+        selectedFile = null;
+        StateHasChanged();
+    }
 
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -42,9 +74,10 @@
         {
             try
             {
-                await FileUploadService.UploadFileAsync(selectedFile);
+                await FileUploadService.UploadFileAsync(selectedFile, CurrentContext);
                 uploadMessage = "File uploaded successfully!";
                 uploadSuccess = true;
+                _ = DelayAndHideUpload();
             }
             catch (Exception ex)
             {
@@ -57,7 +90,11 @@
             }
         }
     }
-
+    private async Task DelayAndHideUpload()
+    {
+        await Task.Delay(5000);
+        HideUpload();
+    }
     private ValidationResult ValidateFile(IBrowserFile file)
     {
         // Example validation: check file size and extension
