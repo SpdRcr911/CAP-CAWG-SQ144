@@ -1,8 +1,10 @@
 ﻿@page "/flights"
 @using CAPSquadron_WebServer.Services
+@using CAPSquadron_WebServer.Services.Flight
+@using CAPSquadron_WebServer.Services.Attendance
 
 @inject IFlightService FlightService
-@inject IMemberService MemberService
+@inject IAttendanceSignInService AttendanceSignInService
 @inject NavigationManager Navigation
 
 <h3>Flights</h3>
@@ -27,14 +29,14 @@ else
                             <strong>Flight Commander:</strong>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.Name <br>
                             <strong>Flight Sergeants:</strong>
                             <ul>
-                                @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<Member>())
+                                @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<AttendanceSignIn>())
                                 {
                                     <li>@sergeant.Rank @sergeant.Name</li>
                                 }
                             </ul>
                             <strong>Members:</strong>
                             <ul>
-                                @foreach (var member in flightMembership?.Members ?? Enumerable.Empty<Member>())
+                                @foreach (var member in flightMembership?.Members ?? Enumerable.Empty<AttendanceSignIn>())
                                 {
                                     <li>@member.Rank @member.Name</li>
                                 }
@@ -69,7 +71,7 @@ else
         }
     }
 
-    protected async Task<(Member? flightCommander, IEnumerable<Member> flightSergeants, IEnumerable<Member> members)> GetFlightMembershipAsync(FlightDto flight)
+    protected async Task<(AttendanceSignIn? flightCommander, IEnumerable<AttendanceSignIn> flightSergeants, IEnumerable<AttendanceSignIn> members)> GetFlightMembershipAsync(FlightDto flight)
     {
         var memberCapIds = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
         if (flight.FlightCommanderId.HasValue)
@@ -77,7 +79,7 @@ else
             memberCapIds.Add(flight.FlightCommanderId.Value);
         }
 
-        var members = await MemberService.GetMembersAsync(memberCapIds);
+        var members = await AttendanceSignInService.GetAttendanceSignInsAsync(memberCapIds);
         var flightCommander = members.FirstOrDefault(m => m.Capid == flight.FlightCommanderId);
         var flightSergeants = members.Where(m => flight.FlightSergeantIds.Contains(m.Capid));
         return (flightCommander, flightSergeants, members.Where(m => flight.MemberIds.Contains(m.Capid)));
@@ -91,8 +93,8 @@ else
     private class FlightMembership
     {
         public int FlightId { get; set; }
-        public Member? FlightCommander { get; set; }
-        public List<Member> FlightSergeants { get; set; } = new();
-        public List<Member> Members { get; set; } = new();
+        public AttendanceSignIn? FlightCommander { get; set; }
+        public List<AttendanceSignIn> FlightSergeants { get; set; } = new();
+        public List<AttendanceSignIn> Members { get; set; } = new();
     }
 }

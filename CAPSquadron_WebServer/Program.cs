@@ -1,17 +1,22 @@
 using CAPSquadron_WebServer.Services;
+using CAPSquadron_WebServer.Services.Attendance;
+using CAPSquadron_WebServer.Services.CadetTracker;
+using CAPSquadron_WebServer.Services.FileHandling;
+using CAPSquadron_WebServer.Services.Flight;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IAttendanceSignInService, AttendanceSignInService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IFileHandler, AttendanceFileHandler>();
+builder.Services.AddScoped<IFileHandler, CadetTrackerFileHandler>();
 builder.Services.AddScoped<IFileHandlerFactory, FileHandlerFactory>();
 builder.Services.AddLogging();
 builder.Services.AddHttpClient();

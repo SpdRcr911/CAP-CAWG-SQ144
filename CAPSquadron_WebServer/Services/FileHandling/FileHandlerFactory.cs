@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace CAPSquadron_WebServer.Services;
+namespace CAPSquadron_WebServer.Services.FileHandling;
 
 public class FileHandlerFactory : IFileHandlerFactory
 {
@@ -11,9 +11,9 @@ public class FileHandlerFactory : IFileHandlerFactory
         _fileHandlers = fileHandlers;
     }
 
-    public IFileHandler GetFileHandler(IBrowserFile file)
+    public IFileHandler GetFileHandler(IBrowserFile file, string? context)
     {
-        return _fileHandlers.FirstOrDefault(handler => handler.CanHandle(file))
+        return _fileHandlers.FirstOrDefault(handler => handler.CanHandle(file, context))
                ?? throw new InvalidOperationException("No handler found for the specified file.");
     }
 }

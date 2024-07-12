@@ -1,9 +1,13 @@
 ﻿@page "/flights/{FlightId:int}"
 @using CAPSquadron_WebServer.Services
+@using CAPSquadron_WebServer.Services.Flight
+@using CAPSquadron_WebServer.Services.CadetTracker
+@using CAPSquadron_WebServer.Services.Attendance
 @using CAPSquadron_WebServer.Components
 
 @inject IFlightService FlightService
 @inject ICadetTrackerService CadetTrackerService
+@inject IAttendanceSignInService AttendanceSignInService
 @inject NavigationManager Navigation
 
 @code {
@@ -12,9 +16,7 @@
 
     private FlightDto? flight;
     private List<PersonalCadetTrackerDto>? cadetTrackers;
-    private IEnumerable<Member>? members;
-    private Member? flightCommander;
-    private IEnumerable<Member>? flightSergeants;
+    private AttendanceSignIn? flightCommander;
 
     protected override async Task OnInitializedAsync()
     {
@@ -22,8 +24,9 @@
 
         var capids = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
         capids.Add(flight.FlightCommanderId!.Value);
-
         cadetTrackers = (await CadetTrackerService.GetCadetTrackerByCapidsAsync(capids)).ToList();
+        flightCommander = await AttendanceSignInService.GetAttendanceSignInAsync(flight.FlightCommanderId.Value);
+
 
     }
 

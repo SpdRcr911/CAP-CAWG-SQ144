@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace CAPSquadron_WebServer.Services;
+namespace CAPSquadron_WebServer.Services.FileHandling;
 
 public class FileUploadService : IFileUploadService
 {
@@ -13,13 +13,13 @@ public class FileUploadService : IFileUploadService
         _logger = logger;
     }
 
-    public async Task UploadFileAsync(IBrowserFile file)
+    public async Task UploadFileAsync(IBrowserFile file, string? context)
     {
         try
         {
             ValidateFile(file);
 
-            var fileHandler = _fileHandlerFactory.GetFileHandler(file);
+            var fileHandler = _fileHandlerFactory.GetFileHandler(file, context);
             await fileHandler.UploadFileAsync(file);
         }
         catch (InvalidDataException ex)

@@ -1,4 +1,4 @@
-﻿namespace CAPSquadron_WebServer.Services;
+﻿namespace CAPSquadron_WebServer.Services.CadetTracker;
 
 public class CadetTrackerService : ICadetTrackerService
 {
