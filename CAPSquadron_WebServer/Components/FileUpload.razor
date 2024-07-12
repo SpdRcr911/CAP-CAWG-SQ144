@@ -1,0 +1,93 @@
+﻿@using CAPSquadron_WebServer.Services
+@inject IFileUploadService FileUploadService
+
+<div>
+    <InputFile OnChange="HandleFileSelected" />
+    @if (validationMessage is not null)
+    {
+        <p style="color: red;">@validationMessage</p>
+    }
+    <button @onclick="SubmitFile" disabled="@(selectedFile is null)">Upload</button>
+    @if (uploadMessage is not null)
+    {
+        <p style="color: @(uploadSuccess ? "green" : "red");">@uploadMessage</p>
+    }
+</div>
+
+@code {
+    private IBrowserFile? selectedFile;
+    private string? validationMessage;
+    private string? uploadMessage;
+    private bool uploadSuccess;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        var validationResult = ValidateFile(file);
+
+        if (!validationResult.IsValid)
+        {
+            validationMessage = validationResult.ErrorMessage;
+            selectedFile = null;
+            return;
+        }
+
+        validationMessage = null;
+        selectedFile = file;
+    }
+
+    private async Task SubmitFile()
+    {
+        if (selectedFile is not null)
+        {
+            try
+            {
+                await FileUploadService.UploadFileAsync(selectedFile);
+                uploadMessage = "File uploaded successfully!";
+                uploadSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                uploadMessage = $"File upload failed: {ex.Message}";
+                uploadSuccess = false;
+            }
+            finally
+            {
+                selectedFile = null; // Clear the file after upload
+            }
+        }
+    }
+
+    private ValidationResult ValidateFile(IBrowserFile file)
+    {
+        // Example validation: check file size and extension
+        var maxSizeInBytes = 10 * 1024 * 1024; // 10 MB
+        var allowedExtensions = new[] { ".csv", ".xlsx" };
+
+        if (file.Size > maxSizeInBytes)
+        {
+            return new ValidationResult("File size exceeds the maximum allowed size.");
+        }
+
+        var fileExtension = Path.GetExtension(file.Name);
+        if (!allowedExtensions.Contains(fileExtension, StringComparer.OrdinalIgnoreCase))
+        {
+            return new ValidationResult("Invalid file type.");
+        }
+
+        return ValidationResult.Success;
+    }
+
+    public class ValidationResult
+    {
+        public bool IsValid => ErrorMessage is null;
+        public string? ErrorMessage { get; }
+
+        public ValidationResult(string? errorMessage = null)
+        {
+            ErrorMessage = errorMessage;
+        }
+
+        public static ValidationResult Success => new ValidationResult();
+    }
+}
