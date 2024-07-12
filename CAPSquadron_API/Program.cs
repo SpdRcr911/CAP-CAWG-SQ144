@@ -50,7 +50,7 @@ builder.Services.AddScoped<IProcessDataService<AchievementCsvModel>, Achievement
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection") ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("CAPSQ144_CONNECTIONSTRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
