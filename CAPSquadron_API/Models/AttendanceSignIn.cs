@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CAPSquadron_API.Models;
 
-public class Member(string name, string rank)
+public class AttendanceSignIn(string name, string rank)
 {
     [Key]
     public int CAPID { get; set; }

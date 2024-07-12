@@ -145,7 +145,7 @@ public class FlightService : IFlightService
     public async Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync()
     {
         var assignedCapIds = await _context.FlightMembers.Select(fm => fm.CAPID).Distinct().ToListAsync();
-        var allCapIds = await _context.Members.Select(m => m.CAPID).ToListAsync();
+        var allCapIds = await _context.AttendanceSignIns.Select(m => m.CAPID).ToListAsync();
 
         return allCapIds.Except(assignedCapIds);
     }

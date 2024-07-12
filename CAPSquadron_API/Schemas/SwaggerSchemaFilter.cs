@@ -9,7 +9,7 @@ public class SwaggerSchemaFilter : ISchemaFilter
 {
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
-        if (context.Type == typeof(Member))
+        if (context.Type == typeof(AttendanceSignIn))
         {
             schema.Example = new OpenApiObject
             {

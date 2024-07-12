@@ -43,8 +43,8 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // Register services
 builder.Services.AddScoped<ICsvParsingService, CsvParsingService>();
 builder.Services.AddScoped<IXlsxParsingService, XlsxParsingService>();
-builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
-builder.Services.AddScoped<IProcessDataService<MemberCsvModel>, MemberService>();
+builder.Services.AddScoped<IRetrieveDataService<AttendanceSignIn>, AttendanceSignInService>();
+builder.Services.AddScoped<IProcessDataService<AttendanceSignInCsvModel>, AttendanceSignInService>();
 builder.Services.AddScoped<IRetrieveDataService<Achievement>, AchievementService>();
 builder.Services.AddScoped<IProcessDataService<AchievementCsvModel>, AchievementService>();
 builder.Services.AddScoped<IFlightService, FlightService>();

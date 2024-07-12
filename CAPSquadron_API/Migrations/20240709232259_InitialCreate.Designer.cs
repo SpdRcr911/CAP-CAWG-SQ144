@@ -258,7 +258,7 @@ namespace CAPSquadron_API.Migrations
                     b.ToTable("flight_members");
                 });
 
-            modelBuilder.Entity("CAPSquadron_API.Models.Member", b =>
+            modelBuilder.Entity("CAPSquadron_API.Models.AttendanceSignIn", b =>
                 {
                     b.Property<int>("CAPID")
                         .ValueGeneratedOnAdd()
@@ -317,7 +317,7 @@ namespace CAPSquadron_API.Migrations
 
             modelBuilder.Entity("CAPSquadron_API.Models.FlightMember", b =>
                 {
-                    b.HasOne("CAPSquadron_API.Models.Member", "Member")
+                    b.HasOne("CAPSquadron_API.Models.AttendanceSignIn", "AttendanceSignIn")
                         .WithMany()
                         .HasForeignKey("CAPID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -333,7 +333,7 @@ namespace CAPSquadron_API.Migrations
 
                     b.Navigation("Flight");
 
-                    b.Navigation("Member");
+                    b.Navigation("AttendanceSignIn");
                 });
 #pragma warning restore 612, 618
         }
