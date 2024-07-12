@@ -18,5 +18,5 @@ public class FlightMember
 
     public Flight? Flight { get; set; }
 
-    public Member? Member { get; set; }
+    public AttendanceSignIn? Member { get; set; }
 }

@@ -43,14 +43,14 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // Register services
 builder.Services.AddScoped<ICsvParsingService, CsvParsingService>();
 builder.Services.AddScoped<IXlsxParsingService, XlsxParsingService>();
-builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
-builder.Services.AddScoped<IProcessDataService<MemberCsvModel>, MemberService>();
+builder.Services.AddScoped<IRetrieveDataService<AttendanceSignIn>, AttendanceSignInService>();
+builder.Services.AddScoped<IProcessDataService<AttendanceSignInCsvModel>, AttendanceSignInService>();
 builder.Services.AddScoped<IRetrieveDataService<Achievement>, AchievementService>();
 builder.Services.AddScoped<IProcessDataService<AchievementCsvModel>, AchievementService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 
-var connectionString = Environment.GetEnvironmentVariable("DefaultConnection") ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("CAPSQ144_CONNECTIONSTRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));

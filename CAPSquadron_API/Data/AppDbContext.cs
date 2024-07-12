@@ -8,7 +8,7 @@ namespace CAPSquadron_API.Data;
 public class AppDbContext : DbContext
 {
     public DbSet<Achievement> Achievements { get; set; }
-    public DbSet<Member> Members { get; set; }
+    public DbSet<AttendanceSignIn> AttendanceSignIns { get; set; }
     public DbSet<Flight> Flights { get; set; }
     public DbSet<FlightMember> FlightMembers { get; set; }
 
