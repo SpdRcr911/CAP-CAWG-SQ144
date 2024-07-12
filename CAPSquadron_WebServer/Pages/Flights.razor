@@ -1,0 +1,98 @@
+﻿@page "/flights"
+@using CAPSquadron_WebServer.Services
+
+@inject IFlightService FlightService
+@inject IMemberService MemberService
+@inject NavigationManager Navigation
+
+<h3>Flights</h3>
+
+@if (flights == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var flight in flights.OrderBy(flt => flt.Name))
+        {
+            var flightMembership = flightMemberships.FirstOrDefault(fm => fm.FlightId == flight.Id);
+            <div class="col-md-4 d-flex align-items-stretch">
+                <div class="card mb-4 flex-fill">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);">@flight.Name</a>
+                        </h5>
+                        <p class="card-text">
+                            <strong>Flight Commander:</strong>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.Name <br>
+                            <strong>Flight Sergeants:</strong>
+                            <ul>
+                                @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<Member>())
+                                {
+                                    <li>@sergeant.Rank @sergeant.Name</li>
+                                }
+                            </ul>
+                            <strong>Members:</strong>
+                            <ul>
+                                @foreach (var member in flightMembership?.Members ?? Enumerable.Empty<Member>())
+                                {
+                                    <li>@member.Rank @member.Name</li>
+                                }
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private IEnumerable<FlightDto>? flights;
+    private List<FlightMembership> flightMemberships = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        flights = await FlightService.GetFlightsAsync();
+        flightMemberships = new List<FlightMembership>();
+
+        foreach (var flight in flights)
+        {
+            var membership = await GetFlightMembershipAsync(flight);
+            flightMemberships.Add(new FlightMembership
+                {
+                    FlightId = flight.Id,
+                    FlightCommander = membership.flightCommander,
+                    FlightSergeants = membership.flightSergeants.ToList(),
+                    Members = membership.members.ToList()
+                });
+        }
+    }
+
+    protected async Task<(Member? flightCommander, IEnumerable<Member> flightSergeants, IEnumerable<Member> members)> GetFlightMembershipAsync(FlightDto flight)
+    {
+        var memberCapIds = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
+        if (flight.FlightCommanderId.HasValue)
+        {
+            memberCapIds.Add(flight.FlightCommanderId.Value);
+        }
+
+        var members = await MemberService.GetMembersAsync(memberCapIds);
+        var flightCommander = members.FirstOrDefault(m => m.Capid == flight.FlightCommanderId);
+        var flightSergeants = members.Where(m => flight.FlightSergeantIds.Contains(m.Capid));
+        return (flightCommander, flightSergeants, members.Where(m => flight.MemberIds.Contains(m.Capid)));
+    }
+
+    private void NavigateToFlight(int flightId)
+    {
+        Navigation.NavigateTo($"/flights/{flightId}");
+    }
+
+    private class FlightMembership
+    {
+        public int FlightId { get; set; }
+        public Member? FlightCommander { get; set; }
+        public List<Member> FlightSergeants { get; set; } = new();
+        public List<Member> Members { get; set; } = new();
+    }
+}

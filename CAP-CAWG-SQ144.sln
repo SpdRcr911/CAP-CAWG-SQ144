@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAPSquadron_API", "CAPSquad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAPSquadron_SPA", "CAPSquadron_SPA\CAPSquadron_SPA.csproj", "{2C8E8E35-5CAB-4401-A5AA-72C6A3D6B771}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAPSquadron_WebServer", "CAPSquadron_WebServer\CAPSquadron_WebServer.csproj", "{4212D224-3E31-4C21-8FBE-18197D673433}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2C8E8E35-5CAB-4401-A5AA-72C6A3D6B771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C8E8E35-5CAB-4401-A5AA-72C6A3D6B771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C8E8E35-5CAB-4401-A5AA-72C6A3D6B771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4212D224-3E31-4C21-8FBE-18197D673433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4212D224-3E31-4C21-8FBE-18197D673433}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4212D224-3E31-4C21-8FBE-18197D673433}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4212D224-3E31-4C21-8FBE-18197D673433}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
