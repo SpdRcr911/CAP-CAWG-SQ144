@@ -1,0 +1,51 @@
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore virtual environment directories
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Ignore distribution and packaging directories
+build/
+dist/
+*.egg-info/
+
+# Ignore test and coverage reports
+.coverage
+*.cover
+*.py,cover
+htmlcov/
+.tox/
+.nox/
+.cache
+coverage.xml
+*.log
+*.tmp
+
+# Ignore editor and IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+
+# Ignore OS generated files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Ignore node modules
+node_modules/
+
+# Ignore Dockerfile and Docker-compose file if not needed in the container
+Dockerfile
+docker-compose.yml
+
+# Ignore any other files or directories specific to your development setup
