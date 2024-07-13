@@ -92,43 +92,78 @@ public class FlightService : IFlightService
 
     public async Task<FlightDto> UpdateFlightAsync(int id, FlightDto flightDto)
     {
-        var flight = await _context.Flights.FindAsync(id) ?? throw new NotFoundException($"Flight with ID {id} was not found.");
+        using var transaction = await _context.Database.BeginTransactionAsync();
 
-        flight.Name = flightDto.Name;
-        _context.Flights.Update(flight);
-
-        var existingMembers = await _context.FlightMembers.Where(fm => fm.FlightId == id).ToListAsync();
-        _context.FlightMembers.RemoveRange(existingMembers);
-
-        var flightMembers = new List<FlightMember>();
-
-        if (flightDto.FlightCommanderId.HasValue)
+        try
         {
-            flightMembers.Add(new FlightMember
+            var flight = await _context.Flights.FindAsync(id) ?? throw new NotFoundException($"Flight with ID {id} was not found.");
+
+            flight.Name = flightDto.Name;
+            _context.Flights.Update(flight);
+
+            var existingMembers = await _context.FlightMembers
+                .Where(fm => fm.FlightId == id)
+                .ToListAsync();
+
+            _context.FlightMembers.RemoveRange(existingMembers);
+
+            var flightMembers = new List<FlightMember>();
+
+            var allMemberIds = new List<int>();
+            if (flightDto.FlightCommanderId.HasValue)
+            {
+                allMemberIds.Add(flightDto.FlightCommanderId.Value);
+            }
+
+            allMemberIds.AddRange(flightDto.FlightSergeantIds);
+            allMemberIds.AddRange(flightDto.MemberIds);
+
+            // Ensure all CAPIDs exist in the attendance_sign_ins table
+            var existingCapIds = await _context.AttendanceSignIns
+                .Where(a => allMemberIds.Contains(a.CAPID))
+                .Select(a => a.CAPID)
+                .ToListAsync();
+
+            var missingCapIds = allMemberIds.Except(existingCapIds).ToList();
+            if (missingCapIds.Any())
+            {
+                throw new ArgumentOutOfRangeException($"Some CAPIDs are missing in attendance_sign_ins table: {string.Join(", ", missingCapIds)}");
+            }
+
+            if (flightDto.FlightCommanderId.HasValue)
+            {
+                flightMembers.Add(new FlightMember
+                {
+                    FlightId = flight.Id,
+                    CAPID = flightDto.FlightCommanderId.Value,
+                    IsFlightCommander = true
+                });
+            }
+
+            flightMembers.AddRange(flightDto.FlightSergeantIds.Select(id => new FlightMember
             {
                 FlightId = flight.Id,
-                CAPID = flightDto.FlightCommanderId.Value,
-                IsFlightCommander = true
-            });
+                CAPID = id,
+                IsFlightSergeant = true
+            }));
+
+            flightMembers.AddRange(flightDto.MemberIds.Select(id => new FlightMember
+            {
+                FlightId = flight.Id,
+                CAPID = id
+            }));
+
+            _context.FlightMembers.AddRange(flightMembers);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return flightDto;
         }
-
-        flightMembers.AddRange(flightDto.FlightSergeantIds.Select(id => new FlightMember
+        catch (Exception)
         {
-            FlightId = flight.Id,
-            CAPID = id,
-            IsFlightSergeant = true
-        }));
-
-        flightMembers.AddRange(flightDto.MemberIds.Select(id => new FlightMember
-        {
-            FlightId = flight.Id,
-            CAPID = id
-        }));
-
-        _context.FlightMembers.AddRange(flightMembers);
-        await _context.SaveChangesAsync();
-
-        return flightDto;
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task DeleteFlightAsync(int id)

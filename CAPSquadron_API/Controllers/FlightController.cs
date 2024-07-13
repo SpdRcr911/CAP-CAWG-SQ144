@@ -67,6 +67,10 @@ public class FlightController : ControllerBase
             var updatedFlight = await _flightService.UpdateFlightAsync(id, flightDto);
             return Ok(updatedFlight);
         }
+        catch (ArgumentOutOfRangeException aorex)
+        {
+            return BadRequest(aorex.Message);
+        }
         catch (NotFoundException nfex)
         {
             return NotFound(new { message = nfex.Message });
