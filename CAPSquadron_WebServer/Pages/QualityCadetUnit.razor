@@ -1,0 +1,88 @@
+﻿@page "/quality-unit"
+@using CAPSquadron_WebServer.Services
+@using CAPSquadron_WebServer.Services.QualityCadetUnit
+@inject IQualityCadetUnitReportService ReportService
+
+<h3>Quality Cadet Unit Reports</h3>
+
+@if (reports == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Charter</th>
+                <th>Current Cadets</th>
+                <th>Enrollment 25+ Cadets</th>
+                <th>Cadets Joined</th>
+                <th>Curry in 8 Weeks</th>
+                <th>Onboarding 70%</th>
+                <th>Cadets with WB</th>
+                <th>Cadet Achievement 45%</th>
+                <th>Cadets with O'Flights</th>
+                <th>O'Flights 70%</th>
+                <th>Cadets with Encamp</th>
+                <th>Encamp 50%</th>
+                <th>Cadets with GES</th>
+                <th>GES 60%</th>
+                <th>AEX</th>
+                <th>STEM</th>
+                <th>AE (AEX or STEM Kit)</th>
+                <th>Outside Activities</th>
+                <th>Seniors with TLC</th>
+                <th>Adult Leadership 3+ TLC Grads</th>
+                <th>Seniors with CP Specialty Track Rating</th>
+                <th>Specialty Track 2+ Seniors with Rating</th>
+                <th>QCUA 6+ Criteria Met</th>
+                <th>Number of Criteria Met</th>
+                <th>Report Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in reports)
+            {
+                <tr>
+                    <td>@report.Id</td>
+                    <td>@report.Charter</td>
+                    <td>@report.CurrentCadets</td>
+                    <td>@report.Enrollment25PlusCadets</td>
+                    <td>@report.CadetsJoined</td>
+                    <td>@report.CurryIn8Weeks</td>
+                    <td>@report.Onboarding70Percent</td>
+                    <td>@report.CadetsWithWB</td>
+                    <td>@report.CadetAchievement45Percent</td>
+                    <td>@report.CadetsWithOFlights</td>
+                    <td>@report.OFlights70Percent</td>
+                    <td>@report.CadetsWithEncamp</td>
+                    <td>@report.Encamp50Percent</td>
+                    <td>@report.CadetsWithGES</td>
+                    <td>@report.GeS60Percent</td>
+                    <td>@report.Aex</td>
+                    <td>@report.Stem</td>
+                    <td>@report.AeAexOrStemKit</td>
+                    <td>@report.OutsideActivities</td>
+                    <td>@report.SeniorsWithTLC</td>
+                    <td>@report.AdultLeadership3PlusTlcGrads</td>
+                    <td>@report.SeniorsWithCPSpecialtyTrackRating</td>
+                    <td>@report.SpecialtyTrack2PlusSeniorsWithRating</td>
+                    <td>@report.QcuA6PlusCriteriaMet</td>
+                    <td>@report.NumberOfCriteriaMet</td>
+                    <td>@report.ReportDate.DateTime.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<QualityCadetUnitReport>? reports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reports = (await ReportService.GetReportsAsync()).ToList();
+    }
+}
