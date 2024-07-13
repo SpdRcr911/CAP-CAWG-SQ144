@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<AttendanceSignIn> AttendanceSignIns { get; set; }
     public DbSet<Flight> Flights { get; set; }
     public DbSet<FlightMember> FlightMembers { get; set; }
+    public DbSet<QualityCadetUnitReport> QualityCadetUnitReports { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -54,5 +55,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(fm => fm.CAPID);
 
         modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
+
+        modelBuilder.Entity<QualityCadetUnitReport>().ToTable("quality_cadet_unit_reports", t => t.ExcludeFromMigrations());
     }
 }
