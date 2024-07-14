@@ -36,10 +36,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>CAPID</th>
-                            <th>Name</th>
-                            <th>Next Approval Date</th>
-                            <th>Tasks</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -48,23 +45,33 @@
                         {
                             <tr>
                                 <td>
-                                    <a class="nav-link" href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a>
-                                </td>
-                                <td>@cadet.LastName, @cadet.FirstName</td>
-                                <td>
-                                    @cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()
-                                    <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
-                                </td>
-                                <td>
-                                    <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
-                                                Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
-                                                DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
-                                                Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
-                                                Character="@cadet.Character"
-                                                NextApprovalDate="@cadet.NextApprovalDate" />
+                                    <div class="d-flex">
+                                        <div class="p-2"><a href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a></div>
+                                        <div class="p-2">
+                                            @cadet.LastName, @cadet.FirstName
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
-                                    <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
+                                    <div class="d-flex">
+                                        <div class="p-2">
+                                            <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
+                                        </div>
+                                        <div class="p-2">
+                                            <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
+                                                        Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
+                                                        DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
+                                                        Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
+                                                        Character="@cadet.Character"
+                                                        NextApprovalDate="@cadet.NextApprovalDate" />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="p-2">Next Approval Date: @cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()</div>
+                                        <div class="p-2">
+                                            <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         }
