@@ -2,9 +2,11 @@
 @using CAPSquadron_WebServer.Services
 @using CAPSquadron_WebServer.Services.Flight
 @using CAPSquadron_WebServer.Services.Attendance
+@using CAPSquadron_WebServer.Services.MemberAttribute
 
 @inject IFlightService FlightService
 @inject IAttendanceSignInService AttendanceSignInService
+@inject IMemberAttributeService MemberAttributeService
 @inject NavigationManager Navigation
 
 <h3>Flights</h3>
@@ -35,12 +37,17 @@ else
                                 }
                             </ul>
                             <strong>Members:</strong>
-                            <ul>
-                                @foreach (var member in flightMembership?.Members ?? Enumerable.Empty<AttendanceSignIn>())
-                                {
-                                    <li>@member.Rank @member.Name</li>
-                                }
-                            </ul>
+                            @foreach (var member in flightMembership?.Members ?? Enumerable.Empty<AttendanceSignIn>())
+                            {
+                                <div class="d-flex justify-content-between">
+                                    <div class="mr-auto">
+                                        <span class="badge rounded-pill btn-primary">@member.Capid</span> @member.Rank @member.Name
+                                    </div>
+                                    <div class="ps-1">
+                                        <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == member.Capid)" />
+                                    </div>
+                                </div>
+                            }
                         </p>
                     </div>
                 </div>
@@ -50,13 +57,15 @@ else
 }
 
 @code {
-    private IEnumerable<FlightDto>? flights;
-    private List<FlightMembership> flightMemberships = new();
+    private IEnumerable<FlightDto> flights = [];
+    private List<FlightMembership> flightMemberships = [];
+    private IEnumerable<MemberAttributesDto> memberAttributes = [];
 
     protected override async Task OnInitializedAsync()
     {
         flights = await FlightService.GetFlightsAsync();
         flightMemberships = new List<FlightMembership>();
+        memberAttributes = await MemberAttributeService.GetMemberAttributesAsync();
 
         foreach (var flight in flights)
         {
