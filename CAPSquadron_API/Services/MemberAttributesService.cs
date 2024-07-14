@@ -32,7 +32,7 @@ namespace CAPSquadron_API.Services
                 CurryAchievementCTE AS (
                     SELECT DISTINCT capid
                     FROM achievements
-                    WHERE achv_name = 'Achievement 1'
+                    WHERE achv_name = 'Achievement 1' AND apr_date <> NULL
                     {(capidCondition is not null ? $"AND capid = {capidCondition}" : "")}
                 ),
                 CawgcapEmailCTE AS (
