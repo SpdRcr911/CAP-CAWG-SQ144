@@ -3,6 +3,7 @@ using CAPSquadron_WebServer.Services.Attendance;
 using CAPSquadron_WebServer.Services.CadetTracker;
 using CAPSquadron_WebServer.Services.FileHandling;
 using CAPSquadron_WebServer.Services.Flight;
+using CAPSquadron_WebServer.Services.MemberAttribute;
 using CAPSquadron_WebServer.Services.QualityCadetUnit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IAttendanceSignInService, AttendanceSignInService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 builder.Services.AddScoped<IQualityCadetUnitReportService, QualityCadetUnitReportService>();
+builder.Services.AddScoped<IMemberAttributeService, MemberAttributeService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
