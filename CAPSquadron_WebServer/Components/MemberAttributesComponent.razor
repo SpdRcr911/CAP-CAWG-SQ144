@@ -1,0 +1,36 @@
+﻿@using CAPSquadron_WebServer.Services
+
+@if (Attributes != null)
+{
+    @foreach (var attribute in GetAttributesList())
+    {
+        <span class="badge @GetBadgeClass(attribute.Value)" style="font-size: .5em;font-weight: lighter;padding: .5em .65em;">
+            @(attribute.Key)
+        </span>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public MemberAttributesDto? Attributes { get; set; }
+
+    private List<KeyValuePair<string, bool>> GetAttributesList()
+    {
+        if (Attributes is null)
+            return [];
+
+        return new List<KeyValuePair<string, bool>>
+        {
+            new ("Email", Attributes.HasCawgcapEmail),
+            new ("GES", Attributes.HasGESCertification),
+            new ("Curry", Attributes.HasCurryAchievement),
+            new ("WB", Attributes.HasWrightBrothersAchievement)
+        };
+    }
+
+    private string GetBadgeClass(bool attributeValue)
+    {
+        return attributeValue ? "rounded-pill btn-success" : "rounded-pill btn-danger";
+    }
+}
