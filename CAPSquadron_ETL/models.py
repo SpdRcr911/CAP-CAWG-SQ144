@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Integer, Date
+from sqlalchemy import Column, Integer, String, Float, Date
 from database import Base
 
 class QualityCadetUnitReport(Base):
@@ -29,6 +29,38 @@ class QualityCadetUnitReport(Base):
     specialty_track_2_plus_seniors_with_rating = Column(String)
     qcua_6_plus_criteria_met = Column(String)
     number_of_criteria_met = Column(Integer)
+    report_date = Column(Date, index=True)
+
+class ComprehensiveHFZReport(Base):
+    __tablename__ = "comprehensive_hfz_reports"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    capid = Column(Integer, index=True)
+    full_name = Column(String)
+    org = Column(String)
+    date_taken = Column(Date)
+    is_passed = Column(String)
+    weather_waiver = Column(String)
+    pacer_run = Column(Integer)
+    pacer_run_waiver = Column(String)
+    pacer_run_passed = Column(String)
+    mile_run = Column(String)
+    mile_run_waiver = Column(String)
+    mile_run_passed = Column(String)
+    curl_up = Column(Integer)
+    curl_up_waiver = Column(String)
+    curl_up_passed = Column(String)
+    push_up = Column(Integer)
+    push_up_waiver = Column(String)
+    push_up_passed = Column(String)
+    sit_and_reach = Column(Float)
+    sit_and_reach_waiver = Column(String)
+    sit_and_reach_passed = Column(String)
+    first_usr = Column(Integer)
+    date_created = Column(Date)
+    usr_id = Column(Integer)
+    date_mod = Column(Date)
+    name_last = Column(String)
     report_date = Column(Date, index=True)
 
 # Create the tables in the database
