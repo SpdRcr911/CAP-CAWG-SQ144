@@ -17,42 +17,45 @@
 }
 else
 {
-    <div class="row">
-        @foreach (var flight in flights.OrderBy(flt => flt.Name))
-        {
-            var flightMembership = flightMemberships.FirstOrDefault(fm => fm.FlightId == flight.Id);
-            <div class="col-md-4 d-flex align-items-stretch">
-                <div class="card mb-4 flex-fill">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);">@flight.Name</a>
-                        </h5>
-                        <p class="card-text">
-                            <strong>Flight Commander:</strong>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.Name <br>
-                            <strong>Flight Sergeants:</strong>
-                            <ul>
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var flight in flights.OrderBy(flt => flt.Name))
+            {
+                var flightMembership = flightMemberships.FirstOrDefault(fm => fm.FlightId == flight.Id);
+                <div class="col-md-4 d-flex align-items-stretch">
+                    <div class="card mb-4 flex-fill">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);">@flight.Name</a>
+                            </h5>
+                            <p class="card-text">
+                                <div><strong>Flight Commander:</strong></div>
+                                <div style="padding-left: 15px"><span>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.Name <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == flight.FlightCommanderId)" /></span></div>
+                                <strong>Flight Sergeants:</strong>
                                 @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<AttendanceSignIn>())
                                 {
-                                    <li>@sergeant.Rank @sergeant.Name</li>
+                                    <div style="padding-left: 15px">@sergeant.Rank @sergeant.Name <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == sergeant.Capid)" /> </div>
                                 }
-                            </ul>
-                            <strong>Members:</strong>
-                            @foreach (var member in flightMembership?.Members ?? Enumerable.Empty<AttendanceSignIn>())
-                            {
-                                <div class="d-flex justify-content-between">
-                                    <div class="mr-auto">
-                                        <span class="badge rounded-pill btn-primary">@member.Capid</span> @member.Rank @member.Name
-                                    </div>
-                                    <div class="ps-1">
-                                        <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == member.Capid)" />
-                                    </div>
+                                <div style="padding-top: 15px">
+                                    <strong>Members:</strong>
+                                    @foreach (var member in flightMembership?.Members.Where(m => !flight.FlightSergeantIds.Contains(m.Capid) && flight.FlightCommanderId != m.Capid) ?? [])
+                                    {
+                                        <div class="d-flex justify-content-between">
+                                            <div class="mr-auto">
+                                                <span class="badge rounded-pill btn-primary">@member.Capid</span> @member.Rank @member.Name
+                                            </div>
+                                            <div class="ps-1">
+                                                <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == member.Capid)" />
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                            }
-                        </p>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 }
 
