@@ -119,7 +119,7 @@ public class FlightService : IFlightService
             allMemberIds.AddRange(flightDto.MemberIds);
 
             // Ensure all CAPIDs exist in the attendance_sign_ins table
-            var existingCapIds = await _context.AttendanceSignIns
+            var existingCapIds = await _context.Members
                 .Where(a => allMemberIds.Contains(a.CAPID))
                 .Select(a => a.CAPID)
                 .ToListAsync();
@@ -180,7 +180,7 @@ public class FlightService : IFlightService
     public async Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync()
     {
         var assignedCapIds = await _context.FlightMembers.Select(fm => fm.CAPID).Distinct().ToListAsync();
-        var allCapIds = await _context.AttendanceSignIns.Select(m => m.CAPID).ToListAsync();
+        var allCapIds = await _context.Members.Select(m => m.CAPID).ToListAsync();
 
         return allCapIds.Except(assignedCapIds);
     }
@@ -201,7 +201,7 @@ public class FlightService : IFlightService
                 .Select(fm => new FlightMemberDto
                 {
                     Capid = fm.CAPID,
-                    Name = fm.Member?.Name,
+                    Name = fm.Member?.FullName,
                     Rank = fm.Member?.Rank
                 }).FirstOrDefault(),
             FlightSergeants = flight.FlightMembers
@@ -209,7 +209,7 @@ public class FlightService : IFlightService
                 .Select(fm => new FlightMemberDto
                 {
                     Capid = fm.CAPID,
-                    Name = fm.Member?.Name,
+                    Name = fm.Member?.FullName,
                     Rank = fm.Member?.Rank
                 }).ToList(),
             Members = flight.FlightMembers
@@ -217,7 +217,7 @@ public class FlightService : IFlightService
                 .Select(fm => new FlightMemberDto
                 {
                     Capid = fm.CAPID,
-                    Name = fm.Member?.Name,
+                    Name = fm.Member?.FullName,
                     Rank = fm.Member?.Rank
                 }).ToList()
         };

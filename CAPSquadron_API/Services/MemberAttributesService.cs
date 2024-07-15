@@ -42,8 +42,8 @@ namespace CAPSquadron_API.Services
                     {(capidCondition is not null ? $"AND capid = {capidCondition}" : "")}
                 )
                 SELECT 
-                    asi.capid AS ""CAPID"",
-                    asi.""name"" AS ""Name"",
+                    mem.capid AS ""CAPID"",
+                    mem.""full_name"" AS ""Name"",
                     CASE 
                         WHEN wb.capid IS NOT NULL THEN true
                         ELSE false
@@ -61,18 +61,18 @@ namespace CAPSquadron_API.Services
                         ELSE false
                     END AS ""HasCawgcapEmail""
                 FROM 
-                    attendance_sign_ins asi
+                    members mem
                 LEFT JOIN 
-                    WrightBrothersCTE wb ON asi.capid = wb.capid
+                    WrightBrothersCTE wb ON mem.capid = wb.capid
                 LEFT JOIN 
-                    CurryAchievementCTE curry ON asi.capid = curry.capid
+                    CurryAchievementCTE curry ON mem.capid = curry.capid
                 LEFT JOIN 
-                    CawgcapEmailCTE email ON asi.capid = email.capid
+                    CawgcapEmailCTE email ON mem.capid = email.capid
                 LEFT JOIN 
-                    general_emergency_services ges ON asi.capid = ges.capid
-                {(capidCondition is not null ? $"WHERE asi.capid = {capidCondition}" : "")}
+                    general_emergency_services ges ON mem.capid = ges.capid
+                {(capidCondition is not null ? $"WHERE mem.capid = {capidCondition}" : "")}
                 ORDER BY 
-                    asi.""name""
+                    mem.""full_name""
             ";
         }
     }

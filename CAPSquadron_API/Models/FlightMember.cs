@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CAPSquadron_API.Models;
 
@@ -16,7 +17,9 @@ public class FlightMember
 
     public bool IsFlightSergeant { get; set; }
 
+    [ForeignKey("FlightId")]
     public Flight? Flight { get; set; }
 
-    public AttendanceSignIn? Member { get; set; }
+    [ForeignKey("CAPID")]
+    public Member? Member { get; set; }
 }
