@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Flight> Flights { get; set; }
     public DbSet<FlightMember> FlightMembers { get; set; }
     public DbSet<QualityCadetUnitReport> QualityCadetUnitReports { get; set; }
+    public DbSet<Member> Members { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
