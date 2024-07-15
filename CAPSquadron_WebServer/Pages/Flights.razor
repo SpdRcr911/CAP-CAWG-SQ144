@@ -5,7 +5,7 @@
 @using CAPSquadron_WebServer.Services.MemberAttribute
 
 @inject IFlightService FlightService
-@inject IAttendanceSignInService AttendanceSignInService
+@inject IRetrieveDataService<Member> MemberService
 @inject IMemberAttributeService MemberAttributeService
 @inject NavigationManager Navigation
 
@@ -30,19 +30,19 @@ else
                             </h5>
                             <p class="card-text">
                                 <div><strong>Flight Commander:</strong></div>
-                                <div style="padding-left: 15px"><span>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.Name <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == flight.FlightCommanderId)" /></span></div>
+                                <div style="padding-left: 15px"><span>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.FullName <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == flight.FlightCommanderId)" /></span></div>
                                 <strong>Flight Sergeants:</strong>
-                                @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<AttendanceSignIn>())
+                                @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<Member>())
                                 {
-                                    <div style="padding-left: 15px">@sergeant.Rank @sergeant.Name <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == sergeant.Capid)" /> </div>
+                                    <div style="padding-left: 15px">@sergeant.Rank @sergeant.FullName <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == sergeant.Capid)" /> </div>
                                 }
                                 <div style="padding-top: 15px">
                                     <strong>Members:</strong>
-                                    @foreach (var member in flightMembership?.Members.Where(m => !flight.FlightSergeantIds.Contains(m.Capid) && flight.FlightCommanderId != m.Capid) ?? [])
+                                    @foreach (var member in flightMembership?.Members.Where(m => !flight.FlightSergeantIds.Contains(m.Capid) && flight.FlightCommanderId != m.Capid).OrderBy(f => f.FullName).ToList() ?? [])
                                     {
                                         <div class="d-flex justify-content-between">
                                             <div class="mr-auto">
-                                                <span class="badge rounded-pill btn-primary">@member.Capid</span> @member.Rank @member.Name
+                                                <span class="badge rounded-pill btn-primary">@member.Capid</span> @member.Rank @member.FullName
                                             </div>
                                             <div class="ps-1">
                                                 <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == member.Capid)" />
@@ -83,7 +83,7 @@ else
         }
     }
 
-    protected async Task<(AttendanceSignIn? flightCommander, IEnumerable<AttendanceSignIn> flightSergeants, IEnumerable<AttendanceSignIn> members)> GetFlightMembershipAsync(FlightDto flight)
+    protected async Task<(Member? flightCommander, IEnumerable<Member> flightSergeants, IEnumerable<Member> members)> GetFlightMembershipAsync(FlightDto flight)
     {
         var memberCapIds = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
         if (flight.FlightCommanderId.HasValue)
@@ -91,7 +91,7 @@ else
             memberCapIds.Add(flight.FlightCommanderId.Value);
         }
 
-        var members = await AttendanceSignInService.GetAttendanceSignInsAsync(memberCapIds);
+        var members = await MemberService.GetAsync(memberCapIds);
         var flightCommander = members.FirstOrDefault(m => m.Capid == flight.FlightCommanderId);
         var flightSergeants = members.Where(m => flight.FlightSergeantIds.Contains(m.Capid));
         return (flightCommander, flightSergeants, members.Where(m => flight.MemberIds.Contains(m.Capid)));
@@ -105,8 +105,8 @@ else
     private class FlightMembership
     {
         public int FlightId { get; set; }
-        public AttendanceSignIn? FlightCommander { get; set; }
-        public List<AttendanceSignIn> FlightSergeants { get; set; } = new();
-        public List<AttendanceSignIn> Members { get; set; } = new();
+        public Member? FlightCommander { get; set; }
+        public List<Member> FlightSergeants { get; set; } = new();
+        public List<Member> Members { get; set; } = new();
     }
 }

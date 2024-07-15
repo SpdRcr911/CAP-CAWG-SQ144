@@ -53,7 +53,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<FlightMember>()
             .HasOne(fm => fm.Member)
             .WithMany()
-            .HasForeignKey(fm => fm.CAPID);
+            .HasForeignKey(fm => fm.CAPID)
+            .HasPrincipalKey(m => m.CAPID)
+            .OnDelete(DeleteBehavior.Restrict); 
 
         modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
 

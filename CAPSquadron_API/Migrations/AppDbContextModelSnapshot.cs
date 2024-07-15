@@ -304,7 +304,8 @@ namespace CAPSquadron_API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_flight_members");
 
-                    b.HasIndex("CAPID");
+                    b.HasIndex("CAPID")
+                        .HasDatabaseName("ix_flight_members_capid");
 
                     b.HasIndex("FlightId")
                         .HasDatabaseName("ix_flight_members_flight_id");
@@ -314,20 +315,13 @@ namespace CAPSquadron_API.Migrations
 
             modelBuilder.Entity("CAPSquadron_API.Models.Member", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CAPID")
                         .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+                        .HasColumnName("capid");
 
                     b.Property<string>("Address")
                         .HasColumnType("text")
                         .HasColumnName("address");
-
-                    b.Property<int>("CAPID")
-                        .HasColumnType("integer")
-                        .HasColumnName("capid");
 
                     b.Property<string>("CPhone")
                         .HasColumnType("text")
@@ -381,7 +375,7 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("wing_unit");
 
-                    b.HasKey("ID")
+                    b.HasKey("CAPID")
                         .HasName("pk_members");
 
                     b.ToTable("members");
@@ -507,12 +501,12 @@ namespace CAPSquadron_API.Migrations
 
             modelBuilder.Entity("CAPSquadron_API.Models.FlightMember", b =>
                 {
-                    b.HasOne("CAPSquadron_API.Models.AttendanceSignIn", "Member")
+                    b.HasOne("CAPSquadron_API.Models.Member", "Member")
                         .WithMany()
                         .HasForeignKey("CAPID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_flight_members_attendance_sign_ins_member_capid");
+                        .HasConstraintName("fk_flight_members_members_capid");
 
                     b.HasOne("CAPSquadron_API.Models.Flight", "Flight")
                         .WithMany("FlightMembers")

@@ -8,7 +8,7 @@
 
 @inject IFlightService FlightService
 @inject ICadetTrackerService CadetTrackerService
-@inject IAttendanceSignInService AttendanceSignInService
+@inject IRetrieveDataService<Member> MemberService
 @inject IMemberAttributeService MemberAttributeService
 @inject NavigationManager Navigation
 
@@ -19,7 +19,7 @@
 
     private FlightDto? flight;
     private List<PersonalCadetTrackerDto>? cadetTrackers;
-    private AttendanceSignIn? flightCommander;
+    private Member? flightCommander;
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,7 +28,7 @@
         var capids = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
         capids.Add(flight.FlightCommanderId!.Value);
         cadetTrackers = (await CadetTrackerService.GetCadetTrackerByCapidsAsync(capids)).ToList();
-        flightCommander = await AttendanceSignInService.GetAttendanceSignInAsync(flight.FlightCommanderId.Value);
+        flightCommander = await MemberService.GetAsync(flight.FlightCommanderId.Value);
 
         memberAttributes = await MemberAttributeService.GetMemberAttributesAsync();
     }
@@ -44,7 +44,7 @@
 @if (flight is not null)
 {
     <h3>@flight.Name</h3>
-    <h4>Flight Commander: @flightCommander?.Name (@flightCommander?.Rank)</h4>
+    <h4>Flight Commander: @flightCommander?.FullName (@flightCommander?.Rank)</h4>
 
     @if (cadetTrackers is not null)
     {

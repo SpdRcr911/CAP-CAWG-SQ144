@@ -16,6 +16,7 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 builder.Services.AddScoped<IQualityCadetUnitReportService, QualityCadetUnitReportService>();
 builder.Services.AddScoped<IMemberAttributeService, MemberAttributeService>();
+builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();

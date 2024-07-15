@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CAPSquadron_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240712032249_RenameMemberToAttendance")]
-    partial class RenameMemberToAttendance
+    [Migration("20240715154436_InitializeDb")]
+    partial class InitializeDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,7 +307,8 @@ namespace CAPSquadron_API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_flight_members");
 
-                    b.HasIndex("CAPID");
+                    b.HasIndex("CAPID")
+                        .HasDatabaseName("ix_flight_members_capid");
 
                     b.HasIndex("FlightId")
                         .HasDatabaseName("ix_flight_members_flight_id");
@@ -315,14 +316,200 @@ namespace CAPSquadron_API.Migrations
                     b.ToTable("flight_members");
                 });
 
+            modelBuilder.Entity("CAPSquadron_API.Models.Member", b =>
+                {
+                    b.Property<int>("CAPID")
+                        .HasColumnType("integer")
+                        .HasColumnName("capid");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text")
+                        .HasColumnName("address");
+
+                    b.Property<string>("CPhone")
+                        .HasColumnType("text")
+                        .HasColumnName("cphone");
+
+                    b.Property<string>("CityStateZip")
+                        .HasColumnType("text")
+                        .HasColumnName("city_state_zip");
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("email_address");
+
+                    b.Property<DateOnly>("Expiration")
+                        .HasColumnType("date")
+                        .HasColumnName("expiration");
+
+                    b.Property<string>("FBIStatus")
+                        .HasColumnType("text")
+                        .HasColumnName("fbistatus");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("text")
+                        .HasColumnName("full_name");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("text")
+                        .HasColumnName("gender");
+
+                    b.Property<string>("HPhone")
+                        .HasColumnType("text")
+                        .HasColumnName("hphone");
+
+                    b.Property<DateOnly>("Joined")
+                        .HasColumnType("date")
+                        .HasColumnName("joined");
+
+                    b.Property<string>("Rank")
+                        .HasColumnType("text")
+                        .HasColumnName("rank");
+
+                    b.Property<DateOnly>("RankDate")
+                        .HasColumnType("date")
+                        .HasColumnName("rank_date");
+
+                    b.Property<string>("Region1")
+                        .HasColumnType("text")
+                        .HasColumnName("region1");
+
+                    b.Property<string>("Wing_Unit")
+                        .HasColumnType("text")
+                        .HasColumnName("wing_unit");
+
+                    b.HasKey("CAPID")
+                        .HasName("pk_members");
+
+                    b.ToTable("members");
+                });
+
+            modelBuilder.Entity("CAPSquadron_API.Models.QualityCadetUnitReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AEAexOrStemKit")
+                        .HasColumnType("text")
+                        .HasColumnName("ae_aex_or_stem_kit");
+
+                    b.Property<string>("AEX")
+                        .HasColumnType("text")
+                        .HasColumnName("aex");
+
+                    b.Property<string>("AdultLeadership3PlusTlcGrads")
+                        .HasColumnType("text")
+                        .HasColumnName("adult_leadership_3_plus_tlc_grads");
+
+                    b.Property<string>("CadetAchievement45Percent")
+                        .HasColumnType("text")
+                        .HasColumnName("cadet_achievement_45_percent");
+
+                    b.Property<int>("CadetsJoined")
+                        .HasColumnType("integer")
+                        .HasColumnName("cadets_joined");
+
+                    b.Property<int>("CadetsWithEncamp")
+                        .HasColumnType("integer")
+                        .HasColumnName("cadets_with_encamp");
+
+                    b.Property<int>("CadetsWithGES")
+                        .HasColumnType("integer")
+                        .HasColumnName("cadets_with_ges");
+
+                    b.Property<int>("CadetsWithOFlights")
+                        .HasColumnType("integer")
+                        .HasColumnName("cadets_with_oflights");
+
+                    b.Property<int>("CadetsWithWB")
+                        .HasColumnType("integer")
+                        .HasColumnName("cadets_with_wb");
+
+                    b.Property<string>("Charter")
+                        .HasColumnType("text")
+                        .HasColumnName("charter");
+
+                    b.Property<int>("CurrentCadets")
+                        .HasColumnType("integer")
+                        .HasColumnName("current_cadets");
+
+                    b.Property<int>("CurryIn8Weeks")
+                        .HasColumnType("integer")
+                        .HasColumnName("curry_in_8_weeks");
+
+                    b.Property<string>("Encamp50Percent")
+                        .HasColumnType("text")
+                        .HasColumnName("encamp_50_percent");
+
+                    b.Property<string>("Enrollment25PlusCadets")
+                        .HasColumnType("text")
+                        .HasColumnName("enrollment_25_plus_cadets");
+
+                    b.Property<string>("GES60Percent")
+                        .HasColumnType("text")
+                        .HasColumnName("ges_60_percent");
+
+                    b.Property<int>("NumberOfCriteriaMet")
+                        .HasColumnType("integer")
+                        .HasColumnName("number_of_criteria_met");
+
+                    b.Property<string>("OFlights70Percent")
+                        .HasColumnType("text")
+                        .HasColumnName("oflights_70_percent");
+
+                    b.Property<string>("Onboarding70Percent")
+                        .HasColumnType("text")
+                        .HasColumnName("onboarding_70_percent");
+
+                    b.Property<string>("OutsideActivities")
+                        .HasColumnType("text")
+                        .HasColumnName("outside_activities");
+
+                    b.Property<string>("QCUA6PlusCriteriaMet")
+                        .HasColumnType("text")
+                        .HasColumnName("qcua_6_plus_criteria_met");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("report_date");
+
+                    b.Property<string>("STEM")
+                        .HasColumnType("text")
+                        .HasColumnName("stem");
+
+                    b.Property<int>("SeniorsWithCPSpecialtyTrackRating")
+                        .HasColumnType("integer")
+                        .HasColumnName("seniors_with_cp_specialty_track_rating");
+
+                    b.Property<int>("SeniorsWithTLC")
+                        .HasColumnType("integer")
+                        .HasColumnName("seniors_with_tlc");
+
+                    b.Property<string>("SpecialtyTrack2PlusSeniorsWithRating")
+                        .HasColumnType("text")
+                        .HasColumnName("specialty_track_2_plus_seniors_with_rating");
+
+                    b.HasKey("Id")
+                        .HasName("pk_quality_cadet_unit_reports");
+
+                    b.ToTable("quality_cadet_unit_reports", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("CAPSquadron_API.Models.FlightMember", b =>
                 {
-                    b.HasOne("CAPSquadron_API.Models.AttendanceSignIn", "Member")
+                    b.HasOne("CAPSquadron_API.Models.Member", "Member")
                         .WithMany()
                         .HasForeignKey("CAPID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_flight_members_attendance_sign_ins_member_capid");
+                        .HasConstraintName("fk_flight_members_members_capid");
 
                     b.HasOne("CAPSquadron_API.Models.Flight", "Flight")
                         .WithMany("FlightMembers")

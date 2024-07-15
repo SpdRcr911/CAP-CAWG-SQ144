@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CAPSquadron_API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitializeDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,6 +63,28 @@ namespace CAPSquadron_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "attendance_sign_ins",
+                columns: table => new
+                {
+                    capid = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    rank = table.Column<string>(type: "text", nullable: false),
+                    expiration = table.Column<DateOnly>(type: "date", nullable: false),
+                    eo_completed = table.Column<bool>(type: "boolean", nullable: false),
+                    opsec_completed = table.Column<bool>(type: "boolean", nullable: false),
+                    safety_current = table.Column<bool>(type: "boolean", nullable: false),
+                    last_modified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    inactive_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    is_executive_staff = table.Column<bool>(type: "boolean", nullable: false),
+                    is_on_leave = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_attendance_sign_ins", x => x.capid);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "flights",
                 columns: table => new
                 {
@@ -79,18 +101,21 @@ namespace CAPSquadron_API.Migrations
                 name: "members",
                 columns: table => new
                 {
-                    capid = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    rank = table.Column<string>(type: "text", nullable: false),
+                    capid = table.Column<int>(type: "integer", nullable: false),
+                    region1 = table.Column<string>(type: "text", nullable: true),
+                    wing_unit = table.Column<string>(type: "text", nullable: true),
+                    full_name = table.Column<string>(type: "text", nullable: true),
+                    rank = table.Column<string>(type: "text", nullable: true),
+                    rank_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    gender = table.Column<string>(type: "text", nullable: true),
+                    joined = table.Column<DateOnly>(type: "date", nullable: false),
                     expiration = table.Column<DateOnly>(type: "date", nullable: false),
-                    eo_completed = table.Column<bool>(type: "boolean", nullable: false),
-                    opsec_completed = table.Column<bool>(type: "boolean", nullable: false),
-                    safety_current = table.Column<bool>(type: "boolean", nullable: false),
-                    last_modified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    inactive_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    is_executive_staff = table.Column<bool>(type: "boolean", nullable: false),
-                    is_on_leave = table.Column<bool>(type: "boolean", nullable: false)
+                    hphone = table.Column<string>(type: "text", nullable: true),
+                    cphone = table.Column<string>(type: "text", nullable: true),
+                    address = table.Column<string>(type: "text", nullable: true),
+                    email_address = table.Column<string>(type: "text", nullable: true),
+                    city_state_zip = table.Column<string>(type: "text", nullable: true),
+                    fbistatus = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,11 +143,11 @@ namespace CAPSquadron_API.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_flight_members_members_member_capid",
+                        name: "fk_flight_members_members_capid",
                         column: x => x.capid,
                         principalTable: "members",
                         principalColumn: "capid",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -132,7 +157,7 @@ namespace CAPSquadron_API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_flight_members_capid",
+                name: "ix_flight_members_capid",
                 table: "flight_members",
                 column: "capid");
 
@@ -147,6 +172,9 @@ namespace CAPSquadron_API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "achievements");
+
+            migrationBuilder.DropTable(
+                name: "attendance_sign_ins");
 
             migrationBuilder.DropTable(
                 name: "flight_members");
