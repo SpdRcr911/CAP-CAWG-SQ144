@@ -1,17 +1,21 @@
 ﻿@page "/achievements"
 @using CAPSquadron_WebServer.Services
 @using CAPSquadron_WebServer.Services.CadetTracker
+@using CAPSquadron_WebServer.Services.MemberAttribute
 
 @inject ICadetTrackerService CadetTrackerService
+@inject IMemberAttributeService MemberAttributeService
 @inject NavigationManager Navigation
 
 @code {
 
     private IEnumerable<PersonalCadetTrackerDto>? cadetTrackers;
+    private IEnumerable<MemberAttributesDto> memberAttributes = [];
 
     protected override async Task OnInitializedAsync()
     {
         cadetTrackers = await CadetTrackerService.GetCadetTrackerAsync();
+        memberAttributes = await MemberAttributeService.GetMemberAttributesAsync();
     }
 
     private string DisplayTask(bool? taskCompleted, DateTimeOffset? dateCompleted, DateTimeOffset? interactiveDate = null)
@@ -36,7 +40,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th width="200"></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -45,11 +49,14 @@
                         {
                             <tr>
                                 <td>
-                                    <div class="d-flex">
+                                    <div class="d-flex flex-row">
                                         <div class="p-2"><a href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a></div>
                                         <div class="p-2">
                                             @cadet.LastName, @cadet.FirstName
                                         </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="p-2"><MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma=> ma.Capid == cadet.Capid)" /></div>
                                     </div>
                                 </td>
                                 <td>
