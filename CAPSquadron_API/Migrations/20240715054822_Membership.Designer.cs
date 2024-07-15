@@ -3,6 +3,7 @@ using System;
 using CAPSquadron_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CAPSquadron_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715054822_Membership")]
+    partial class Membership
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,22 +317,18 @@ namespace CAPSquadron_API.Migrations
 
             modelBuilder.Entity("CAPSquadron_API.Models.Member", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("CAPID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("capid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CAPID"));
 
                     b.Property<string>("Address")
                         .HasColumnType("text")
                         .HasColumnName("address");
 
-                    b.Property<int>("CAPID")
-                        .HasColumnType("integer")
-                        .HasColumnName("capid");
-
-                    b.Property<string>("CPhone")
+                    b.Property<string>("CPhone2")
                         .HasColumnType("text")
                         .HasColumnName("cphone");
 
@@ -341,8 +340,8 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email_address");
 
-                    b.Property<DateOnly>("Expiration")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("expiration");
 
                     b.Property<string>("FBIStatus")
@@ -353,24 +352,24 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("full_name");
 
-                    b.Property<string>("Gender")
+                    b.Property<string>("Gender1")
                         .HasColumnType("text")
-                        .HasColumnName("gender");
+                        .HasColumnName("gender1");
 
                     b.Property<string>("HPhone")
                         .HasColumnType("text")
                         .HasColumnName("hphone");
 
-                    b.Property<DateOnly>("Joined")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("Joined")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("joined");
 
                     b.Property<string>("Rank")
                         .HasColumnType("text")
                         .HasColumnName("rank");
 
-                    b.Property<DateOnly>("RankDate")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("RankDate")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("rank_date");
 
                     b.Property<string>("Region1")
@@ -381,7 +380,7 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("wing_unit");
 
-                    b.HasKey("ID")
+                    b.HasKey("CAPID")
                         .HasName("pk_members");
 
                     b.ToTable("members");

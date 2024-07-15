@@ -51,6 +51,8 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 builder.Services.AddScoped<IQualityCadetUnitReportService, QualityCadetUnitReportService>();
 builder.Services.AddScoped<IMemberAttributesService, MemberAttributesService>();
+builder.Services.AddScoped<IRetrieveDataService<Member>, MembershipService>();
+builder.Services.AddScoped<IProcessDataService<MemberCsv>, MembershipService>();
 
 var connectionString = Environment.GetEnvironmentVariable("CAPSQ144_CONNECTIONSTRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 

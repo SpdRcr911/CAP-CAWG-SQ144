@@ -3,6 +3,7 @@ using System;
 using CAPSquadron_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CAPSquadron_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715062415_MembershipUpdateDateOnly")]
+    partial class MembershipUpdateDateOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,20 +317,16 @@ namespace CAPSquadron_API.Migrations
 
             modelBuilder.Entity("CAPSquadron_API.Models.Member", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("CAPID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("capid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CAPID"));
 
                     b.Property<string>("Address")
                         .HasColumnType("text")
                         .HasColumnName("address");
-
-                    b.Property<int>("CAPID")
-                        .HasColumnType("integer")
-                        .HasColumnName("capid");
 
                     b.Property<string>("CPhone")
                         .HasColumnType("text")
@@ -381,7 +380,7 @@ namespace CAPSquadron_API.Migrations
                         .HasColumnType("text")
                         .HasColumnName("wing_unit");
 
-                    b.HasKey("ID")
+                    b.HasKey("CAPID")
                         .HasName("pk_members");
 
                     b.ToTable("members");
