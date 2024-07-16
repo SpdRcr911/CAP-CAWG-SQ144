@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Form</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <h2>Squadron 144 - Call Down Reply</h2>
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title"><h3>1st Tuesday</h3></div>
+                <div class="card-text">
+                  This is a lead paragraph. It stands out from regular
+                  paragraphs.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <form id="dataForm">
+              <div class="form-group">
+                <label for="dropdown">Choose an option</label>
+                <select
+                  class="form-control"
+                  id="dropdown"
+                  name="dropdown"
+                  required
+                >
+                  <option value="">Select an option</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Will you be attending?</label><br />
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="attendance"
+                    id="attendYes"
+                    value="Yes"
+                    required
+                  />
+                  <label class="form-check-label" for="attendYes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="attendance"
+                    id="attendNo"
+                    value="No"
+                    required
+                  />
+                  <label class="form-check-label" for="attendNo">No</label>
+                </div>
+              </div>
+              <div class="form-group" id="reasonGroup" style="display: none">
+                <label for="reason">If no, please specify why</label>
+                <textarea
+                  class="form-control"
+                  id="reason"
+                  name="reason"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label>Requests</label><br />
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="drillTest"
+                    name="requests"
+                    value="Drill Test"
+                  />
+                  <label class="form-check-label" for="drillTest"
+                    >Drill Test</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="reviewBoard"
+                    name="requests"
+                    value="Review Board"
+                  />
+                  <label class="form-check-label" for="reviewBoard"
+                    >Review Board</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="milestoneTest"
+                    name="requests"
+                    value="Milestone Test"
+                  />
+                  <label class="form-check-label" for="milestoneTest"
+                    >Milestone Test</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="sda"
+                    name="requests"
+                    value="SDA"
+                  />
+                  <label class="form-check-label" for="sda">SDA</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="presentation"
+                    name="requests"
+                    value="Presentation"
+                  />
+                  <label class="form-check-label" for="presentation"
+                    >Presentation</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea
+                  class="form-control"
+                  id="comments"
+                  name="comments"
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        // Fetch data for the dropdown list
+        $.ajax({
+          url: "/api/attendies",
+          method: "GET",
+          success: function (data) {
+            var dropdown = $("#dropdown");
+            data.attendies.forEach(function (attendee) {
+              dropdown.append(
+                '<option value="' +
+                  attendee.capid +
+                  '">' +
+                  attendee.name +
+                  "</option>"
+              );
+            });
+          },
+          error: function () {
+            alert("Error fetching dropdown options.");
+          },
+        });
+
+        // Show or hide the reason field based on attendance
+        $('input[name="attendance"]').on("change", function () {
+          if ($(this).val() === "No") {
+            $("#reasonGroup").show();
+          } else {
+            $("#reasonGroup").hide();
+          }
+        });
+
+        $("#dataForm").on("submit", function (event) {
+          event.preventDefault();
+          var requests = [];
+          $('input[name="requests"]:checked').each(function () {
+            requests.push($(this).val());
+          });
+          $.ajax({
+            url: "/submit",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              dropdown: $("#dropdown").val(),
+              attendance: $('input[name="attendance"]:checked').val(),
+              reason: $("#reason").val(),
+              requests: requests,
+              comments: $("#comments").val(),
+            }),
+            success: function (response) {
+              alert("Form submitted successfully!");
+            },
+            error: function (response) {
+              alert("Error submitting form.");
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
