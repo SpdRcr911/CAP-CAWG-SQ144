@@ -2735,6 +2735,12 @@ namespace CAPSquadron_WebServer.Services
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("rank", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Rank { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("wipAchName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WipAchName { get; set; }
+
         [Newtonsoft.Json.JsonProperty("hasWrightBrothersAchievement", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool HasWrightBrothersAchievement { get; set; }
 
@@ -2746,6 +2752,9 @@ namespace CAPSquadron_WebServer.Services
 
         [Newtonsoft.Json.JsonProperty("hasCawgcapEmail", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool HasCawgcapEmail { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("notExpiringThisMonth", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool NotExpiringThisMonth { get; set; }
 
     }
 
