@@ -5,12 +5,24 @@ using CAPSquadron_WebServer.Services.FileHandling;
 using CAPSquadron_WebServer.Services.Flight;
 using CAPSquadron_WebServer.Services.MemberAttribute;
 using CAPSquadron_WebServer.Services.QualityCadetUnit;
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrap5Providers()
+    .AddFontAwesomeIcons();
+
 builder.Services.AddScoped<IAttendanceSignInService, AttendanceSignInService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
