@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<FlightMember> FlightMembers { get; set; }
     public DbSet<QualityCadetUnitReport> QualityCadetUnitReports { get; set; }
     public DbSet<Member> Members { get; set; }
+    public DbSet<AttendanceReport> AttendanceReports { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -60,5 +61,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
 
         modelBuilder.Entity<QualityCadetUnitReport>().ToTable("quality_cadet_unit_reports", t => t.ExcludeFromMigrations());
+    }
+    public void TruncateAttendanceReports()
+    {
+        Database.ExecuteSqlRaw("TRUNCATE TABLE attendance_reports RESTART IDENTITY");
     }
 }
