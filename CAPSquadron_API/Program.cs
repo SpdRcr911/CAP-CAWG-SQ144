@@ -53,6 +53,8 @@ builder.Services.AddScoped<IQualityCadetUnitReportService, QualityCadetUnitRepor
 builder.Services.AddScoped<IMemberAttributesService, MemberAttributesService>();
 builder.Services.AddScoped<IRetrieveDataService<Member>, MembershipService>();
 builder.Services.AddScoped<IProcessDataService<MemberCsv>, MembershipService>();
+builder.Services.AddScoped<IAttendanceReportService, AttendanceReportService>();
+builder.Services.AddScoped<IProcessDataService<AttendanceReportCsv>, AttendanceReportService>();
 
 var connectionString = Environment.GetEnvironmentVariable("CAPSQ144_CONNECTIONSTRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
