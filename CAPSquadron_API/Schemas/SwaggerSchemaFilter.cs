@@ -26,7 +26,7 @@ public class SwaggerSchemaFilter : ISchemaFilter
             };
         }
 
-        if (context.Type == typeof(Achievement))
+        if (context.Type == typeof(CadetPromotionsFullTrack))
         {
             schema.Example = new OpenApiObject
             {
@@ -72,7 +72,7 @@ public class SwaggerSchemaFilter : ISchemaFilter
             };
         }
 
-        if (context.Type == typeof(AchievementCsvModel))
+        if (context.Type == typeof(CadetPromotionsFullTrackCsv))
         {
             schema.Example = new OpenApiObject
             {

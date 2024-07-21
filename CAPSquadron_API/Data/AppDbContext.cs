@@ -7,7 +7,7 @@ namespace CAPSquadron_API.Data;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<CadetPromotionsFullTrack> CadetPromotionsFullTracks { get; set; }
     public DbSet<AttendanceSignIn> AttendanceSignIns { get; set; }
     public DbSet<Flight> Flights { get; set; }
     public DbSet<FlightMember> FlightMembers { get; set; }
@@ -58,7 +58,7 @@ public class AppDbContext : DbContext
             .HasPrincipalKey(m => m.CAPID)
             .OnDelete(DeleteBehavior.Restrict); 
 
-        modelBuilder.Entity<Achievement>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
+        modelBuilder.Entity<CadetPromotionsFullTrack>().HasIndex(a => new { a.CAPID, a.AchvName }).IsUnique();
 
         modelBuilder.Entity<QualityCadetUnitReport>().ToTable("quality_cadet_unit_reports", t => t.ExcludeFromMigrations());
     }
