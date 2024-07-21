@@ -37,7 +37,7 @@ namespace CAPSquadron_API.Services
                 ),
                 CurryAchievementCTE AS (
                     SELECT DISTINCT capid
-                    FROM achievemcadet_promotions_full_tracksents
+                    FROM cadet_promotions_full_tracks
                     WHERE achv_name = 'Achievement 1' AND apr_date IS NOT NULL
                     {(capidCondition is not null ? $"AND capid = {capidCondition}" : "")}
                 )
