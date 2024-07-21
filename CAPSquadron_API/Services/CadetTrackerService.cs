@@ -64,7 +64,7 @@ public class CadetTrackerService : ICadetTrackerService
                 character_development AS ""CharacterDevelopmentDate"",
                 welcome_course_date AS ""WelcomeCourseDate"",
 		        last_modified AS ""LastModified""
-                FROM public.achievements
+                FROM public.cadet_promotions_full_tracks
                 WHERE apr_date is null";
 
         if (!string.IsNullOrEmpty(additionalCondition))

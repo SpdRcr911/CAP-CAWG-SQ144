@@ -25,19 +25,19 @@ namespace CAPSquadron_API.Services
             return $@"
                 WITH WIPAchivement AS (
 	                  SELECT DISTINCT capid, achv_name
-	                  FROM achievements
+	                  FROM cadet_promotions_full_tracks
 	                  WHERE apr_date IS NULL
                     {(capidCondition is not null ? $"AND capid = {capidCondition}" : "")}
                 ),
                 WrightBrothersCTE AS (
                     SELECT DISTINCT capid
-                    FROM achievements
+                    FROM cadet_promotions_full_tracks
                     WHERE achv_name = 'Wright Brothers'
                     {(capidCondition is not null ? $"AND capid = {capidCondition}" : "")}
                 ),
                 CurryAchievementCTE AS (
                     SELECT DISTINCT capid
-                    FROM achievements
+                    FROM achievemcadet_promotions_full_tracksents
                     WHERE achv_name = 'Achievement 1' AND apr_date IS NOT NULL
                     {(capidCondition is not null ? $"AND capid = {capidCondition}" : "")}
                 )

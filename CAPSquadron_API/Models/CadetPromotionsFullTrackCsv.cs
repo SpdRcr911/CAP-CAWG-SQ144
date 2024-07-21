@@ -1,7 +1,7 @@
 ﻿namespace CAPSquadron_API.Models;
-public class AchievementCsvModel
+public class CadetPromotionsFullTrackCsv
 {
-    public AchievementCsvModel()
+    public CadetPromotionsFullTrackCsv()
     {
     }
 

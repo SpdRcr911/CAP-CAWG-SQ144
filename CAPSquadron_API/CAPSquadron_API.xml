@@ -1,22 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <docs>
-	<achievement>
-		<controller>
-			 <summary>Initializes a new instance of the <see cref="AchievementController"/> class.</summary>
-			 <param name="xlsxParsingService">The service for parsing XLSX files.</param>
-			 <param name="retrieveDataService">The service for retrieving data.</param>
-			 <param name="processDataService">The service for processing data.</param>
-		</controller>
-		<getAchievements>
-			<summary>Gets the list of all achievements.</summary>
-			<returns>A list of achievements.</returns>
+	<cadetPromotionsFullTrack>
+		<get>
+			<summary>Gets the list of all Cadet Promotions Full Tracks.</summary>
+			<remarks></remarks>
+			<returns>A list of Cadet Promotions Full Tracks.</returns>
 			<response code="200">Returns the list of achievements.</response>
-		</getAchievements>
+		</get>
 		<uploadFile>
-			 <summary>Uploads a CSV file to update achievement data.</summary>
-			 <param name="file">The CSV file containing achievement data.</param>
-			 <returns>A success message if the file is processed correctly.</returns>
-			 <response code="200">File successfully uploaded and processed.</response>		
+			<summary>Uploads a CSV file to update Cadet Promotions Full Track data.</summary>
+			<param name="file">The CSV file containing Cadet Promotions Full Track data.</param>
+			<remarks>
+				This endpoit accepts a "Cadet Full Track Report" file.
+				e.g. Cadet_Full_Track_Report-7_14_2024.xlsx
+				The file can be downloaded from:
+				https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Reports/CadetPromotionsTrack
+
+		</remarks>
+			<returns>A success message if the file is processed correctly.</returns>
+			<response code="200">File successfully uploaded and processed.</response>
 		</uploadFile>
-	</achievement>
+	</cadetPromotionsFullTrack>
 </docs>

@@ -2,7 +2,7 @@
 
 namespace CAPSquadron_API.Models;
 
-public class Achievement(string nameLast, string nameFirst, string email, string achvName, string region, string wing, string unit)
+public class CadetPromotionsFullTrack(string nameLast, string nameFirst, string email, string achvName, string region, string wing, string unit)
 {
     public int Id { get; set; }
 
