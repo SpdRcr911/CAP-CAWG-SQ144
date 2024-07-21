@@ -6,12 +6,6 @@ using System.Text.RegularExpressions;
 
 namespace CAPSquadron_API.Services;
 
-public interface IMembershipService
-{
-    Task<IEnumerable<Member>> ParseCsvAsync(IFormFile file);
-    Task UpdateMembershipListAsync(IEnumerable<Member> members);
-}
-
 public class MembershipService(AppDbContext context) : IRetrieveDataService<Member>, IProcessDataService<MemberCsv>
 {
     public async Task<IEnumerable<Member>> GetAsync()
