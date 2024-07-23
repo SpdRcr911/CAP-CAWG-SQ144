@@ -2,5 +2,5 @@
 
 public interface IXlsxParsingService
 {
-    IEnumerable<T> ParseXlsx<T>(Stream fileStream) where T : new();
+    IEnumerable<T> ParseXlsx<T>(Stream fileStream, int? rowOffset = null, int? colOffset = null) where T : new();
 }

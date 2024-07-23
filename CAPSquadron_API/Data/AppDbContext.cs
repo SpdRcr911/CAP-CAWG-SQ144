@@ -14,7 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<QualityCadetUnitReport> QualityCadetUnitReports { get; set; }
     public DbSet<Member> Members { get; set; }
     public DbSet<AttendanceReport> AttendanceReports { get; set; }
-
+    public DbSet<CadetPhysicalFitnessTrainingReport> CadetPhysicalFitnessTrainingReports { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -65,5 +65,9 @@ public class AppDbContext : DbContext
     public void TruncateAttendanceReports()
     {
         Database.ExecuteSqlRaw("TRUNCATE TABLE attendance_reports RESTART IDENTITY");
+    }
+    public void TruncateCadetPhysicalFitnessTrainingReports()
+    {
+        Database.ExecuteSqlRaw("TRUNCATE TABLE cadet_physical_fitness_training_reports RESTART IDENTITY");
     }
 }

@@ -3,6 +3,7 @@ using System;
 using CAPSquadron_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CAPSquadron_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240722045854_UpdateCadetPhysicalFitnessTrainingReportRecordTimeStamp")]
+    partial class UpdateCadetPhysicalFitnessTrainingReportRecordTimeStamp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,10 +273,6 @@ namespace CAPSquadron_API.Migrations
                     b.Property<int>("PacerRunReq")
                         .HasColumnType("integer")
                         .HasColumnName("pacer_run_req");
-
-                    b.Property<int>("PushUpReq")
-                        .HasColumnType("integer")
-                        .HasColumnName("push_up_req");
 
                     b.Property<string>("Rank")
                         .HasColumnType("text")
