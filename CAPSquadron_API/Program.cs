@@ -47,6 +47,9 @@ builder.Services.AddScoped<IRetrieveDataService<AttendanceSignIn>, AttendanceSig
 builder.Services.AddScoped<IProcessDataService<AttendanceSignInCsvModel>, AttendanceSignInService>();
 builder.Services.AddScoped<IRetrieveDataService<CadetPromotionsFullTrack>, CadetPromotionsFullTrackService>();
 builder.Services.AddScoped<IProcessDataService<CadetPromotionsFullTrackCsv>, CadetPromotionsFullTrackService>();
+builder.Services.AddScoped<IRetrieveDataService<CadetPhysicalFitnessTrainingReport>, CadetPhysicalFitnessTrainingReportService>();
+builder.Services.AddScoped<IProcessDataService<CadetPhysicalFitnessTrainingReportCsv>, CadetPhysicalFitnessTrainingReportService>();
+builder.Services.AddScoped<ICadetPhysicalFitnessTrainingReportService,  CadetPhysicalFitnessTrainingReportService>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
 builder.Services.AddScoped<IQualityCadetUnitReportService, QualityCadetUnitReportService>();
