@@ -125,9 +125,9 @@ public class FlightService : IFlightService
                 .ToListAsync();
 
             var missingCapIds = allMemberIds.Except(existingCapIds).ToList();
-            if (missingCapIds.Any())
+            if (missingCapIds.Count != 0)
             {
-                throw new ArgumentOutOfRangeException($"Some CAPIDs are missing in attendance_sign_ins table: {string.Join(", ", missingCapIds)}");
+                throw new ArgumentOutOfRangeException($"Some CAPIDs are not members: {string.Join(", ", missingCapIds)}");
             }
 
             if (flightDto.FlightCommanderId.HasValue)
