@@ -1,20 +1,4 @@
 ﻿@page "/hexagon"
-@using System
-
-@code {
-    [Parameter]
-    public bool? LearnToLead { get; set; }
-    [Parameter]
-    public bool? Aerospace { get; set; }
-    [Parameter]
-    public bool? DrillAndCeremonies { get; set; }
-    [Parameter]
-    public bool? Fitness { get; set; }
-    [Parameter]
-    public bool? Character { get; set; }
-    [Parameter]
-    public DateTimeOffset? NextApprovalDate { get; set; }
-}
 
 <svg viewBox="0 0 100 100" class="hexagon">
     <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 z"
