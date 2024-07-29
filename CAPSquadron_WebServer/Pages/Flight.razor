@@ -20,6 +20,7 @@
     private FlightDto? flight;
     private List<PersonalCadetTrackerDto>? cadetTrackers;
     private Member? flightCommander;
+    private List<Member>? flightSergeants;
 
     protected override async Task OnInitializedAsync()
     {
@@ -29,7 +30,7 @@
         capids.Add(flight.FlightCommanderId!.Value);
         cadetTrackers = (await CadetTrackerService.GetCadetTrackerByCapidsAsync(capids)).ToList();
         flightCommander = await MemberService.GetAsync(flight.FlightCommanderId.Value);
-
+        flightSergeants = (await MemberService.GetAsync(flight.FlightSergeantIds)).ToList();
         memberAttributes = await MemberAttributeService.GetMemberAttributesAsync();
     }
 
@@ -43,70 +44,99 @@
 }
 @if (flight is not null)
 {
-    <h3>@flight.Name</h3>
-    <h4>Flight Commander: @flightCommander?.FullName (@flightCommander?.Rank)</h4>
-
-    @if (cadetTrackers is not null)
-    {
-        <div class="flight-details">
-            @foreach (var group in cadetTrackers.GroupBy(ct => ct.AchievementName))
-            {
-                <div class="achievement-group">
-                    <h5>@group.Key</h5>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th width="200"></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var cadet in group)
-                            {
-                                <tr>
-                                    <td>
-                                        <div class="d-flex flex-row">
-                                            <div class="p-2"><a href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a></div>
-                                            <div class="p-2">
-                                                @cadet.LastName, @cadet.FirstName
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="p-2"><MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma=> ma.Capid == cadet.Capid)" /></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex">
-                                            <div class="p-2">
-                                                <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
-                                            </div>
-                                            <div class="p-2">
-                                                <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
-                                                            Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
-                                                            DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
-                                                            Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
-                                                            Character="@cadet.Character"
-                                                            NextApprovalDate="@cadet.NextApprovalDate" />
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="p-2">Next Approval Date: @cadet.NextApprovalDate!.Value.LocalDateTime.ToShortDateString()</div>
-                                            <div class="p-2">
-                                                <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
+    <div class="container">
+        <div class="row">
+            <div class="col mt-3"><h3>@flight.Name</h3></div>
         </div>
-    }
-    <style>
-        .flight-details .achievement-group {
-            margin-bottom: 20px;
+        <div class="row">
+            <div class="col">
+                <div class="card shadow mb-3">
+                    <div class="card-header">Flight Commander</div>
+                    <div class="card-body">@flightCommander?.Rank @flightCommander?.FullName</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header">Flight Sergeant</div>
+                    <div class="card-body">
+                        @if (flightSergeants is not null)
+                            foreach (var sergeant in flightSergeants)
+                                @($"{sergeant.Rank} {sergeant.FullName}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        @if (cadetTrackers is not null)
+        {
+            <div class="row">
+                <div class="col">
+                    @foreach (var group in cadetTrackers.GroupBy(ct => ct.AchievementName))
+                    {
+                        <div class="card shadow mb-3">
+                            <h5 class="card-header">@group.Key</h5>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var cadet in group)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div>
+                                                            <a href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a>
+                                                            @cadet.LastName, @cadet.FirstName
+                                                        </div>
+                                                    </div>
+                                                    <div class="col text-end">
+                                                        <MemberAttributesComponent Attributes="memberAttributes?.FirstOrDefault(ma => ma.Capid == cadet.Capid)" />
+                                                    </div>
+                                                    <div class="w-100"></div>
+                                                    <div class="col-3">
+                                                        <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
+                                                    </div>
+                                                    <div class="col">
+                                                        <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
+                                                                    Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
+                                                                    DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
+                                                                    Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
+                                                                    Character="@cadet.Character"
+                                                                    NextApprovalDate="@cadet.NextApprovalDate" />
+                                                    </div>
+                                                    <div class="w-100"></div>
+                                                    <div class="col">
+                                                        <div>Next Approval Date: @cadet.NextApprovalDate?.LocalDateTime.ToShortDateString()</div>
+                                                    </div>
+                                                    <div class="w-100"></div>
+                                                    <div class="col">
+                                                        @if (cadet.NextApprovalDate is not null )
+                                                        {
+                                                            <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         }
-    </style>
+    </div>
 }
