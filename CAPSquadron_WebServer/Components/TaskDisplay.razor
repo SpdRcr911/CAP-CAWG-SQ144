@@ -1,18 +1,4 @@
-﻿@code {
-    [Parameter]
-    public bool TaskStatus { get; set; }
-
-    [Parameter]
-    public DateTimeOffset? Date1 { get; set; }
-
-    [Parameter]
-    public DateTimeOffset? Date2 { get; set; }
-
-    private string GetDateDisplay(DateTimeOffset? date) => date.HasValue ? date.Value.LocalDateTime.ToShortDateString() : "-";
-}
-
-
-@if (Date1.HasValue)
+﻿@if (Date1.HasValue)
 {
     <span>@GetDateDisplay(Date1)</span>
 }

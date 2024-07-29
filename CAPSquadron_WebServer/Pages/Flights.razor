@@ -9,8 +9,6 @@
 @inject IMemberAttributeService MemberAttributeService
 @inject NavigationManager Navigation
 
-<h3>Flights</h3>
-
 @if (flights == null)
 {
     <p><em>Loading...</em></p>
@@ -19,38 +17,40 @@ else
 {
     <div class="container-fluid">
         <div class="row">
-            @foreach (var flight in flights.OrderBy(flt => flt.Name))
+            <div class="col mt-3"><h3>Flights</h3></div>
+
+        </div>
+        <div class="row">
+            @foreach (var flight in flights.OrderBy(flt => !flt.Name.EndsWith("Flight")).ThenBy(flt => flt.Name))
             {
                 var flightMembership = flightMemberships.FirstOrDefault(fm => fm.FlightId == flight.Id);
-                <div class="col-md-4 d-flex align-items-stretch">
-                    <div class="card mb-4 flex-fill">
+                <div class="col-sm-12 col-lg-6 col-xl-4 col-xxl-3">
+                    <div class="card shadow mb-4">
+                        <h5 class="card-header">
+                            <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);" class="link-offset-2 link-offset-0-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">@flight.Name</a>
+                        </h5>
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);">@flight.Name</a>
-                            </h5>
-                            <p class="card-text">
-                                <div><strong>Flight Commander:</strong></div>
-                                <div style="padding-left: 15px"><span>@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.FullName <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == flight.FlightCommanderId)" /></span></div>
-                                <strong>Flight Sergeants:</strong>
+                            <strong class="card-title">Flight Commander:</strong>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.FullName</li>
+                            </ul>
+                            <strong>Flight Sergeants:</strong>
+                            <ul class="list-group list-group-flush">
                                 @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<Member>())
                                 {
-                                    <div style="padding-left: 15px">@sergeant.Rank @sergeant.FullName <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == sergeant.Capid)" /> </div>
+                                    <li class="list-group-item">@sergeant.Rank @sergeant.FullName</li>
                                 }
-                                <div style="padding-top: 15px">
-                                    <strong>Members:</strong>
-                                    @foreach (var member in flightMembership?.Members.Where(m => !flight.FlightSergeantIds.Contains(m.Capid) && flight.FlightCommanderId != m.Capid).OrderBy(f => f.FullName).ToList() ?? [])
-                                    {
-                                        <div class="d-flex justify-content-between">
-                                            <div class="mr-auto">
-                                                <span class="badge rounded-pill btn-primary">@member.Capid</span> @member.Rank @member.FullName
-                                            </div>
-                                            <div class="ps-1">
-                                                <MemberAttributesComponent Attributes="memberAttributes.FirstOrDefault(ma => ma.Capid == member.Capid)" />
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </p>
+                            </ul>
+                            <strong>Members:</strong>
+                            <ul class="list-group list-group-flush list-group-numbered">
+                                @foreach (var member in flightMembership?.Members.Where(m => !flight.FlightSergeantIds.Contains(m.Capid) && flight.FlightCommanderId != m.Capid).OrderBy(f => f.FullName).ToList() ?? [])
+                                {
+                                    <li class="list-group-item">
+                                        @member.Rank @member.FullName
+                                        
+                                        </li>
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>

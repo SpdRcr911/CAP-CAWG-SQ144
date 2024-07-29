@@ -1,60 +1,27 @@
-@code {
-    [Parameter]
-    public DateTime NextPromotionDate { get; set; }
+@namespace CAPSquadron_WebServer.Components
 
-    private int CurrentProgress => CalculateProgress();
-    private int ProgressLeft => CalculateProgressLeft();
-    private int OverdueDays => CalculateOverdueDays();
-
-    private int CalculateProgress()
-    {
-        DateTime startDate = NextPromotionDate.AddDays(-56); // 8 weeks before the next promotion date
-        DateTime currentDate = DateTime.Now;
-
-        var elapsedDuration = (currentDate - startDate).Days;
-
-        return elapsedDuration > 56 ? 56 : elapsedDuration;
-    }
-    private int CalculateProgressLeft()
-    {
-        var daysLeft = 56 - CurrentProgress;
-        return daysLeft > 0 ? daysLeft : 0;
-    }
-
-    private int CalculateOverdueDays()
-    {
-        DateTime currentDate = DateTime.Now;
-        if (currentDate > NextPromotionDate)
-        {
-            return (int)((currentDate - NextPromotionDate).TotalDays * 2); // Each overdue day equals 2 pixels
-        }
-        return 0;
-    }
-
-    private string NextPromotionDifference(DateTime NextPromotionDate)
-    {
-        DateTime currentDate = DateTime.Now;
-        var diff = (NextPromotionDate - currentDate).Days;
-
-        return diff switch
-        {
-            > 0 => $"{diff} days until next promotion date",
-            < 0 => $"{Math.Abs(diff)} days past your promition date",
-            0 => "can promote today"
-        };
-
-    }
+@if (OverdueDays == 0)
+{
+    <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="@ProgressPercent" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar" style="width: @ProgressPercent%">
+            @GetPromotionDifferenceMessage()
+        </div>
+    </div>
 }
+else
+{
+    (int progressBar1, int progressBar2) = OverdueProgressPercent;
 
-<div class="d-flex flex-row" style="">
-    <div class="p-0">
-        <img src="/images/green.png" style="width: @(CurrentProgress)px; height: 20px;" title="@NextPromotionDifference(NextPromotionDate)" />
+    <div class="progress-stacked">
+        <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="@progressBar1" aria-valuemin="0" aria-valuemax="100" style="width: @progressBar1%">
+            <div class="progress-bar bg-success">
+                @(progressBar1 > 50 ? GetPromotionDifferenceMessage() : "")
+            </div>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="@progressBar2" aria-valuemin="0" aria-valuemax="100" style="width: @progressBar2%">
+            <div class="progress-bar bg-warning">
+                @(progressBar2 >= 50 ? GetPromotionDifferenceMessage() : "")
+            </div>
+        </div>
     </div>
-    <div class="p-0">
-        <img src="/images/grey.png" style="width: @(ProgressLeft)px; height: 20px;" title="@NextPromotionDifference(NextPromotionDate)" />
-    </div>
-    @if (OverdueDays > 0)
-    {
-        <div class="p-0"><img src="/images/warning.png" style="height: 20px; width: @(OverdueDays)px;" title="@NextPromotionDifference(NextPromotionDate)" /></div>
-    }
-</div>
+}

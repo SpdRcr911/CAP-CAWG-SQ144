@@ -1,41 +1,35 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<nav class="navbar navbar-expand-lg bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">CAP Squadron 144</a>
+        <a class="navbar-brand" href=""><img src="images/sq144_logo.png" width="30" class="d-inline-block align-top" alt="San Diego Squadron 144" /> CAP Squadron 144</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="navbar-collapse @NavMenuCssClass">
+            <div class="navbar-nav">
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="achievements">
+                        <span class="oi oi-moon" aria-hidden="true"></span> Achievements
+                    </NavLink>
+                </div>
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="flights">
+                        <span class="oi oi-people" aria-hidden="true"></span> Flights
+                    </NavLink>
+                </div>
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="quality-unit">
+                        <span class="oi oi-badge" aria-hidden="true"></span> Quality Cadet Unit
+                    </NavLink>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="achievements">
-                <span class="oi oi-moon" aria-hidden="true"></span> Achievements
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="flights">
-                <span class="oi oi-people" aria-hidden="true"></span> Flights
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="attendees">
-                <span class="oi oi-person" aria-hidden="true"></span> Attendees
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="quality-unit">
-                <span class="oi oi-badge" aria-hidden="true"></span> Quality Cadet Unit
-            </NavLink>
-        </div>
-    </nav>
-</div>
+</nav>
 
 @code {
     private bool collapseNavMenu = true;
