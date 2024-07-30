@@ -1,0 +1,33 @@
+﻿@page "/cadet-report/{capid:int}"
+@using CAPSquadron_WebServer.Services
+@using CAPSquadron_WebServer.Services.Flight
+@using CAPSquadron_WebServer.Services.CadetTracker
+@using CAPSquadron_WebServer.Services.Attendance
+@using CAPSquadron_WebServer.Services.MemberAttribute
+@using CAPSquadron_WebServer.Components
+
+@inject ICadetTrackerService CadetTrackerService
+@inject IRetrieveDataService<Member> MemberService
+@inject IMemberAttributeService MemberAttributeService
+
+
+<div class="container">
+    @if (cadetTrackers is not null && memberAttribute is not null)
+    {
+        <CadetTrackerComponent CadetTrackers="new [] { cadetTrackers }" MemberAttributes="new [] { memberAttribute }"></CadetTrackerComponent>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int capid { get; set; }
+
+    private MemberAttributesDto? memberAttribute;
+    private PersonalCadetTrackerDto? cadetTrackers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cadetTrackers = await CadetTrackerService.GetCadetTrackerByCapidAsync(capid);
+        memberAttribute = await MemberAttributeService.GetMemberAttributesByCapIdAsync(capid);
+    }
+}
