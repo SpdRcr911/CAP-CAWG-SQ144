@@ -82,61 +82,7 @@
         
         @if (cadetTrackers is not null)
         {
-            <div class="row">
-                <div class="col">
-                    @foreach (var group in cadetTrackers.GroupBy(ct => ct.AchievementName))
-                    {
-                        <div class="card shadow mb-3">
-                            <h5 class="card-header">@group.Key</h5>
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush">
-                                    @foreach (var cadet in group)
-                                    {
-                                        <li class="list-group-item">
-                                            <div class="container">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div>
-                                                            <a href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a>
-                                                            @cadet.LastName, @cadet.FirstName
-                                                        </div>
-                                                    </div>
-                                                    <div class="col text-end">
-                                                        <MemberAttributesComponent Attributes="memberAttributes?.FirstOrDefault(ma => ma.Capid == cadet.Capid)" />
-                                                    </div>
-                                                    <div class="w-100"></div>
-                                                    <div class="col-3">
-                                                        <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
-                                                    </div>
-                                                    <div class="col">
-                                                        <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
-                                                                    Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
-                                                                    DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
-                                                                    Fitness="@cadet.Fitness" PhyFitTest="@cadet.PhyFitTest"
-                                                                    Character="@cadet.Character"
-                                                                    NextApprovalDate="@cadet.NextApprovalDate" />
-                                                    </div>
-                                                    <div class="w-100"></div>
-                                                    <div class="col">
-                                                        <div>Next Approval Date: @cadet.NextApprovalDate?.LocalDateTime.ToShortDateString()</div>
-                                                    </div>
-                                                    <div class="w-100"></div>
-                                                    <div class="col">
-                                                        @if (cadet.NextApprovalDate is not null )
-                                                        {
-                                                            <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
+            <CadetTrackerComponent CadetTrackers="cadetTrackers" MemberAttributes="memberAttributes"></CadetTrackerComponent>
         }
     </div>
 }

@@ -13,17 +13,18 @@
                         <ul class="list-group list-group-flush">
                             @foreach (var cadet in group)
                             {
+                                var attributes = MemberAttributes?.FirstOrDefault(ma => ma.Capid == cadet.Capid);
                                 <li class="list-group-item">
                                     <div class="container">
                                         <div class="row">
                                             <div class="col">
                                                 <div>
+                                                    <span class="fs-3">@attributes?.Rank @cadet.LastName, @cadet.FirstName</span>
                                                     <a href="https://www.capnhq.gov/CAP.ProfessionalLevels.Web/Accomplishments/CadetPromotions?capid=@cadet.Capid" target="_blank">@cadet.Capid</a>
-                                                    @cadet.LastName, @cadet.FirstName
                                                 </div>
                                             </div>
                                             <div class="col text-end">
-                                                <MemberAttributesComponent Attributes="MemberAttributes?.FirstOrDefault(ma => ma.Capid == cadet.Capid)" />
+                                                <MemberAttributesComponent Attributes="attributes" />
                                             </div>
                                             <div class="w-100"></div>
                                             <div class="col-3">
