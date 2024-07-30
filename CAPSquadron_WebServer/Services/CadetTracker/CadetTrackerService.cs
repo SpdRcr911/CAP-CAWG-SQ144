@@ -13,6 +13,12 @@ public class CadetTrackerService : ICadetTrackerService
     {
         return await _apiClient.GetCadetTrackerByCapidsAsync(capids);
     }
+
+    public async Task<PersonalCadetTrackerDto> GetCadetTrackerByCapidAsync(int capids)
+    {
+        return await _apiClient.GetCadetTrackerByCapidAsync(capids);
+    }
+
     public async Task<IEnumerable<PersonalCadetTrackerDto>> GetCadetTrackerAsync()
     {
         return await _apiClient.GetCadetTrackerAsync();

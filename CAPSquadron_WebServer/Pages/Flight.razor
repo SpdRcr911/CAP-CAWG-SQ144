@@ -63,23 +63,11 @@
                             foreach (var sergeant in flightSergeants)
                                 @($"{sergeant.Rank} {sergeant.FullName}")
 
-
-
-
-
-
-
-
-
-
-
-
-
                     </div>
                 </div>
             </div>
         </div>
-        
+
         @if (cadetTrackers is not null)
         {
             <CadetTrackerComponent CadetTrackers="cadetTrackers" MemberAttributes="memberAttributes"></CadetTrackerComponent>

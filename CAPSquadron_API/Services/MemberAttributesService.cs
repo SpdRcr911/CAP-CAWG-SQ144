@@ -43,7 +43,7 @@ namespace CAPSquadron_API.Services
                 )
                 SELECT 
                     mem.capid AS ""CAPID"",
-	                mem.rank as ""RANK"",
+	                mem.rank as ""Rank"",
 	                mem.""full_name"" AS ""Name"",
 	                wip.achv_name AS ""WIPAchName"",
                     CASE 
