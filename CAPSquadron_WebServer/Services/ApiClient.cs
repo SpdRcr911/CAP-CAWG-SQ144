@@ -72,15 +72,15 @@ namespace CAPSquadron_WebServer.Services
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<System.DateTimeOffset>> GetAttendanceReportDatesAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<System.DateOnly>> GetAttendanceReportDatesAsync(System.DateOnly? startDate, bool? tuesdaysOnly)
         {
-            return GetAttendanceReportDatesAsync(System.Threading.CancellationToken.None);
+            return GetAttendanceReportDatesAsync(startDate, tuesdaysOnly, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<System.DateTimeOffset>> GetAttendanceReportDatesAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<System.DateOnly>> GetAttendanceReportDatesAsync(System.DateOnly? startDate, bool? tuesdaysOnly, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -95,6 +95,16 @@ namespace CAPSquadron_WebServer.Services
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "api/AttendanceReport/get-dates"
                     urlBuilder_.Append("api/AttendanceReport/get-dates");
+                    urlBuilder_.Append('?');
+                    if (startDate != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("startDate")).Append('=').Append(System.Uri.EscapeDataString(startDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tuesdaysOnly != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tuesdaysOnly")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tuesdaysOnly, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -121,7 +131,7 @@ namespace CAPSquadron_WebServer.Services
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<System.DateTimeOffset>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<System.DateOnly>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -150,15 +160,15 @@ namespace CAPSquadron_WebServer.Services
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAttendanceReportForMemberAsync(int capid)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAttendanceReportForMemberAsync(int capid, System.DateOnly? startDate, bool? present)
         {
-            return GetAttendanceReportForMemberAsync(capid, System.Threading.CancellationToken.None);
+            return GetAttendanceReportForMemberAsync(capid, startDate, present, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAttendanceReportForMemberAsync(int capid, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAttendanceReportForMemberAsync(int capid, System.DateOnly? startDate, bool? present, System.Threading.CancellationToken cancellationToken)
         {
             if (capid == null)
                 throw new System.ArgumentNullException("capid");
@@ -177,88 +187,10 @@ namespace CAPSquadron_WebServer.Services
                     // Operation Path: "api/AttendanceReport/record/{capid}"
                     urlBuilder_.Append("api/AttendanceReport/record/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(capid, System.Globalization.CultureInfo.InvariantCulture)));
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<AttendanceReport>>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAllAttendiesByDateAsync(System.DateTimeOffset? date, bool? present)
-        {
-            return GetAllAttendiesByDateAsync(date, present, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAllAttendiesByDateAsync(System.DateTimeOffset? date, bool? present, System.Threading.CancellationToken cancellationToken)
-        {
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/AttendanceReport"
-                    urlBuilder_.Append("api/AttendanceReport");
                     urlBuilder_.Append('?');
-                    if (date != null)
+                    if (startDate != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("date")).Append('=').Append(System.Uri.EscapeDataString(date.Value.ToString("s", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("startDate")).Append('=').Append(System.Uri.EscapeDataString(startDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (present != null)
                     {
@@ -320,7 +252,95 @@ namespace CAPSquadron_WebServer.Services
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetAttendiesCapIdsByDateAsync(System.DateTimeOffset date)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAllAttendiesByDateAsync(System.DateOnly? date, bool? present)
+        {
+            return GetAllAttendiesByDateAsync(date, present, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AttendanceReport>> GetAllAttendiesByDateAsync(System.DateOnly? date, bool? present, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "api/AttendanceReport"
+                    urlBuilder_.Append("api/AttendanceReport");
+                    urlBuilder_.Append('?');
+                    if (date != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("date")).Append('=').Append(System.Uri.EscapeDataString(date.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (present != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("present")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(present, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<AttendanceReport>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetAttendiesCapIdsByDateAsync(System.DateOnly date)
         {
             return GetAttendiesCapIdsByDateAsync(date, System.Threading.CancellationToken.None);
         }
@@ -328,7 +348,7 @@ namespace CAPSquadron_WebServer.Services
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetAttendiesCapIdsByDateAsync(System.DateTimeOffset date, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetAttendiesCapIdsByDateAsync(System.DateOnly date, System.Threading.CancellationToken cancellationToken)
         {
             if (date == null)
                 throw new System.ArgumentNullException("date");
@@ -346,7 +366,7 @@ namespace CAPSquadron_WebServer.Services
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "api/AttendanceReport/get-capids/{date}"
                     urlBuilder_.Append("api/AttendanceReport/get-capids/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(date.ToString("s", System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3185,8 +3205,7 @@ namespace CAPSquadron_WebServer.Services
         public int Capid { get; set; }
 
         [Newtonsoft.Json.JsonProperty("expiration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? Expiration { get; set; }
+        public System.DateOnly? Expiration { get; set; }
 
         [Newtonsoft.Json.JsonProperty("isPresent", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool IsPresent { get; set; }
@@ -3244,8 +3263,7 @@ namespace CAPSquadron_WebServer.Services
 
         [Newtonsoft.Json.JsonProperty("expiration", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset Expiration { get; set; }
+        public System.DateOnly Expiration { get; set; }
 
         [Newtonsoft.Json.JsonProperty("eoCompleted", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool EoCompleted { get; set; }
@@ -3304,8 +3322,7 @@ namespace CAPSquadron_WebServer.Services
         public int SitAndReachReq { get; set; }
 
         [Newtonsoft.Json.JsonProperty("expiration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? Expiration { get; set; }
+        public System.DateOnly? Expiration { get; set; }
 
         [Newtonsoft.Json.JsonProperty("recordTimeStamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset RecordTimeStamp { get; set; }
@@ -3338,12 +3355,10 @@ namespace CAPSquadron_WebServer.Services
         public string AchvName { get; set; }
 
         [Newtonsoft.Json.JsonProperty("aprDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? AprDate { get; set; }
+        public System.DateOnly? AprDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("joinDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset JoinDate { get; set; }
+        public System.DateOnly JoinDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("region", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
@@ -3358,19 +3373,16 @@ namespace CAPSquadron_WebServer.Services
         public string Unit { get; set; }
 
         [Newtonsoft.Json.JsonProperty("phyFitTest", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? PhyFitTest { get; set; }
+        public System.DateOnly? PhyFitTest { get; set; }
 
         [Newtonsoft.Json.JsonProperty("leadLabDateP", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? LeadLabDateP { get; set; }
+        public System.DateOnly? LeadLabDateP { get; set; }
 
         [Newtonsoft.Json.JsonProperty("leadLabScore", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? LeadLabScore { get; set; }
 
         [Newtonsoft.Json.JsonProperty("aeDateP", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? AeDateP { get; set; }
+        public System.DateOnly? AeDateP { get; set; }
 
         [Newtonsoft.Json.JsonProperty("aeScore", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? AeScore { get; set; }
@@ -3379,83 +3391,67 @@ namespace CAPSquadron_WebServer.Services
         public string AeModuleOrTest { get; set; }
 
         [Newtonsoft.Json.JsonProperty("characterDevelopment", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? CharacterDevelopment { get; set; }
+        public System.DateOnly? CharacterDevelopment { get; set; }
 
         [Newtonsoft.Json.JsonProperty("activePart", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool ActivePart { get; set; }
 
         [Newtonsoft.Json.JsonProperty("activeParticipationDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? ActiveParticipationDate { get; set; }
+        public System.DateOnly? ActiveParticipationDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cadetOath", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool CadetOath { get; set; }
 
         [Newtonsoft.Json.JsonProperty("cadetOathDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? CadetOathDate { get; set; }
+        public System.DateOnly? CadetOathDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("leadershipExpectationsDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? LeadershipExpectationsDate { get; set; }
+        public System.DateOnly? LeadershipExpectationsDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("uniformDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? UniformDate { get; set; }
+        public System.DateOnly? UniformDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("specialActivityDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? SpecialActivityDate { get; set; }
+        public System.DateOnly? SpecialActivityDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("nextApprovalDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? NextApprovalDate { get; set; }
+        public System.DateOnly? NextApprovalDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("staffServiceDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? StaffServiceDate { get; set; }
+        public System.DateOnly? StaffServiceDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("oralPresentationDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? OralPresentationDate { get; set; }
+        public System.DateOnly? OralPresentationDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("technicalWritingAssignmentDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? TechnicalWritingAssignmentDate { get; set; }
+        public System.DateOnly? TechnicalWritingAssignmentDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("technicalWritingAssignment", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TechnicalWritingAssignment { get; set; }
 
         [Newtonsoft.Json.JsonProperty("drillDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? DrillDate { get; set; }
+        public System.DateOnly? DrillDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("drillScore", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? DrillScore { get; set; }
 
         [Newtonsoft.Json.JsonProperty("welcomeCourseDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? WelcomeCourseDate { get; set; }
+        public System.DateOnly? WelcomeCourseDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("essayDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? EssayDate { get; set; }
+        public System.DateOnly? EssayDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("speechDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? SpeechDate { get; set; }
+        public System.DateOnly? SpeechDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("aeInteractiveDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? AeInteractiveDate { get; set; }
+        public System.DateOnly? AeInteractiveDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("aeInteractiveModule", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string AeInteractiveModule { get; set; }
 
         [Newtonsoft.Json.JsonProperty("leadershipInteractiveDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? LeadershipInteractiveDate { get; set; }
+        public System.DateOnly? LeadershipInteractiveDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("lastModified", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset LastModified { get; set; }
@@ -3535,19 +3531,16 @@ namespace CAPSquadron_WebServer.Services
         public string Rank { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rankDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset RankDate { get; set; }
+        public System.DateOnly RankDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("gender", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Gender { get; set; }
 
         [Newtonsoft.Json.JsonProperty("joined", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset Joined { get; set; }
+        public System.DateOnly Joined { get; set; }
 
         [Newtonsoft.Json.JsonProperty("expiration", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset Expiration { get; set; }
+        public System.DateOnly Expiration { get; set; }
 
         [Newtonsoft.Json.JsonProperty("hPhone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string HPhone { get; set; }
@@ -3583,6 +3576,9 @@ namespace CAPSquadron_WebServer.Services
 
         [Newtonsoft.Json.JsonProperty("wipAchName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string WipAchName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("joinDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateOnly? JoinDate { get; set; }
 
         [Newtonsoft.Json.JsonProperty("hasWrightBrothersAchievement", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool HasWrightBrothersAchievement { get; set; }
@@ -3797,15 +3793,6 @@ namespace CAPSquadron_WebServer.Services
         [Newtonsoft.Json.JsonProperty("reportDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset ReportDate { get; set; }
 
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal class DateFormatConverter : Newtonsoft.Json.Converters.IsoDateTimeConverter
-    {
-        public DateFormatConverter()
-        {
-            DateTimeFormat = "yyyy-MM-dd";
-        }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]

@@ -1,0 +1,30 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using CAPSquadron_WebServer.Services.Attendance
+@code {
+    [Parameter]
+    public DateOnly? JoinDate { get; set; }
+
+    [Parameter]
+    public IEnumerable<IGrouping<(int Year, int Month), KeyValuePair<DateOnly, bool>>>? GroupedByMonth { get; set; }
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">Joined: @JoinDate.ToString()</div>
+    </div>
+    @if (GroupedByMonth is not null)
+    {
+        @foreach (var group in GroupedByMonth)
+        {
+            var monthYear = new DateOnly(group.Key.Year, group.Key.Month, 1);
+            <div class="row">
+                <div class="col-2 text-end">@monthYear.ToString("MMM yyyy")</div>
+                @foreach (var report in group.OrderBy(k => k.Key))
+                {
+                    <div class="col-2 text-center border @(@report.Value ? "bg-primary bg-gradient text-white" : "bg-transparent")">@report.Key.ToString("dd")</div>
+                }
+            </div>
+        }
+    }
+</div>

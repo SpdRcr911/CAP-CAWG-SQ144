@@ -6,6 +6,7 @@
         public string? Name { get; set; }
         public string? Rank { get; set; }
         public string? WIPAchName { get; set; }
+        public DateOnly? JoinDate { get; set; }
         public bool HasWrightBrothersAchievement { get; set; }
         public bool HasGESCertification { get; set; }
         public bool HasCurryAchievement { get; set; }
