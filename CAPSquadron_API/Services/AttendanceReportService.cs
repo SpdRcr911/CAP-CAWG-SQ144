@@ -7,27 +7,34 @@ namespace CAPSquadron_API.Services;
 
 public interface IAttendanceReportService
 {
-    public Task<IEnumerable<DateTimeOffset?>> GetAttendanceReportDatesAsync();
-    public Task<IEnumerable<int>> GetAttendiesCapIdsByDateAsync(DateTimeOffset? date);
-    public Task<IEnumerable<AttendanceReport>> GetAllAttendiesByDateAsync(DateTimeOffset? date, bool? present);
-    public Task<IEnumerable<AttendanceReport>> GetAttendanceReportForMemberAsync(int CAPID);
+    public Task<IEnumerable<DateOnly>> GetAttendanceReportDatesAsync(DateOnly? startDate, bool? tuesdaysOnly);
+    public Task<IEnumerable<int>> GetAttendiesCapIdsByDateAsync(DateOnly date);
+    public Task<IEnumerable<AttendanceReport>> GetAllAttendiesByDateAsync(DateOnly date, bool? present);
+    public Task<IEnumerable<AttendanceReport>> GetAttendanceReportForMemberAsync(int CAPID, DateOnly? startDate, bool? present);
 }
 
 public class AttendanceReportService(AppDbContext context) : IAttendanceReportService, IProcessDataService<AttendanceReportCsv>
 {
-    public async Task<IEnumerable<DateTimeOffset?>> GetAttendanceReportDatesAsync()
+    public async Task<IEnumerable<DateOnly>> GetAttendanceReportDatesAsync(DateOnly? startDate, bool? tuesdaysOnly)
     {
-        return await context.AttendanceReports.Select(d=> d.StartDate).Distinct().OrderByDescending(d=>d).ToListAsync();
+        var dates = context.AttendanceReports.AsQueryable();
+        if (startDate.HasValue)
+            dates = dates.Where(ar => DateTime.Compare(ar.StartDate!.Value.Date, new DateTime(startDate.Value, default)) == 1);
+
+        if (tuesdaysOnly.HasValue)
+            dates = dates.Where(ar => ar.StartDate!.Value.DayOfWeek == DayOfWeek.Tuesday);
+
+        return await dates.Select(d=> new DateOnly(d.StartDate!.Value.Year, d.StartDate!.Value.Month, d.StartDate!.Value.Day)).Distinct().OrderByDescending(d=>d).ToListAsync();
     }
 
-    public async Task<IEnumerable<int>> GetAttendiesCapIdsByDateAsync(DateTimeOffset? date)
+    public async Task<IEnumerable<int>> GetAttendiesCapIdsByDateAsync(DateOnly date)
     {
-        return await context.AttendanceReports.Where(d => d.StartDate == date && d.IsPresent == true).Select(c => c.CAPID).ToListAsync();
+        return await context.AttendanceReports.Where(d => DateTime.Compare(d.StartDate!.Value.Date,date.ToDateTime(default)) == 0 && d.IsPresent == true).Select(c => c.CAPID).ToListAsync();
     }
 
-    public async Task<IEnumerable<AttendanceReport>> GetAllAttendiesByDateAsync(DateTimeOffset? date, bool? present = null)
+    public async Task<IEnumerable<AttendanceReport>> GetAllAttendiesByDateAsync(DateOnly date, bool? present = null)
     {
-        var query = context.AttendanceReports.Where(d => d.StartDate == date);
+        var query = context.AttendanceReports.Where(d => DateTime.Compare(d.StartDate!.Value.Date, date.ToDateTime(default)) == 0 );
 
         if (present is not null)
             query = query.Where(d => d.IsPresent == present);
@@ -86,8 +93,15 @@ public class AttendanceReportService(AppDbContext context) : IAttendanceReportSe
         await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<AttendanceReport>> GetAttendanceReportForMemberAsync(int CAPID)
+    public async Task<IEnumerable<AttendanceReport>> GetAttendanceReportForMemberAsync(int CAPID, DateOnly? startDate, bool? present)
     {
-        return await context.AttendanceReports.Where(a=> a.CAPID == CAPID).ToListAsync();
+        var attendanceReports = context.AttendanceReports.AsQueryable();
+        if (startDate.HasValue)
+            attendanceReports = attendanceReports.Where(ar => DateTime.Compare(ar.StartDate!.Value.Date, startDate.Value.ToDateTime(default)) == 1);
+
+        if (present.HasValue)
+            attendanceReports = attendanceReports.Where(ar => ar.IsPresent == present);
+
+        return await attendanceReports.Where(a=> a.CAPID == CAPID).ToListAsync();
     }
 }
