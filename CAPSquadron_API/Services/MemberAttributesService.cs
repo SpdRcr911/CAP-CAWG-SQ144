@@ -43,8 +43,9 @@ namespace CAPSquadron_API.Services
                 )
                 SELECT 
                     mem.capid AS ""CAPID"",
-	                mem.rank as ""Rank"",
+	                mem.rank AS ""Rank"",
 	                mem.""full_name"" AS ""Name"",
+                    mem.joined AS ""JoinDate"",
 	                wip.achv_name AS ""WIPAchName"",
                     CASE 
                         WHEN wb.capid IS NOT NULL THEN true
