@@ -14,10 +14,11 @@ namespace CAPSquadron_API.Services
             return await context.MemberAttributes.FromSqlRaw(query).ToListAsync(cancellationToken);
         }
 
-        public async Task<MemberAttributesDto> GetMemberAttributesByCapidAsync(int capid, CancellationToken cancellationToken = default)
+        public async Task<MemberAttributesDto?> GetMemberAttributesByCapidAsync(int capid, CancellationToken cancellationToken = default)
         {
             var query = GetBaseQuery(capid);
-            return await context.MemberAttributes.FromSqlRaw(query).FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException($"Member attributes not found for {capid}");
+
+            return await context.MemberAttributes.FromSqlRaw(query).FirstOrDefaultAsync(cancellationToken);
         }
 
         private static string GetBaseQuery(int? capidCondition = null)
@@ -69,7 +70,7 @@ namespace CAPSquadron_API.Services
 		                ELSE true
 	                END AS ""NotExpiringThisMonth""
                 FROM 
-                    (select * FROM members WHERE ""rank"" like 'C/%') mem
+                    (SELECT * FROM members WHERE ""rank"" LIKE 'C/%' OR ""rank"" LIKE 'CADET%') mem
                 LEFT JOIN 
                     WrightBrothersCTE wb ON mem.capid = wb.capid
                 LEFT JOIN 

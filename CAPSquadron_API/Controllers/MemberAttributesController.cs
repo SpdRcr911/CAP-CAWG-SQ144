@@ -1,5 +1,7 @@
-﻿using CAPSquadron_API.Models;
+﻿using CAPSquadron_API.Exceptions;
+using CAPSquadron_API.Models;
 using CAPSquadron_API.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CAPSquadron_API.Controllers;
@@ -21,13 +23,14 @@ public class MemberAttributesController(IMemberAttributesService memberAttribute
     // GET: api/MemberAttributes/{capid}
     [HttpGet("{capid}", Name = nameof(GetMemberAttributesByCapid))]
     [ProducesResponseType<MemberAttributesDto>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<MemberAttributesDto>> GetMemberAttributesByCapid(int capid, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<MemberAttributesDto?>> GetMemberAttributesByCapid(int capid, CancellationToken cancellationToken)
     {
         var result = await memberAttributesService.GetMemberAttributesByCapidAsync(capid, cancellationToken);
-        if (result == null)
-        {
-            return NotFound();
-        }
+
+        if (result is null)
+            return NotFound($"Member attributes not found for capid: {capid}");
+
         return Ok(result);
     }
 }
