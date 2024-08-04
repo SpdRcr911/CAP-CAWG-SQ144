@@ -13,13 +13,14 @@
 
 
 <div class="container">
-    @if (cadetTrackers is not null && memberAttribute is not null)
+    @if (cadetTrackers is not null)
     {
-        <CadetTrackerComponent CadetTrackers="new [] { cadetTrackers }" MemberAttributes="new [] { memberAttribute }"></CadetTrackerComponent>
+        List<MemberAttributesDto?> mAttArr = [];
+        if (memberAttribute is not null)
+            mAttArr.Add(memberAttribute);
+        <CadetTrackerComponent CadetTrackers="new [] { cadetTrackers }" MemberAttributes="mAttArr"></CadetTrackerComponent>
     }
 </div>
-
-<CadetAttendanceReport JoinDate="memberAttribute?.JoinDate" GroupedByMonth="groupedByMonth" />
 
 @code {
     [Parameter]
@@ -27,20 +28,10 @@
 
     private MemberAttributesDto? memberAttribute;
     private PersonalCadetTrackerDto? cadetTrackers;
-    private Dictionary<DateOnly, bool>? attendanceReports;
-    IEnumerable<IGrouping<(int Year, int Month), KeyValuePair<DateOnly, bool>>>? groupedByMonth;
 
     protected override async Task OnInitializedAsync()
     {
         cadetTrackers = await CadetTrackerService.GetCadetTrackerByCapidAsync(capid);
         memberAttribute = await MemberAttributeService.GetMemberAttributesByCapIdAsync(capid);
-        
-        attendanceReports = await AttendanceService.GetCadetsAttendanceAsync(capid, memberAttribute.JoinDate);
-
-        groupedByMonth = attendanceReports
-                                 .GroupBy(report => (report.Key.Year, report.Key.Month))
-                                 .OrderByDescending(group => group.Key.Year)
-                                 .ThenByDescending(group => group.Key.Month);
-
     }
 }
