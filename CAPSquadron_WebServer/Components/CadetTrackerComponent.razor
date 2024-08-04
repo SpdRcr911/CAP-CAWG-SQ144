@@ -14,7 +14,7 @@
                             @foreach (var cadet in group)
                             {
                                 var attributes = MemberAttributes?.FirstOrDefault(ma => ma.Capid == cadet.Capid);
-                                <li class="list-group-item">
+                                <li class="list-group-item border-black">
                                     <div class="container">
                                         <div class="row">
                                             <div class="col">
@@ -27,10 +27,10 @@
                                                 <MemberAttributesComponent Attributes="attributes" />
                                             </div>
                                             <div class="w-100"></div>
-                                            <div class="col-3">
+                                            <div class="col-3 my-2">
                                                 <HexagonComponent LearnToLead="@cadet.LeardToLead" Aerospace="@cadet.Aerospace" DrillAndCeremonies="@cadet.DrillAndCeremonies" Fitness="@cadet.Fitness" Character="@cadet.Character" NextApprovalDate="@cadet.NextApprovalDate" />
                                             </div>
-                                            <div class="col">
+                                            <div class="col my-2">
                                                 <CadetTasks LearnToLead="@cadet.LeardToLead" LeadLabDate="@cadet.LeadLabDate" LeadInteractiveDate="@cadet.LeadInteractiveDate"
                                                             Aerospace="@cadet.Aerospace" AeDate="@cadet.AeDate" AeInteractiveDate="@cadet.AeInteractiveDate"
                                                             DrillAndCeremonies="@cadet.DrillAndCeremonies" DrillDate="@cadet.DrillDate"
@@ -39,8 +39,8 @@
                                                             NextApprovalDate="@cadet.NextApprovalDate" />
                                             </div>
                                             <div class="w-100"></div>
-                                            <div class="col">
-                                                <div>Next Approval Date: @cadet.NextApprovalDate?.LocalDateTime.ToShortDateString()</div>
+                                            <div class="col my-2">
+                                                <div>Next Approval Date: <span class="fw-bold">@cadet.NextApprovalDate?.LocalDateTime.ToString("dd MMM yy")</span></div>
                                             </div>
                                             <div class="w-100"></div>
                                             <div class="col">
@@ -48,6 +48,10 @@
                                                 {
                                                     <PromotionProgressBar NextPromotionDate="cadet.NextApprovalDate.Value.LocalDateTime" />
                                                 }
+                                            </div>
+                                            <div class="w-100"></div>
+                                            <div class="col my-2">
+                                                <CadetAttendanceReport JoinDate="attributes?.JoinDate!.Value" CapId="cadet.Capid" />
                                             </div>
                                         </div>
                                     </div>

@@ -32,13 +32,13 @@ else
                         <div class="card-body">
                             <strong class="card-title">Flight Commander:</strong>
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item">@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.FullName</li>
+                                <li class="list-group-item"><a @onclick="() => NavigateToCadet(flightMembership!.FlightCommander!.Capid)" href="javascript:void(0);">@flightMembership?.FlightCommander?.Rank @flightMembership?.FlightCommander?.FullName</a></li>
                             </ul>
                             <strong>Flight Sergeants:</strong>
                             <ul class="list-group list-group-flush">
                                 @foreach (var sergeant in flightMembership?.FlightSergeants ?? Enumerable.Empty<Member>())
                                 {
-                                    <li class="list-group-item">@sergeant.Rank @sergeant.FullName</li>
+                                    <li class="list-group-item"><a @onclick="() => NavigateToCadet(sergeant.Capid)" href="javascript:void(0);">@sergeant.Rank @sergeant.FullName</a></li>
                                 }
                             </ul>
                             <strong>Members:</strong>
@@ -49,8 +49,7 @@ else
                                         <a @onclick="() => NavigateToCadet(member.Capid)" href="javascript:void(0);">
                                             @member.Rank @member.FullName
                                         </a>
-                                        
-                                        </li>
+                                    </li>
                                 }
                             </ul>
                         </div>
