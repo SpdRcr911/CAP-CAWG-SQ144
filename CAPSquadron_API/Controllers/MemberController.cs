@@ -6,21 +6,37 @@ namespace CAPSquadron_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class MemberController(ICsvParsingService csvParsingService, IRetrieveDataService<Member> retrieveDataService, IProcessDataService<MemberCsv> processDataService) : ControllerBase
+public class MemberController(ICsvParsingService csvParsingService, IMembershipService membershipService, IRetrieveDataService<Member> retrieveDataService, IProcessDataService<MemberCsv> processDataService) : ControllerBase
 {
     [HttpGet(Name = nameof(GetMembers))]
-    [ProducesResponseType<List<Member>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<Member>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMembers()
     {
         var membership = await retrieveDataService.GetAsync();
         return Ok(membership);
     }
 
-    [HttpGet("{capid}", Name = nameof(GetMember))]
+    [HttpGet("{capid}", Name = nameof(GetMemberByCapId))]
     [ProducesResponseType<Member>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetMember(int capid)
+    public async Task<IActionResult> GetMemberByCapId(int capid)
     {
         var membership = await retrieveDataService.GetAsync(capid);
+        return Ok(membership);
+    }
+
+    [HttpGet("cadets", Name = nameof(GetCadets))]
+    [ProducesResponseType<IEnumerable<Member>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCadets()
+    {
+        var membership = await membershipService.GetCadetsAsync();
+        return Ok(membership);
+    }
+
+    [HttpGet("seniorMembers", Name = nameof(GetSeniorMembers))]
+    [ProducesResponseType<IEnumerable<Member>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSeniorMembers()
+    {
+        var membership = await membershipService.GetSeniorMembersAsync();
         return Ok(membership);
     }
 

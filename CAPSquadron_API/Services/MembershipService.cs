@@ -2,11 +2,16 @@
 using CAPSquadron_API.Exceptions;
 using CAPSquadron_API.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace CAPSquadron_API.Services;
 
-public class MembershipService(AppDbContext context) : IRetrieveDataService<Member>, IProcessDataService<MemberCsv>
+public interface IMembershipService
+{
+    Task<IEnumerable<Member>> GetCadetsAsync();
+    Task<IEnumerable<Member>> GetSeniorMembersAsync();
+}
+
+public class MembershipService(AppDbContext context) : IRetrieveDataService<Member>, IProcessDataService<MemberCsv>, IMembershipService
 {
     public async Task<IEnumerable<Member>> GetAsync()
     {
@@ -21,6 +26,16 @@ public class MembershipService(AppDbContext context) : IRetrieveDataService<Memb
     public async Task<IEnumerable<Member>> GetAsync(IEnumerable<int> ids)
     {
         return await context.Members.Where(a => ids.Contains(a.CAPID)).ToListAsync() ?? throw new NotFoundException("Members not found.");
+    }
+
+    public async Task<IEnumerable<Member>> GetCadetsAsync()
+    {
+        return await context.Members.Where(c => c.FBIStatus == string.Empty).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Member>> GetSeniorMembersAsync()
+    {
+        return await context.Members.Where(c => c.FBIStatus != string.Empty).ToListAsync();
     }
 
 
