@@ -50,6 +50,11 @@ namespace CAPSquadron_WebServer.Pages
             Navigation.NavigateTo($"/cadet-report/{capid}");
         }
 
+        private void NavigateToUpdateFlight(int flightId)
+        {
+            Navigation.NavigateTo($"/update-flight/{flightId}");
+        }
+
         private class FlightMembership
         {
             public int FlightId { get; set; }

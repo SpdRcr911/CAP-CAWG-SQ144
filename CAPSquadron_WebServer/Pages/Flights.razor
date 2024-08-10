@@ -18,7 +18,6 @@ else
     <div class="container-fluid">
         <div class="row">
             <div class="col mt-3"><h3>Flights</h3></div>
-
         </div>
         <div class="row">
             @foreach (var flight in flights.OrderBy(flt => !flt.Name.EndsWith("Flight")).ThenBy(flt => flt.Name))
@@ -27,7 +26,7 @@ else
                 <div class="col-sm-12 col-lg-6 col-xl-4 col-xxl-3">
                     <div class="card shadow mb-4">
                         <h5 class="card-header">
-                            <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);" class="link-offset-2 link-offset-0-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">@flight.Name</a>
+                            <a @onclick="() => NavigateToFlight(flight.Id)" href="javascript:void(0);" class="link-offset-2 link-offset-0-hover link-underline link-underline-opacity-0">@flight.Name</a> <button class="p-0 border border-0 bg-transparent" @onclick="() => NavigateToUpdateFlight(flight.Id)" href="javascript:void(0);">⚙️</button>
                         </h5>
                         <div class="card-body">
                             <strong class="card-title">Flight Commander:</strong>
