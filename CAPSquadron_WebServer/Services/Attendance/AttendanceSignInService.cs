@@ -2,11 +2,6 @@
 
 public class AttendanceSignInService(ApiClient apiClient) : IAttendanceSignInService
 {
-    public async Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync()
-    {
-        return await apiClient.GetUnassignedOrCommandersOrSergeantsAsync();
-    }
-
     public async Task<AttendanceSignIn> GetAttendanceSignInAsync(int capid)
     {
         return await apiClient.GetAttendanceSignInAsync(capid);
