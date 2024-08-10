@@ -8,14 +8,14 @@ namespace CAPSquadron_WebServer.Services.MemberAttribute
             return await apiClient.GetMemberAttributesAsync();
         }
 
-        public async Task<MemberAttributesDto?> GetMemberAttributesByCapIdAsync(int capid)
+        public async Task<MemberAttributesDto> GetMemberAttributesByCapIdAsync(int capid)
         {
             try
             {
                 return await apiClient.GetMemberAttributesByCapidAsync(capid);
             }
             catch (ApiException) {
-                return null;
+                return new MemberAttributesDto();
             }
         }
     }
