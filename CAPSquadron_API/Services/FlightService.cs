@@ -177,12 +177,12 @@ public class FlightService : IFlightService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<int>> GetUnassignedOrCommandersOrSergeantsAsync()
+    public async Task<IEnumerable<int>> GetUnassignedCadetsAsync()
     {
-        var assignedCapIds = await _context.FlightMembers.Select(fm => fm.CAPID).Distinct().ToListAsync();
-        var allCapIds = await _context.Members.Select(m => m.CAPID).ToListAsync();
+        var assignedCadetCapIds = await _context.FlightMembers.Select(fm => fm.CAPID).Distinct().ToListAsync();
+        var allCadetCapIds = await _context.Members.Where(m=> string.IsNullOrEmpty(m.FBIStatus)).Select(m => m.CAPID).ToListAsync();
 
-        return allCapIds.Except(assignedCapIds);
+        return allCadetCapIds.Except(assignedCadetCapIds);
     }
 
     public async Task<FlightDetailDto> GetFlightDetailAsync(int id)
