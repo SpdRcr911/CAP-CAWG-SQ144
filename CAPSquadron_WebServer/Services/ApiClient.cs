@@ -2215,15 +2215,15 @@ namespace CAPSquadron_WebServer.Services
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetUnassignedOrCommandersOrSergeantsAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetUnassignedCadetsAsync()
         {
-            return GetUnassignedOrCommandersOrSergeantsAsync(System.Threading.CancellationToken.None);
+            return GetUnassignedCadetsAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetUnassignedOrCommandersOrSergeantsAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<int>> GetUnassignedCadetsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2236,8 +2236,8 @@ namespace CAPSquadron_WebServer.Services
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "api/Flight/unassigned-or-commanders-or-sergeants"
-                    urlBuilder_.Append("api/Flight/unassigned-or-commanders-or-sergeants");
+                    // Operation Path: "api/Flight/unassigned-cadets"
+                    urlBuilder_.Append("api/Flight/unassigned-cadets");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

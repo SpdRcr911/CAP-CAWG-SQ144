@@ -1,0 +1,111 @@
+﻿@page "/update-flight/{FlightId:int}"
+
+@using CAPSquadron_WebServer.Services
+@using CAPSquadron_WebServer.Services.Flight
+
+@inject IFlightService FlightService
+@inject IRetrieveDataService<Member> MemberService
+@inject IJSRuntime JS
+
+@if (flight == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col mt-3">
+                <div class="card shadow">
+                    <h5 class="card-header">
+                        @flight.Name
+                    </h5>
+                     <div class="card-body">
+                        <strong class="card-title">Flight Commander:</strong>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">@flightCommander?.Rank @flightCommander?.FullName</li>
+                        </ul>
+                        <strong>Flight Sergeants:</strong>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var sergeant in flightSergeants ?? Enumerable.Empty<Member>())
+                            {
+                                <li class="list-group-item">@sergeant.Rank @sergeant.FullName</li>
+                            }
+                        </ul>
+                        <strong>
+                            Members: <button type="button" @onclick="() => GetUnassignedCadets()" class="btn btn-outline-primary " data-bs-toggle="modal" data-bs-target="#addCadet" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                                ➕ Add Cadet
+                            </button>
+                        </strong>
+                        @if (showAlert && addedCadetNames.Count() > 0)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show m-2 pb-0" role="alert">
+                                Cadets added successfully:
+                                <ul>
+                                    @foreach (var name in addedCadetNames)
+                                    {
+                                        <li>@name</li>
+                                    }
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <ul class="list-group list-group-flush list-group-numbered">
+                            @foreach (var member in members!.Where(m => !flight.FlightSergeantIds.Contains(m.Capid) && flight.FlightCommanderId != m.Capid).OrderBy(f => f.FullName).ToList() ?? [])
+                            {
+                                <li class="list-group-item">
+                                    <button class="btn p-0 border border-0 bg-transparent" @onclick="() => RemoveCadetFromFlight(member.Capid)" href="javascript:void(0);">⛔</button> @member.Rank @member.FullName
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCadet" tabindex="-1" aria-labelledby="addCadetLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addCadetLabel">Add Cadet to @flight.Name</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (unassignedCadet is null)
+                    {
+                        <p><em>Loading...</em></p>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var cadet in unassignedCadet.OrderBy(c=>c.FullName))
+                            {
+                                <li class="list-group-item list-group-item-action m-0 p-1">
+                                    <input class="form-check-input me-1" type="checkbox" value="0" id="@($"cadet{cadet.Capid}")" @onchange="(e) => UpdateCadetList(cadet.Capid, e.Value is not null && (bool)e.Value)">
+
+                                    <label class="form-check-label stretched-link" for="@($"cadet{cadet.Capid}")">@cadet.FullName</label>
+                                </li>
+                            }
+                        </ul>
+
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="()=> AddCadets()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function closeModal(modalId) {
+        var modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+        if (modal) {
+            modal.hide();
+        }
+    }
+</script>

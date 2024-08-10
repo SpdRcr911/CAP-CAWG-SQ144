@@ -92,11 +92,11 @@ public class FlightController : ControllerBase
         }
     }
 
-    [HttpGet("unassigned-or-commanders-or-sergeants", Name = nameof(GetUnassignedOrCommandersOrSergeants))]
+    [HttpGet("unassigned-cadets", Name = nameof(GetUnassignedCadets))]
     [ProducesResponseType<IEnumerable<int>>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUnassignedOrCommandersOrSergeants()
+    public async Task<IActionResult> GetUnassignedCadets()
     {
-        var capIds = await _flightService.GetUnassignedOrCommandersOrSergeantsAsync();
+        var capIds = await _flightService.GetUnassignedCadetsAsync();
         return Ok(capIds);
     }
 

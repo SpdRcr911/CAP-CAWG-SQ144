@@ -18,4 +18,16 @@ public class FlightService : IFlightService
     {
         return await _apiClient.GetFlightAsync(id);
     }
+
+    public async Task<IEnumerable<Member>> GetUnassignedCadetsAsync()
+    {
+        var unassignedCadetCapIds = await _apiClient.GetUnassignedCadetsAsync();
+        var unassignedCadets = await _apiClient.GetMembersByCapidsAsync(unassignedCadetCapIds);
+        return unassignedCadets;
+    }
+
+    public async Task<FlightDto> UpdateFlight(int flightId, FlightDto flightDto)
+    {
+        return await _apiClient.UpdateFlightAsync(flightId, flightDto);
+    }
 }
