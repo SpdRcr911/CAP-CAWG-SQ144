@@ -1,0 +1,49 @@
+﻿@page "/login"
+@using CAPSquadron_Cadet.Models;
+@using Microsoft.AspNetCore.Components.Forms;
+
+@inject IJSRuntime JSRuntime
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
+
+<EditForm Model="cadet" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <div class="mb-3">
+        <label for="capid" class="form-label">Enter Your CAPID</label>
+        <InputText id="capid" class="form-control" @bind-Value="cadet.CAPID" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+<script>
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+</script>
+
+@code {
+    private Cadet cadet = new Cadet();
+
+    private async Task HandleValidSubmit()
+    {
+        if (cadet.CAPID is not null)
+        {
+            var capid = cadet.CAPID;
+
+            // Call JavaScript function to set the cookie
+            await JSRuntime.InvokeVoidAsync("setCookie", "CAPID", capid, 7);
+
+            // Redirect to the cadet's information page
+            NavigationManager.NavigateTo("/cadetinfo");
+        }
+    }
+}

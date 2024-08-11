@@ -9,7 +9,7 @@
 
     <main>
         <div class="bb-top-row px-4 d-flex justify-content-end">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <a href="/logout" target="_blank">Logout</a>
         </div>
 
         <article class="content px-4">
@@ -42,8 +42,8 @@
         navItems = new List<NavItem>
         {
             new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Home", Match=NavLinkMatch.All},
-            new NavItem { Id = "2", Href = "/counter", IconName = IconName.PlusSquareFill, Text = "Counter"},
-            new NavItem { Id = "3", Href = "/fetchdata", IconName = IconName.Table, Text = "Fetch Data"},
+            new NavItem { Id = "2", Href = "/cadetinfo", IconName = IconName.PlusSquareFill, Text = "Cadet Info"},
+            new NavItem { Id = "3", Href = "/logout", IconName = IconName.Table, Text = "Log Out"},
         };
 
         return navItems;

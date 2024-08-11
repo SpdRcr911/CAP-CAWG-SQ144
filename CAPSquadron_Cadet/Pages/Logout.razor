@@ -1,0 +1,30 @@
+﻿@page "/logout"
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<h1>Log Out</h1>
+
+<script>
+    function clearCookie(name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
+</script>
+
+@code {
+    private bool _firstRender = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _firstRender)
+        {
+            _firstRender = false;
+
+            // Clear the cookie using JavaScript interop
+            await JSRuntime.InvokeVoidAsync("clearCookie", "CAPID");
+
+            // Redirect to the login page
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

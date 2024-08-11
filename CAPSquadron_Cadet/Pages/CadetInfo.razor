@@ -1,14 +1,22 @@
-﻿@page "/"
-
-<PageTitle>San Diego Squadron 144 Cadet</PageTitle>
+﻿@page "/cadetinfo"
 
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 
-<h1>Hello, Cadet!</h1>
+<h3>Cadet Information</h3>
 
-Welcome to your Squadron 144 cadet web page.
+@if (capid is null)
+{
+    <p>No CAPID found. Please log in.</p>
+}
+else
+{
+    <p>Your CAPID: @capid</p>
+    <!-- Fetch and display cadet information based on the CAPID -->
+}
+
 @code {
+    private string? capid;
     private bool _firstRender = true;
 
     protected override void OnAfterRender(bool firstRender)
@@ -17,8 +25,9 @@ Welcome to your Squadron 144 cadet web page.
         {
             _firstRender = false;
 
-            // Check if the CAPID cookie exists, if not, redirect to login
-            if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Request.Cookies["CAPID"]))
+            capid = HttpContextAccessor.HttpContext?.Request.Cookies["CAPID"];
+
+            if (string.IsNullOrEmpty(capid))
             {
                 NavigationManager.NavigateTo("/login");
             }
