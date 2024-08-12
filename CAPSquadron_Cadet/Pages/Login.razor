@@ -1,0 +1,77 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject IValidateCadet validateCadetService
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h3 class="text-center">Cadet Login</h3>
+            <EditForm Model="cadet" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="capid" class="form-label">Enter Your CAPID</label>
+                    <InputText id="capid" class="form-control" placeholder="000000" @bind-Value="cadet.CAPID" />
+                    <small class="form-text text-muted">
+                        Your CAPID is a six-digit number.
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="joinDate" class="form-label">Enter Your Join Date (MM/DD/YYYY)</label>
+                    <InputDate id="joinDate" class="form-control" @bind-Value="cadet.JoinDate" />
+                    <small class="form-text text-muted">
+                        Your Join Date is the date you joined Civil Air Patrol. You can find it in eServices.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" disabled="@IsSubmitDisabled">Submit</button>
+            </EditForm>
+            <div class="text-center mt-3">
+                <span class="text-danger">@message</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private CadetLoginModel cadet = new CadetLoginModel
+        {
+            CAPID = "000000", // Suggesting default CAPID
+            JoinDate = DateOnly.FromDateTime(DateTime.Now) // Suggesting today's date
+        };
+    private string message = "";
+
+    private bool IsSubmitDisabled => cadet.CAPID == "000000" && cadet.JoinDate == DateOnly.FromDateTime(DateTime.Now);
+
+    private async Task HandleValidSubmit()
+    {
+        message = "Validating Cadet...";
+        var isValidCadet = await validateCadetService.ValidateAsync(Convert.ToInt32(cadet.CAPID), cadet.JoinDate);
+        if (isValidCadet)
+        {
+            // Store CAPID in session storage
+            await JSRuntime.InvokeVoidAsync("setSessionStorage", "CAPID", cadet.CAPID);
+            NavigationManager.NavigateTo("/cadetinfo");
+        }
+        else
+        {
+            message = "Failed to validate cadet information";
+        }
+    }
+
+    public class CadetLoginModel
+    {
+        [Required]
+        public string? CAPID { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly JoinDate { get; set; }
+    }
+}

@@ -1,11 +1,10 @@
-﻿@page "/"
+﻿@page "/logout"
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
-<h1>Welcome to the Cadet Portal</h1>
+<h3>Logging Out...</h3>
 
 @code {
-    private string? capid;
     private bool _firstRender = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -15,12 +14,10 @@
             _firstRender = false;
 
             // Perform JavaScript interop after the component has been rendered
-            capid = await JSRuntime.InvokeAsync<string>("getSessionStorage", "CAPID");
+            await JSRuntime.InvokeVoidAsync("removeSessionStorage", "CAPID");
 
-            if (string.IsNullOrEmpty(capid))
-            {
-                NavigationManager.NavigateTo("/login");
-            }
+            // Navigate to the login page
+            NavigationManager.NavigateTo("/login");
         }
     }
 }
