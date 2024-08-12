@@ -1,6 +1,6 @@
 ﻿@page "/cadetinfo"
-@inject IJSRuntime JSRuntime
-@inject NavigationManager NavigationManager
+
+@inherits CadetSessionComponent
 
 <h3>Cadet Information</h3>
 
@@ -12,29 +12,4 @@ else
 {
     <p>Your CAPID: @capid</p>
     <!-- Fetch and display cadet information based on the CAPID -->
-}
-
-@code {
-    private string? capid;
-    private bool _firstRender = true;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && _firstRender)
-        {
-            _firstRender = false;
-
-            // Perform JavaScript interop after the component has been rendered
-            capid = await JSRuntime.InvokeAsync<string>("getSessionStorage", "CAPID");
-
-            if (string.IsNullOrEmpty(capid))
-            {
-                NavigationManager.NavigateTo("/login");
-            }
-            else
-            {
-                StateHasChanged(); // Ensure the UI is updated if capid is found
-            }
-        }
-    }
 }
