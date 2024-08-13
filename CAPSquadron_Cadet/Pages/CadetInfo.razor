@@ -1,6 +1,8 @@
 ﻿@page "/cadet-info"
 
-@inherits CadetSessionComponent
+@inherits CadetSessionComponentBase
+
+@inject IRetrieveDataService<Member> MemberService;
 
 <h3>Cadet Information</h3>
 
@@ -8,8 +10,25 @@
 {
     <p>No CAPID found. Please log in.</p>
 }
+else if (cadet == null)
+{
+    <p>Loading your information...</p>
+}
 else
 {
     <p>Your CAPID: @capid</p>
-    <!-- Fetch and display cadet information based on the CAPID -->
+    <p>Your Name: @cadet.FullName</p>
+}
+
+@code
+{
+    private Member? cadet;
+
+    protected override async Task OnCapidRetrievedAsync()
+    {
+        if (!string.IsNullOrEmpty(capid))
+        {
+            cadet = await MemberService.GetAsync(Convert.ToInt32(capid));
+        }
+    }
 }

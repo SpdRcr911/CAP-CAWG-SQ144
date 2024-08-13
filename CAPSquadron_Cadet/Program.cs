@@ -1,4 +1,6 @@
 using CAPSquadron_Shared.Services;
+using CAPSquadron_Shared.Services.CadetTracker;
+using CAPSquadron_Shared.Services.Meeting;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -10,7 +12,10 @@ builder.Services.AddScoped(sp => new ApiClient(Environment.GetEnvironmentVariabl
 builder.Services.AddSession();
 
 builder.Services.AddScoped<IValidateCadet, ValidateCadet>();
-
+builder.Services.AddScoped<IMemberServcie, MemberService>();
+builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
+builder.Services.AddScoped<ICadetTrackerService, CadetTrackerService>();
+builder.Services.AddScoped<IMeetingService, MeetingService>();
 
 var app = builder.Build();
 

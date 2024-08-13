@@ -1,5 +1,81 @@
 ﻿@page "/call-down"
+@using CAPSquadron_Shared.Services.CadetTracker
+@using CAPSquadron_Shared.Services.Meeting
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
 
-@inherits CadetSessionComponent
+@inherits CadetSessionComponentBase
 
-<h3>Call Down</h3>
+@inject IRetrieveDataService<Member> MemberService;
+@inject ICadetTrackerService CadetTrackerService;
+@inject IMeetingService meetingService;
+
+@if (string.IsNullOrEmpty(capid))
+{
+    <p>No CAPID found. Please log in.</p>
+}
+else if (cadet == null || personalCadetTracker == null || meetingInfo == null)
+{
+    <p>Loading your information...</p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="fs-2">Squadron 144 - Call Down Reply</div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title fs-3">@meetingInfo.Title - @meetingInfo.Topic</div>
+                        <div class="card-text">
+                            <span class="fw-bold">Uniform of the Day:</span> <span>@meetingInfo.Uod</span>
+                            <br />
+                            <span class="fw-bold">Notes:</span> <span>@meetingInfo.Notes</span>
+                            <hr/>
+                            <EditForm Model="formModel" OnValidSubmit="HandleValidSubmit">
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                                
+                                <div class="fs-5 mb-3">
+                                    @cadet.Rank @cadet.FullName
+                                </div>
+                                <div class="mb-3">
+                                    <label>Will you be attending?</label><br />
+                                </div>
+                                <div class="mb-3">
+                                    <Switch @bind-Value="formModel.Attending" Label="I plan to attend this Tuesday's meeting." />
+                                </div>
+                                @if (!formModel.Attending)
+                                {
+                                    <div class="mb-3">
+                                        <label for="reason">If no, please specify why</label>
+                                        <InputTextArea id="reason" class="form-control" @bind-Value="formModel.Reason" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="mb-3">
+                                        <label>@personalCadetTracker.AchievementName Requests</label><br />
+                                        @foreach (var request in availableRequests!)
+                                        {
+                                            <div class="form-check">
+                                                <InputCheckbox class="form-check-input" @bind-Value="request.IsSelected" />
+                                                <label class="form-check-label">@request.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="comments">Comments</label>
+                                        <InputTextArea id="comments" class="form-control" @bind-Value="formModel.Comments" />
+                                    </div>
+                                }
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </EditForm>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
