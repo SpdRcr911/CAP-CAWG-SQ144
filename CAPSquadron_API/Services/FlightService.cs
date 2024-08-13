@@ -180,7 +180,7 @@ public class FlightService : IFlightService
     public async Task<IEnumerable<int>> GetUnassignedCadetsAsync()
     {
         var assignedCadetCapIds = await _context.FlightMembers.Select(fm => fm.CAPID).Distinct().ToListAsync();
-        var allCadetCapIds = await _context.Members.Where(m=> string.IsNullOrEmpty(m.FBIStatus)).Select(m => m.CAPID).ToListAsync();
+        var allCadetCapIds = await _context.Members.Where(m=> string.IsNullOrEmpty(m.FBIStatus) && m.Expiration > DateOnly.FromDateTime(DateTime.Now)).Select(m => m.CAPID).ToListAsync();
 
         return allCadetCapIds.Except(assignedCadetCapIds);
     }
