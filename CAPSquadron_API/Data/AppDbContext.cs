@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Member> Members { get; set; }
     public DbSet<AttendanceReport> AttendanceReports { get; set; }
     public DbSet<CadetPhysicalFitnessTrainingReport> CadetPhysicalFitnessTrainingReports { get; set; }
+    public DbSet<CallDownResponse> CallDownResponses { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
