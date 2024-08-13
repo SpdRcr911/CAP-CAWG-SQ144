@@ -1,4 +1,5 @@
-﻿using CAPSquadron_API.Models;
+﻿using CAPSquadron_API.Exceptions;
+using CAPSquadron_API.Models;
 using CAPSquadron_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +19,18 @@ public class MemberController(ICsvParsingService csvParsingService, IMembershipS
 
     [HttpGet("{capid}", Name = nameof(GetMemberByCapId))]
     [ProducesResponseType<Member>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetMemberByCapId(int capid)
     {
-        var membership = await retrieveDataService.GetAsync(capid);
-        return Ok(membership);
+        try
+        {
+            var membership = await retrieveDataService.GetAsync(capid);
+            return Ok(membership);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(new ProblemDetails() { Detail = "Member not found" });
+        }
     }
 
     [HttpGet("cadets", Name = nameof(GetCadets))]
@@ -42,10 +51,18 @@ public class MemberController(ICsvParsingService csvParsingService, IMembershipS
 
     [HttpPost("capids", Name = nameof(GetMembersByCapids))]
     [ProducesResponseType<IEnumerable<Member>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetMembersByCapids([FromBody] IEnumerable<int> capids)
     {
-        var membership = await retrieveDataService.GetAsync(capids);
-        return Ok(membership);
+        try
+        {
+            var membership = await retrieveDataService.GetAsync(capids);
+            return Ok(membership);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(new ProblemDetails() { Detail = "One or more members not found" });
+        }
     }
 
 

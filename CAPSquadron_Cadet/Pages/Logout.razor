@@ -1,0 +1,23 @@
+﻿@page "/logout"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<h3>Logging Out...</h3>
+
+@code {
+    private bool _firstRender = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _firstRender)
+        {
+            _firstRender = false;
+
+            // Perform JavaScript interop after the component has been rendered
+            await JSRuntime.InvokeVoidAsync("removeSessionStorage", "CAPID");
+
+            // Navigate to the login page
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}
