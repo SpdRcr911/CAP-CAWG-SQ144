@@ -59,6 +59,7 @@ builder.Services.AddScoped<IRetrieveDataService<Member>, MembershipService>();
 builder.Services.AddScoped<IProcessDataService<MemberCsv>, MembershipService>();
 builder.Services.AddScoped<IAttendanceReportService, AttendanceReportService>();
 builder.Services.AddScoped<IProcessDataService<AttendanceReportCsv>, AttendanceReportService>();
+builder.Services.AddScoped<IMeetingService, MeetingService>();
 
 var connectionString = Environment.GetEnvironmentVariable("CAPSQ144_CONNECTIONSTRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
