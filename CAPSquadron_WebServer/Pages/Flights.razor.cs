@@ -1,4 +1,4 @@
-using CAPSquadron_WebServer.Services;
+using CAPSquadron_Shared.Services;
 
 namespace CAPSquadron_WebServer.Pages
 {

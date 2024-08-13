@@ -1,4 +1,4 @@
-using CAPSquadron_WebServer.Services.Attendance;
+using CAPSquadron_Shared.Services.Attendance;
 using Microsoft.AspNetCore.Components;
 
 namespace CAPSquadron_WebServer.Components

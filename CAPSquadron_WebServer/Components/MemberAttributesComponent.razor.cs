@@ -1,4 +1,4 @@
-using CAPSquadron_WebServer.Services;
+using CAPSquadron_Shared.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace CAPSquadron_WebServer.Components;
