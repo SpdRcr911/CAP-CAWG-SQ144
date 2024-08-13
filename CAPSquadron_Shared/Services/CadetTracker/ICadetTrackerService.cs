@@ -1,4 +1,4 @@
-﻿namespace CAPSquadron_WebServer.Services.CadetTracker;
+﻿namespace CAPSquadron_Shared.Services.CadetTracker;
 
 public interface ICadetTrackerService
 {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using CAPSquadron_WebServer.Services;
-using CAPSquadron_WebServer.Services.Attendance;
+using CAPSquadron_Shared.Services;
+using CAPSquadron_Shared.Services.Attendance;
 
 namespace CAPSquadron_WebServer.Components;
 

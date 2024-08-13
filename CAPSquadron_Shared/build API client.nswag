@@ -60,7 +60,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "CAPSquadron_WebServer.Services",
+      "namespace": "CAPSquadron_Shared.Services",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateOnly",
       "jsonConverters": null,

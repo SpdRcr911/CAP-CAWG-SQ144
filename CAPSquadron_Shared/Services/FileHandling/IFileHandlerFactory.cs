@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace CAPSquadron_WebServer.Services.FileHandling;
+namespace CAPSquadron_Shared.Services.FileHandling;
 
 public interface IFileHandlerFactory
 {

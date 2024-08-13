@@ -1,10 +1,10 @@
-using CAPSquadron_WebServer.Services;
-using CAPSquadron_WebServer.Services.Attendance;
-using CAPSquadron_WebServer.Services.CadetTracker;
-using CAPSquadron_WebServer.Services.FileHandling;
-using CAPSquadron_WebServer.Services.Flight;
-using CAPSquadron_WebServer.Services.MemberAttribute;
-using CAPSquadron_WebServer.Services.QualityCadetUnit;
+using CAPSquadron_Shared.Services;
+using CAPSquadron_Shared.Services.Attendance;
+using CAPSquadron_Shared.Services.CadetTracker;
+using CAPSquadron_Shared.Services.FileHandling;
+using CAPSquadron_Shared.Services.Flight;
+using CAPSquadron_Shared.Services.MemberAttribute;
+using CAPSquadron_Shared.Services.QualityCadetUnit;
 
 var builder = WebApplication.CreateBuilder(args);
 

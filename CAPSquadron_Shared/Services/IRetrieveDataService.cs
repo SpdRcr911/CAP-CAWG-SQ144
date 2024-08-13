@@ -1,4 +1,4 @@
-﻿namespace CAPSquadron_WebServer.Services;
+﻿namespace CAPSquadron_Shared.Services;
 
 public interface IRetrieveDataService<T> where T : class
 {
