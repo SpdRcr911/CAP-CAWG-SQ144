@@ -1,4 +1,4 @@
-﻿namespace CAPSquadron_WebServer.Services.Attendance;
+﻿namespace CAPSquadron_Shared.Services.Attendance;
 
 public class AttendanceSignInService(ApiClient apiClient) : IAttendanceSignInService
 {

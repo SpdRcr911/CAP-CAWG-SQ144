@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
 
-namespace CAPSquadron_WebServer.Services.FileHandling;
+namespace CAPSquadron_Shared.Services.FileHandling;
 
 public class FileUploadService : IFileUploadService
 {

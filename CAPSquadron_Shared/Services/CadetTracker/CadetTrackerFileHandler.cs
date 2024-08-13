@@ -1,7 +1,7 @@
-﻿using CAPSquadron_WebServer.Services.FileHandling;
+﻿using CAPSquadron_Shared.Services.FileHandling;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace CAPSquadron_WebServer.Services.Attendance;
+namespace CAPSquadron_Shared.Services.Attendance;
 
 public class CadetTrackerFileHandler(ApiClient apiClient) : IFileHandler
 {

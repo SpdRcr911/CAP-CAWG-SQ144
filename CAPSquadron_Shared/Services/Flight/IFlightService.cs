@@ -1,4 +1,4 @@
-﻿namespace CAPSquadron_WebServer.Services.Flight;
+﻿namespace CAPSquadron_Shared.Services.Flight;
 
 public interface IFlightService
 {

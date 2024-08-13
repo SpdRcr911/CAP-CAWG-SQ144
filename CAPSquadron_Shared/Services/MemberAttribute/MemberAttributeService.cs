@@ -1,5 +1,5 @@
 ﻿
-namespace CAPSquadron_WebServer.Services.MemberAttribute
+namespace CAPSquadron_Shared.Services.MemberAttribute
 {
     public class MemberAttributeService(ApiClient apiClient) : IMemberAttributeService
     {

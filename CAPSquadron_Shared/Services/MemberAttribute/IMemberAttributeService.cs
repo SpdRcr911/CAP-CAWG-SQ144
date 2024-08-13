@@ -1,4 +1,4 @@
-﻿namespace CAPSquadron_WebServer.Services.MemberAttribute;
+﻿namespace CAPSquadron_Shared.Services.MemberAttribute;
 
 public interface IMemberAttributeService
 {

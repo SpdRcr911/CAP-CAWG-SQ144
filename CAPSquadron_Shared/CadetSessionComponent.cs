@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace CAPSquadron_Shared;
 
-public class CadetSessionComponent : ComponentBase
+public abstract class CadetSessionComponentBase : ComponentBase
 {
     [Inject] protected IJSRuntime? JSRuntime { get; set; }
     [Inject] protected NavigationManager? NavigationManager { get; set; }
@@ -13,11 +13,13 @@ public class CadetSessionComponent : ComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
+
         if (firstRender && _firstRender)
         {
             _firstRender = false;
 
-            // Perform JavaScript interop after the component has been rendered
+            // Retrieve CAPID from session storage
             capid = await JSRuntime!.InvokeAsync<string>("getSessionStorage", "CAPID");
 
             if (string.IsNullOrEmpty(capid))
@@ -26,8 +28,12 @@ public class CadetSessionComponent : ComponentBase
             }
             else
             {
-                StateHasChanged(); // Ensure the UI is updated if capid is found
+                await OnCapidRetrievedAsync();
+                StateHasChanged(); // Refresh UI with loaded data
             }
         }
     }
+
+    // Abstract method to be implemented by derived components
+    protected abstract Task OnCapidRetrievedAsync();
 }

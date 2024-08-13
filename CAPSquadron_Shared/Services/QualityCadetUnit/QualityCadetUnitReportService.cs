@@ -1,5 +1,5 @@
 ﻿
-namespace CAPSquadron_WebServer.Services.QualityCadetUnit
+namespace CAPSquadron_Shared.Services.QualityCadetUnit
 {
     public class QualityCadetUnitReportService(ApiClient apiClient) : IQualityCadetUnitReportService
     {
