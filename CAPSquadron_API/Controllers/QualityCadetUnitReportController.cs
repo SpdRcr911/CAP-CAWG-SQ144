@@ -25,12 +25,13 @@ public class QualityCadetUnitReportController : ControllerBase
 
     [HttpGet("{id}", Name = nameof(GetQCUReportById))]
     [ProducesResponseType<QualityCadetUnitReport>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<QualityCadetUnitReport>> GetQCUReportById(int id, CancellationToken cancellationToken)
     {
         var report = await _service.GetQCUReportByIdAsync(id, cancellationToken);
         if (report == null)
         {
-            return NotFound();
+            return NotFound(new ProblemDetails() { Detail = $"No QCU Report with id {id} found." });
         }
         return Ok(report);
     }

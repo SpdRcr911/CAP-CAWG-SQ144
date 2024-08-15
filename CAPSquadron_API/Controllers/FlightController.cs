@@ -37,6 +37,7 @@ public class FlightController : ControllerBase
     [HttpGet("{id}", Name = nameof(GetFlight))]
     [ProducesResponseType<FlightDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetFlight(int id)
     {
         try
@@ -46,7 +47,7 @@ public class FlightController : ControllerBase
         }
         catch (NotFoundException nfex)
         {
-            return NotFound(new { message = nfex.Message });
+            return NotFound(new ProblemDetails() { Detail = nfex.Message });
         }
     }
 
@@ -60,6 +61,7 @@ public class FlightController : ControllerBase
 
     [HttpPut("{id}", Name = nameof(UpdateFlight))]
     [ProducesResponseType<FlightDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateFlight(int id, FlightDto flightDto)
     {
         try
@@ -73,12 +75,13 @@ public class FlightController : ControllerBase
         }
         catch (NotFoundException nfex)
         {
-            return NotFound(new { message = nfex.Message });
+            return NotFound(new ProblemDetails() { Detail = nfex.Message });
         }
     }
 
     [HttpDelete("{id}", Name = nameof(DeleteFlight))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteFlight(int id)
     {
         try
@@ -88,7 +91,7 @@ public class FlightController : ControllerBase
         }
         catch (NotFoundException nfex)
         {
-            return NotFound(new { message = nfex.Message });
+            return NotFound(new ProblemDetails() { Detail = nfex.Message });
         }
     }
 
