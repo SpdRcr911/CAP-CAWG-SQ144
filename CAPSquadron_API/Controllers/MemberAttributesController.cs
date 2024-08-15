@@ -29,7 +29,7 @@ public class MemberAttributesController(IMemberAttributesService memberAttribute
         var result = await memberAttributesService.GetMemberAttributesByCapidAsync(capid, cancellationToken);
 
         if (result is null)
-            return NotFound($"Member attributes not found for capid: {capid}");
+            return NotFound(new ProblemDetails() { Detail = $"Member attributes not found for capid: {capid}" });
 
         return Ok(result);
     }

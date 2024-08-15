@@ -29,7 +29,7 @@ public class MemberController(ICsvParsingService csvParsingService, IMembershipS
         }
         catch (NotFoundException)
         {
-            return NotFound(new ProblemDetails() { Detail = "Member not found" });
+            return NotFound(new ProblemDetails() { Detail = $"Member witn capid {capid} not found" });
         }
     }
 
