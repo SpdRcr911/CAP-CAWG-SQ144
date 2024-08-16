@@ -11,4 +11,8 @@ public class MeetingService (ApiClient apiClient) : IMeetingService
         return ["Drill Test", "Review Board", "Milestone Test", "SDA", "Presentation"];
 
     }
+    public async Task RecordCallDownAsync(CallDownResponse callDownResponse)
+    {
+        await apiClient.CallDownReesponseAsync(callDownResponse);
+    }
 }
