@@ -1,0 +1,55 @@
+﻿@page "/cadet-report"
+
+@using CAPSquadron_Shared.Services
+@using CAPSquadron_Shared.Services.Flight
+@using CAPSquadron_Shared.Services.CadetTracker
+@using CAPSquadron_Shared.Services.Attendance
+@using CAPSquadron_Shared.Services.MemberAttribute
+
+@inherits CadetSessionComponentBase
+
+@inject ICadetTrackerService CadetTrackerService
+@inject IRetrieveDataService<Member> MemberService
+@inject IMemberAttributeService MemberAttributeService
+@inject IAttendanceService AttendanceService
+
+<h3>Cadet Information</h3>
+
+@if (string.IsNullOrEmpty(capid))
+{
+    <p>No CAPID found. Please log in.</p>
+}
+else if (cadet == null)
+{
+    <p>Loading your information...</p>
+}
+else
+{
+    <div class="container">
+        @if (cadetTrackers is not null)
+        {
+            List<MemberAttributesDto?> mAttArr = [];
+            if (memberAttribute is not null)
+                mAttArr.Add(memberAttribute);
+            <CadetTrackerComponent CadetTrackers="new [] { cadetTrackers }" MemberAttributes="mAttArr"></CadetTrackerComponent>
+        }
+    </div>
+}
+
+@code
+{
+    private Member? cadet;
+    private MemberAttributesDto? memberAttribute;
+    private PersonalCadetTrackerDto? cadetTrackers;
+
+    protected override async Task OnCapidRetrievedAsync()
+    {
+        if (!string.IsNullOrEmpty(capid))
+        {
+            var capId = Convert.ToInt32(capid);
+            cadet = await MemberService.GetAsync(capId);
+            cadetTrackers = await CadetTrackerService.GetCadetTrackerByCapidAsync(capId);
+            memberAttribute = await MemberAttributeService.GetMemberAttributesByCapIdAsync(capId);
+        }
+    }
+}
