@@ -1,12 +1,13 @@
 using CAPSquadron_Shared.Services;
 using Microsoft.AspNetCore.Components;
 
-namespace CAPSquadron_WebServer.Components;
+namespace CAPSquadron_RazorSharedLibrary;
 
 public partial class MemberAttributesComponent
 {
     [Parameter]
     public MemberAttributesDto? Attributes { get; set; }
+    private int currentBadge = 0;
 
     private List<KeyValuePair<string, bool>> GetAttributesList()
     {
@@ -25,6 +26,10 @@ public partial class MemberAttributesComponent
 
     private string GetBadgeClass(bool attributeValue)
     {
-        return attributeValue ? "text-bg-success" : "text-bg-danger";
+        return attributeValue ? "bg-success" : "bg-danger";
+    }
+    private string GetBadgeMargin()
+    {
+        return currentBadge++ % 2 == 0 ? "mx-0" : "mx-1";
     }
 }

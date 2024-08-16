@@ -1,0 +1,8 @@
+﻿@if (Attributes != null)
+{
+    
+    @foreach (var attribute in GetAttributesList())
+    {
+        <div class="badge px-2 @GetBadgeMargin() fw-light font-monospace @GetBadgeClass(attribute.Value)">@(attribute.Key)</div>
+    }
+}
