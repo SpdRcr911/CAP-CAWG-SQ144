@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CAPSquadron_RazorSharedLibrary\CAPSquadron_RazorSharedLibrary.csproj" />
     <ProjectReference Include="..\CAPSquadron_Shared\CAPSquadron_Shared.csproj" />
   </ItemGroup>
 
