@@ -1,6 +1,7 @@
 ﻿using CAPSquadron_API.Exceptions;
 using CAPSquadron_API.Models;
 using CAPSquadron_API.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -46,20 +47,27 @@ public class MeetingController(IMeetingService meetingService) : ControllerBase
     /// <summary>
     /// Get call downs by date
     /// </summary>
-    /// <param name="meetingDate">Date only in the formate of YYYY-MM-DD</param>
+    /// <param name="meetingDate">Date only in the format of YYYY-MM-DD</param>I have 
     /// <returns></returns>
     [HttpGet("call-down", Name = nameof(GetCallDowns))]
-    [ProducesResponseType<CallDownResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<IEnumerable<CallDownResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetCallDowns(DateOnly meetingDate)
+    public async Task<IActionResult> GetCallDowns([FromQuery] DateOnly meetingDate)
     {
+        if (meetingDate == default)
+        {
+            return BadRequest(new ProblemDetails() { Detail = "Invalid date format." });
+        }
+
         var callDownResponses = await meetingService.GetCallDownResponsesAsync(meetingDate);
         if (callDownResponses is null || !callDownResponses.Any())
         {
-            return NotFound(new ProblemDetails() { Detail = $"Call downs not found for date {meetingDate}." });
+            return NotFound(new ProblemDetails() { Detail = $"Call downs not found for date {meetingDate:yyyy-MM-dd}." });
         }
+
         return Ok(callDownResponses);
     }
+
 
     /// <summary>
     /// Get call downs by date
@@ -86,4 +94,17 @@ public class MeetingController(IMeetingService meetingService) : ControllerBase
 
         }
     }
+
+    [HttpGet("call-down/dates", Name = nameof(GetCallDownDates))]
+    [ProducesResponseType<IEnumerable<DateOnly>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCallDownDates()
+    {
+        var callDownDates = await meetingService.GetCallDownDatesAsync();
+        if (callDownDates is null && !callDownDates!.Any())
+            return NotFound(new ProblemDetails() { Detail = "No call down dates found" });
+        return Ok(callDownDates);
+    }
+
+
 }

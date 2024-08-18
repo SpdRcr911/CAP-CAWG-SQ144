@@ -12,6 +12,7 @@ public interface IMeetingService
     Task<CallDownResponse> GetCallDownResponseByIdAsync(int id);
     Task<MeetingInfoDto> GetNextMeetingInfoAsync();
     Task<CallDownResponse> RecordCallDown(CallDownResponse response);
+    Task<IEnumerable<DateOnly>> GetCallDownDatesAsync();
 }
 public class MeetingService(AppDbContext appContext) : IMeetingService
 {
@@ -35,6 +36,12 @@ public class MeetingService(AppDbContext appContext) : IMeetingService
         await appContext.SaveChangesAsync();
 
         return createdCallDown.Entity;
+    }
+
+    public async Task<IEnumerable<DateOnly>> GetCallDownDatesAsync()
+    {
+        var calldowndates = await appContext.CallDownResponses.Select(d=> d.MeetingDate).Distinct().OrderByDescending(d=>d).ToListAsync();
+        return calldowndates;
     }
 }
 
