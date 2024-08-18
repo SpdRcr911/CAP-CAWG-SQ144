@@ -1,3 +1,4 @@
+using CAPSquadron_Shared.Models;
 using CAPSquadron_Shared.Services;
 
 namespace CAPSquadron_WebServer.Pages
@@ -53,14 +54,6 @@ namespace CAPSquadron_WebServer.Pages
         private void NavigateToUpdateFlight(int flightId)
         {
             Navigation.NavigateTo($"/update-flight/{flightId}");
-        }
-
-        private class FlightMembership
-        {
-            public int FlightId { get; set; }
-            public Member? FlightCommander { get; set; }
-            public List<Member> FlightSergeants { get; set; } = new();
-            public List<Member> Members { get; set; } = new();
         }
     }
 }

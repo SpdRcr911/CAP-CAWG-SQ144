@@ -3,6 +3,7 @@ using CAPSquadron_Shared.Services.Attendance;
 using CAPSquadron_Shared.Services.CadetTracker;
 using CAPSquadron_Shared.Services.FileHandling;
 using CAPSquadron_Shared.Services.Flight;
+using CAPSquadron_Shared.Services.Meeting;
 using CAPSquadron_Shared.Services.MemberAttribute;
 using CAPSquadron_Shared.Services.QualityCadetUnit;
 
@@ -19,6 +20,7 @@ builder.Services.AddScoped<IMemberAttributeService, MemberAttributeService>();
 builder.Services.AddScoped<IMemberServcie, MemberService>();
 builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<IMeetingService, MeetingService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
