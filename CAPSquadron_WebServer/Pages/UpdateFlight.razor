@@ -69,13 +69,17 @@ else
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addCadetLabel">Add Cadet to @flight.Name</h1>
+                    <h1 class="modal-title fs-5" id="addCadetLabel">Add Cadets to @flight.Name</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     @if (unassignedCadet is null)
                     {
                         <p><em>Loading...</em></p>
+                    }
+                    else if (unassignedCadet.Count == 0)
+                    {
+                        <p><em>All cadets are assigned to a flight.</em></p>
                     }
                     else
                     {

@@ -6,9 +6,9 @@
 
 @inherits CadetSessionComponentBase
 
-@inject IRetrieveDataService<Member> MemberService;
-@inject ICadetTrackerService CadetTrackerService;
-@inject IMeetingService meetingService;
+@inject IRetrieveDataService<Member> MemberService
+@inject ICadetTrackerService CadetTrackerService
+@inject IMeetingService meetingService
 
 @if (string.IsNullOrEmpty(capid))
 {
@@ -31,11 +31,11 @@ else
                             <span class="fw-bold">Uniform of the Day:</span> <span>@meetingInfo.Uod</span>
                             <br />
                             <span class="fw-bold">Notes:</span> <span>@meetingInfo.Notes</span>
-                            <hr/>
+                            <hr />
                             <EditForm Model="formModel" OnValidSubmit="HandleValidSubmit">
                                 <DataAnnotationsValidator />
                                 <ValidationSummary />
-                                
+
                                 <div class="fs-5 mb-3">
                                     @cadet.Rank @cadet.FullName
                                 </div>

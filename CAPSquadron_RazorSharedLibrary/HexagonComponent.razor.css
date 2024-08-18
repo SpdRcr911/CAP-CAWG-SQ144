@@ -1,0 +1,15 @@
+﻿/* Hex Component */
+.hexagon {
+    width: 100px;
+    height: 100px;
+}
+
+.hexagon-segment {
+    fill: #ccc;
+    stroke: #fff;
+    stroke-width: 1;
+}
+
+    .hexagon-segment.completed {
+        fill: #1b6ec2;
+    }

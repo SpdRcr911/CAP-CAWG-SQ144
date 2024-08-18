@@ -1,0 +1,37 @@
+﻿/* File Uploader */
+.file-upload-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+    border-bottom: 1px solid #dee2e6;
+    width: 100%;
+}
+
+.icon-link {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+    .icon-link:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+.file-upload-container div {
+    margin-top: 20px;
+}
+
+button[disabled] {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button.btn-secondary {
+    margin-left: 10px;
+}

@@ -57,7 +57,7 @@
         {
             // Store CAPID in session storage
             await JSRuntime.InvokeVoidAsync("setSessionStorage", "CAPID", cadet.CAPID);
-            NavigationManager.NavigateTo("/cadet-info");
+            NavigationManager.NavigateTo("/cadet-report");
         }
         else
         {

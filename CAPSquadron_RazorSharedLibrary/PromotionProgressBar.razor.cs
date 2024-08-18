@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace CAPSquadron_WebServer.Components;
+namespace CAPSquadron_RazorSharedLibrary;
 
 public partial class PromotionProgressBar
 {

@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using CAPSquadron_Shared.Services;
-using CAPSquadron_Shared.Services.Attendance;
 
-namespace CAPSquadron_WebServer.Components;
+namespace CAPSquadron_RazorSharedLibrary;
 
 public partial class CadetTrackerComponent
 {

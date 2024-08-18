@@ -1,6 +1,4 @@
-﻿@using System.Collections.Generic
-@using System.Linq
-@using CAPSquadron_Shared.Services.Attendance
+﻿@using CAPSquadron_Shared.Services.Attendance
 
 @inject IAttendanceService attendanceService
 
@@ -9,11 +7,14 @@
         <div class="col fs-3">Attendance</div>
     </div>
     <div class="row">
-        <div class="col-2 border-bottom">Joined: <span class="fw-bold">@JoinDate!.Value.ToString("dd MMM yy")</span></div>
-        <div class="col-8 border-bottom"></div>
-        <div class="col-2 border-bottom text-end">Participation: <span class="fw-bold">@(Math.Round(OverallPercentage))%</span></div>
-
+        <div class="col-6 border-bottom">
+            Joined: <span class="fw-bold">@JoinDate!.Value.ToString("MMM yy")</span>
+        </div>
+        <div class="col-6 border-bottom text-end">
+            Participation: <span class="fw-bold">@(Math.Round(OverallPercentage))%</span>
+        </div>
     </div>
+
     @if (GroupedByMonth is not null)
     {
         @foreach (var group in GroupedByMonth)

@@ -1,5 +1,6 @@
 ﻿using CAPSquadron_API.Controllers;
 using CAPSquadron_API.Data;
+using CAPSquadron_API.Exceptions;
 using CAPSquadron_API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,15 +8,20 @@ namespace CAPSquadron_API.Services;
 
 public interface IMeetingService
 {
-    Task<IEnumerable<CallDownResponse>> GetCallDownResponses(DateOnly meetingDate);
+    Task<IEnumerable<CallDownResponse>> GetCallDownResponsesAsync(DateOnly meetingDate);
+    Task<CallDownResponse> GetCallDownResponseByIdAsync(int id);
     Task<MeetingInfoDto> GetNextMeetingInfoAsync();
-    Task RecordCallDown(CallDownResponse response);
+    Task<CallDownResponse> RecordCallDown(CallDownResponse response);
 }
 public class MeetingService(AppDbContext appContext) : IMeetingService
 {
-    public async Task<IEnumerable<CallDownResponse>> GetCallDownResponses(DateOnly meetingDate)
+    public async Task<IEnumerable<CallDownResponse>> GetCallDownResponsesAsync(DateOnly meetingDate)
     {
         return await appContext.CallDownResponses.Where(c => c.MeetingDate == meetingDate).ToListAsync();
+    }
+    public async Task<CallDownResponse> GetCallDownResponseByIdAsync(int id)
+    {
+        return await appContext.CallDownResponses.FirstOrDefaultAsync(c =>c.Id == id) ?? throw new NotFoundException($"Call Down Response not found for id {id}.");
     }
 
     public async Task<MeetingInfoDto> GetNextMeetingInfoAsync()
@@ -23,10 +29,12 @@ public class MeetingService(AppDbContext appContext) : IMeetingService
         return await Task.FromResult(MeetingDefaults.GetUpcommingMeeting());
     }
 
-    public async Task RecordCallDown(CallDownResponse response)
+    public async Task<CallDownResponse> RecordCallDown(CallDownResponse response)
     {
-        await appContext.CallDownResponses.AddAsync(response);
+        var createdCallDown = await appContext.CallDownResponses.AddAsync(response);
         await appContext.SaveChangesAsync();
+
+        return createdCallDown.Entity;
     }
 }
 
