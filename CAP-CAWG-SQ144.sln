@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAPSquadron_Cadet", "CAPSqu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAPSquadron_Shared", "CAPSquadron_Shared\CAPSquadron_Shared.csproj", "{7749BA37-4F57-465C-B9A4-04CAD01181FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAPSquadron_RazorSharedLibrary", "CAPSquadron_RazorSharedLibrary\CAPSquadron_RazorSharedLibrary.csproj", "{B2A53A2B-2703-4480-92CA-B076A197123F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAPSquadron_RazorSharedLibrary", "CAPSquadron_RazorSharedLibrary\CAPSquadron_RazorSharedLibrary.csproj", "{B2A53A2B-2703-4480-92CA-B076A197123F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
