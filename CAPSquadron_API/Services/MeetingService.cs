@@ -8,34 +8,55 @@ namespace CAPSquadron_API.Services;
 
 public interface IMeetingService
 {
-    Task<IEnumerable<CallDownResponse>> GetCallDownResponsesAsync(DateOnly meetingDate);
+    Task<IEnumerable<CallDownResponse>> GetCallDownResponsesAsync(DateOnly meetingDate, int? capId);
     Task<CallDownResponse> GetCallDownResponseByIdAsync(int id);
-    Task<MeetingInfoDto> GetNextMeetingInfoAsync();
+    Task<MeetingInfoDto> GetNextMeetingInfoAsync(DateOnly? meetingDate);
     Task<CallDownResponse> RecordCallDown(CallDownResponse response);
     Task<IEnumerable<DateOnly>> GetCallDownDatesAsync();
 }
 public class MeetingService(AppDbContext appContext) : IMeetingService
 {
-    public async Task<IEnumerable<CallDownResponse>> GetCallDownResponsesAsync(DateOnly meetingDate)
+    public async Task<IEnumerable<CallDownResponse>> GetCallDownResponsesAsync(DateOnly meetingDate, int? capId)
     {
-        return await appContext.CallDownResponses.Where(c => c.MeetingDate == meetingDate).ToListAsync();
+        var query = appContext.CallDownResponses.Where(c => c.MeetingDate == meetingDate);
+        if (capId.HasValue)
+        {
+            query = query.Where(c=> c.CapId == capId);
+        }
+
+        return await query.ToListAsync();
     }
     public async Task<CallDownResponse> GetCallDownResponseByIdAsync(int id)
     {
         return await appContext.CallDownResponses.FirstOrDefaultAsync(c =>c.Id == id) ?? throw new NotFoundException($"Call Down Response not found for id {id}.");
     }
 
-    public async Task<MeetingInfoDto> GetNextMeetingInfoAsync()
+    public async Task<MeetingInfoDto> GetNextMeetingInfoAsync(DateOnly? meetingDate = null)
     {
-        return await Task.FromResult(MeetingDefaults.GetUpcommingMeeting());
+        return await Task.FromResult(MeetingDefaults.GetUpcommingMeeting(meetingDate?.ToDateTime(new TimeOnly())));
     }
 
     public async Task<CallDownResponse> RecordCallDown(CallDownResponse response)
     {
-        var createdCallDown = await appContext.CallDownResponses.AddAsync(response);
-        await appContext.SaveChangesAsync();
+        var current = await appContext.CallDownResponses.FirstOrDefaultAsync(cd => cd.CapId == response.CapId && cd.MeetingDate == response.MeetingDate);
+        if (current != null)
+        {
+            current.Attending = response.Attending;
+            current.Requests = response.Requests;
+            current.Comments = response.Comments;
+            current.Reason = response.Reason;
 
-        return createdCallDown.Entity;
+            await appContext.SaveChangesAsync();
+
+            return current;
+        }
+        else
+        {
+            var createdCallDown = await appContext.CallDownResponses.AddAsync(response);
+            await appContext.SaveChangesAsync();
+
+            return createdCallDown.Entity;
+        }
     }
 
     public async Task<IEnumerable<DateOnly>> GetCallDownDatesAsync()
@@ -47,9 +68,9 @@ public class MeetingService(AppDbContext appContext) : IMeetingService
 
 public class MeetingDefaults
 {
-    public static MeetingInfoDto GetUpcommingMeeting()
+    public static MeetingInfoDto GetUpcommingMeeting(DateTime? meetinDate = null)
     {
-        var today = DateTime.Today;
+        var today = meetinDate ?? DateTime.Today;
         var nextTuesday = GetNextTuesday(today);
         var tuesdayOfTheMonth = GetTuesdayOfMonth(nextTuesday);
 
@@ -67,13 +88,13 @@ public class MeetingDefaults
     private static DateTime GetNextTuesday(DateTime fromDate)
     {
         int daysUntilTuesday = ((int)DayOfWeek.Tuesday - (int)fromDate.DayOfWeek + 7) % 7;
-        return fromDate.AddDays(daysUntilTuesday == 0 ? 7 : daysUntilTuesday);
+        return fromDate.AddDays(daysUntilTuesday);
     }
 
     private static int GetTuesdayOfMonth(DateTime date)
     {
         // Get the first day of the month
-        DateTime firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+        DateTime firstDayOfMonth = new(date.Year, date.Month, 1);
 
         // Find the first Tuesday of the month
         DateTime firstTuesday = GetNextTuesday(firstDayOfMonth.AddDays(-1));

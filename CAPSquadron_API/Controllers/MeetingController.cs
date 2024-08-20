@@ -18,11 +18,9 @@ public class MeetingController(IMeetingService meetingService) : ControllerBase
     /// <returns>Meeting informtaion</returns>
     [HttpGet("next-meeting", Name = nameof(NextMeetingInfo))]
     [ProducesResponseType<MeetingInfoDto>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> NextMeetingInfo()
+    public async Task<IActionResult> NextMeetingInfo([FromQuery] DateOnly? meetingDate)
     {
-        //var flights = await _Service.GetFlightsAsync();
-
-        var meeting = await meetingService.GetNextMeetingInfoAsync();
+        var meeting = await meetingService.GetNextMeetingInfoAsync(meetingDate);
         return Ok(meeting);
     }
 
@@ -47,19 +45,20 @@ public class MeetingController(IMeetingService meetingService) : ControllerBase
     /// <summary>
     /// Get call downs by date
     /// </summary>
-    /// <param name="meetingDate">Date only in the format of YYYY-MM-DD</param>I have 
+    /// <param name="meetingDate">Date only in the format of YYYY-MM-DD</param>
+    /// <param name="capId">Cadet's CAPID</param>
     /// <returns></returns>
     [HttpGet("call-down", Name = nameof(GetCallDowns))]
     [ProducesResponseType<IEnumerable<CallDownResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCallDowns([FromQuery] DateOnly meetingDate)
+    public async Task<IActionResult> GetCallDowns([FromQuery] DateOnly meetingDate, [FromQuery] int? capId = null)
     {
         if (meetingDate == default)
         {
             return BadRequest(new ProblemDetails() { Detail = "Invalid date format." });
         }
 
-        var callDownResponses = await meetingService.GetCallDownResponsesAsync(meetingDate);
+        var callDownResponses = await meetingService.GetCallDownResponsesAsync(meetingDate, capId);
         if (callDownResponses is null || !callDownResponses.Any())
         {
             return NotFound(new ProblemDetails() { Detail = $"Call downs not found for date {meetingDate:yyyy-MM-dd}." });
