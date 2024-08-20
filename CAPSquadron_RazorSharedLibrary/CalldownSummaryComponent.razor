@@ -1,0 +1,39 @@
+﻿@using CAPSquadron_Shared.Services
+@using CAPSquadron_Shared.Services.Flight
+@using CAPSquadron_Shared.Services.Meeting
+
+@inject IMeetingService meetingService
+@inject IFlightService FlightService
+@inject IRetrieveDataService<Member> MemberService
+
+<h3>Summary</h3>
+@if (CallDownResponses is not null)
+{
+    <div>
+        <span class="fw-bold">YES:</span> @counts.yesCount
+        <span class="fw-bold">NO:</span> @counts.noCount
+        <span class="fw-bold">NO RESPONSE:</span> @counts.nrCount
+    </div>
+    <ul>
+        @foreach (var requestGroup in CallDownResponses
+       .Where(cr => cr.Attending == true && cr.Requests.Any())
+       .SelectMany(cr => cr.Requests.Select(request => new { cr.CapId, Request = request }))
+       .GroupBy(item => item.Request)
+       .OrderBy(group => group.Key))
+        {
+            <li>
+                <strong>@requestGroup.Key</strong>
+                <ul>
+                    @foreach (var item in requestGroup)
+                    {
+                        var mem = MembersWithRequests?.FirstOrDefault(m => m.Capid == item.CapId);
+
+                        <li>@mem?.Rank @mem?.FullName</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+}
+
+

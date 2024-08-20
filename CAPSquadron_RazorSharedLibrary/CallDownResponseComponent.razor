@@ -1,0 +1,68 @@
+﻿@using CAPSquadron_Shared.Models
+@using CAPSquadron_Shared.Services
+@using CAPSquadron_Shared.Services.CadetTracker
+@using CAPSquadron_Shared.Services.Meeting
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+@inject IRetrieveDataService<Member> MemberService
+@inject ICadetTrackerService CadetTrackerService
+@inject IMeetingService meetingService
+
+@if (cadet is not null && meetingInfo is not null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@meetingInfo.Title - @meetingInfo.Topic</h5>
+            <div class="card-text">
+                <div><span class="fw-bold">Uniform of the Day:</span> <span>@meetingInfo.Uod</span></div>
+                @if (!string.IsNullOrEmpty(meetingInfo.Notes))
+                {
+                    <div><span class="fw-bold">Notes:</span> <span>@meetingInfo.Notes</span></div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="fs-5 mb-3">@cadet.Rank @cadet.FullName</div>
+
+    <div class="mb-3">Will you be attending?</div>
+
+    <EditForm Model="formModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label class="form-check-label">
+                <InputCheckbox class="form-check-input" @bind-Value="formModel.Attending" /> Yes, I plan to attend this Tuesday's meeting.
+            </label>
+        </div>
+        @if (!formModel.Attending)
+        {
+            <div class="mb-3">
+                <label for="reason form-check-label">If no, please specify why</label>
+                <InputTextArea id="reason" class="form-control" @bind-Value="formModel.Reason" />
+            </div>
+        }
+        else
+        {
+            <div class="mb-3">
+                <label class="form-check-label">@personalCadetTracker.AchievementName Requests</label><br />
+                @foreach (var request in availableRequests!)
+                {
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <InputCheckbox class="form-check-input" @bind-Value="request.IsSelected" />
+                            @request.Name
+                        </label>
+                    </div>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label for="comments">Comments</label>
+                <InputTextArea id="comments" class="form-control" @bind-Value="formModel.Comments" />
+            </div>
+        }
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}

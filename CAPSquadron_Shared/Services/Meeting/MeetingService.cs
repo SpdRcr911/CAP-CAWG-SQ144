@@ -4,9 +4,9 @@ namespace CAPSquadron_Shared.Services.Meeting;
 
 public class MeetingService (ApiClient apiClient) : IMeetingService
 {
-    public async Task<MeetingInfoDto> GetNextMeeting()
+    public async Task<MeetingInfoDto> GetNextMeeting(DateOnly? meetingDate = null)
     {
-        return await apiClient.NextMeetingInfoAsync();
+        return await apiClient.NextMeetingInfoAsync(meetingDate);
     }
     public IEnumerable<string> GetAvailableRequestsForCadet(PersonalCadetTrackerDto personalCadetTracker)
     {
@@ -26,9 +26,9 @@ public class MeetingService (ApiClient apiClient) : IMeetingService
     {
         return await apiClient.GetCallDownDatesAsync();
     }
-    public async Task<IEnumerable<CallDownResponse>> GetCallDownsAsync(DateOnly meetingDate)
+    public async Task<IEnumerable<CallDownResponse>> GetCallDownsAsync(DateOnly meetingDate, int? capId = null)
     {
-        return await apiClient.GetCallDownsAsync(meetingDate);
+        return await apiClient.GetCallDownsAsync(meetingDate, capId);
 
     }
 }

@@ -4,16 +4,18 @@
 @using CAPSquadron_Shared.Services.Flight
 @using CAPSquadron_Shared.Services.Meeting
 @using CAPSquadron_Shared.Services.MemberAttribute
+@using Microsoft.JSInterop;
 
 @inject IMeetingService meetingService
 @inject IFlightService FlightService
 @inject IRetrieveDataService<Member> MemberService
 @inject IMemberAttributeService MemberAttributeService
+@inject IJSRuntime JS
 
 <div class="container">
     <div class="row">
         <div class="col">
-            <h3>CallDown</h3>
+            <h3>Call Down Responses for @SelectedCallDownDate?.ToString("dd MMM yyyy")</h3>
         </div>
     </div>
 
@@ -33,136 +35,112 @@
         </div>
     }
 
-    @if (selectedCallDownDate.HasValue && flightMemberships.Any())
+    @if (SelectedCallDownDate.HasValue && flightMemberships.Any())
     {
-        @foreach (var flight in flights)
-        {
-            var flightMembership = flightMemberships.FirstOrDefault(fm => fm.FlightId == flight.Id);
-            if (flightMembership != null)
-            {
-                <div class="row">
-                    <div class="col">
-                        <div class="fs-3">@flight.Name</div>
-                        @foreach (var category in attendanceCategory)
-                        {
-                            var categoryStyle = category.HasValue
-                            ? (category.Value ? "list-group-item-success" : "list-group-item-danger")
-                            : "list-group-item-warning";
-                            <div class="fs-4">@(category.HasValue ? (category.Value ? "Yes" : "No") : "No Response")</div>
-                            <ul class="list-group list-group-flush">
-                                @foreach (var member in flightMembership.Members)
+        <div class="row mb-3">
+            <div class="col-8">
+                @foreach (var flight in flights)
+                {
+                    var flightMembership = flightMemberships.FirstOrDefault(fm => fm.FlightId == flight.Id);
+                    if (flightMembership != null)
+                    {
+                        <div class="card my-3">
+                            <h4 class="card-title mx-2 mx-3">@flight.Name</h4>
+                            <div class="card-body">
+                                @foreach (var category in attendanceCategory)
                                 {
-                                    var callDown = flightMembership.CallDown.FirstOrDefault(cd => cd.CapId == member.Capid);
-                                    var attending = callDown.Attending;
-                                    if (attending == category)
-                                    {
-                                        <li class="list-group-item @categoryStyle">
-                                            <div>@member.Capid - @member.Rank @member.FullName</div>
-                                            @if (!string.IsNullOrEmpty(callDown.Comments))
+                                    var categoryStyle = category.HasValue
+                                    ? (category.Value ? "list-group-item-success" : "list-group-item-danger")
+                                    : "list-group-item-warning";
+                                    <div class="fs-4 text-center">@(category.HasValue ? (category.Value ? "Yes" : "No") : "No Response")</div>
+                                    <ul class="list-group list-group-flush">
+                                        @if (!flightMembership.CallDown.Any(m => m.Attending == category))
+                                        {
+                                            <li class="list-group-item list-group-item-secondary">&nbsp;</li>
+                                        }
+                                        @foreach (var member in flightMembership.Members.OrderBy(m => m.FullName))
+                                        {
+                                            var callDown = flightMembership.CallDown.FirstOrDefault(cd => cd.CapId == member.Capid);
+                                            var attending = callDown?.Attending;
+                                            if (attending == category)
                                             {
-                                                <div><span class="fw-bold">Comment:</span> @callDown.Comments</div>
+                                                <li class="list-group-item @categoryStyle">
+                                                    <a class="link-offset-2 link-underline link-underline-opacity-0 text-body" href="#" data-bs-toggle="modal" data-bs-target="#updateCallDown" @onclick="() => ShowModal(member, callDown)">@member.Capid - @member.Rank @member.FullName</a>
+                                                    @if (callDown != null)
+                                                    {
+                                                        @if (!string.IsNullOrEmpty(callDown.Comments))
+                                                        {
+                                                            <div><span class="fw-bold">Comment:</span> @callDown.Comments</div>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(callDown.Reason))
+                                                        {
+                                                            <div><span class="fw-bold">Reason:</span> @callDown.Reason</div>
+                                                        }
+                                                        @if (callDown.Requests.Any())
+                                                        {
+                                                            <div class="fw-bold">Requests:</div>
+                                                            <ul>
+                                                                @foreach (var request in callDown.Requests)
+                                                                {
+                                                                    <li>@request</li>
+                                                                }
+                                                            </ul>
+                                                        }
+                                                    }
+                                                </li>
                                             }
-                                            @if (!string.IsNullOrEmpty(callDown.Reason))
-                                            {
-                                                <div><span class="fw-bold">Reason:</span> @callDown.Reason</div>
-                                            }
-                                            @if (callDown.Requests.Any())
-                                            {
-                                                <div class="fw-bold">Requests:</div>
-                                                <ul>
-                                                @foreach (var request in callDown.Requests)
-                                                {
-                                                    <li>@request</li>
-                                                }
-                                                </ul>
-                                            }
-                                        </li>
-                                    }
+                                        }
+                                    </ul>
                                 }
-                            </ul>
-                        }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="col">
+                <div class="card my-3">
+                    <div class="card-body">
+                        <CalldownSummaryComponent MeetingDate="SelectedCallDownDate.Value" />
                     </div>
                 </div>
-            }
-        }
+            </div>
+
+        </div>
+
     }
 </div>
 
-@code {
-    private IEnumerable<DateOnly> callDownDates = Enumerable.Empty<DateOnly>();
-    private DateOnly? selectedCallDownDate { get; set; } = null;
-    private IEnumerable<FlightDto> flights = Enumerable.Empty<FlightDto>();
-    private List<FlightMembership> flightMemberships = new List<FlightMembership>();
-    private IEnumerable<bool?> attendanceCategory = new[] { true, false, (bool?)null };
+<div class="modal fade" id="updateCallDown" tabindex="-1" aria-labelledby="updateCallDownLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="updateCallDown">Call Down Response</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (selectedCadet is not null && cadetsCallDownResponse != null)
+                {
+                    <CallDownResponseComponent cadet="selectedCadet" callDownResponse="cadetsCallDownResponse" OnCallDownUpdated="HandleCallDownUpdated" />
+                }
+                else
+                {
+                    <p>No data available for this cadet.</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    protected override async Task OnInitializedAsync()
-    {
-        callDownDates = await meetingService.GetCallDownDatesAsync();
-    }
-
-    private async Task OnDateChanged(ChangeEventArgs e)
-    {
-        if (DateOnly.TryParse(e.Value.ToString(), out var selectedDate))
-        {
-            selectedCallDownDate = selectedDate;
-            flights = (await FlightService.GetFlightsAsync())
-                .Where(flt => flt.Name.EndsWith("Flight"))
-                .OrderBy(flt => flt.Name);
-
-            var callDownResponse = await GetCallDowns(selectedDate);
-
-            flightMemberships.Clear();
-            foreach (var flight in flights)
-            {
-                var members = await GetFlightMembershipAsync(flight);
-
-                flightMemberships.Add(new FlightMembership
-                    {
-                        FlightId = flight.Id,
-                        FlightName = flight.Name,
-                        Members = members,
-                        CallDown = (from m in members
-                                    let myAttendance = callDownResponse.FirstOrDefault(cd => cd.CapId == m.Capid)
-                                    select new CallDownResponse
-                                    {
-                                        CapId = m.Capid,
-                                        Attending = myAttendance?.Attending ?? null,
-                                        Reason = myAttendance?.Reason,
-                                        Comments = myAttendance?.Comments,
-                                        Requests = myAttendance?.Requests?.ToList() ?? new List<string>()
-                                    })
-                    });
-            }
-        }
-        else
-        {
-            selectedCallDownDate = null;
-            flights = Enumerable.Empty<FlightDto>();
-            flightMemberships.Clear();
+<script>
+    function closeModal(modalId) {
+        var modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+        if (modal) {
+            modal.hide();
         }
     }
+</script>
 
-    protected async Task<IEnumerable<CallDownResponse>> GetCallDowns(DateOnly meetingDate)
-    {
-        return await meetingService.GetCallDownsAsync(meetingDate);
-    }
 
-    protected async Task<IEnumerable<Member>> GetFlightMembershipAsync(FlightDto flight)
-    {
-        var memberCapIds = flight.FlightSergeantIds.Concat(flight.MemberIds).ToList();
-        if (flight.FlightCommanderId.HasValue)
-        {
-            memberCapIds.Add(flight.FlightCommanderId.Value);
-        }
-
-        return await MemberService.GetAsync(memberCapIds);
-    }
-
-    public class FlightMembership
-    {
-        public int FlightId { get; set; }
-        public string FlightName { get; set; } = string.Empty;
-        public IEnumerable<Member> Members { get; set; } = Enumerable.Empty<Member>();
-        public IEnumerable<CallDownResponse> CallDown { get; set; } = Enumerable.Empty<CallDownResponse>();
-    }
-}

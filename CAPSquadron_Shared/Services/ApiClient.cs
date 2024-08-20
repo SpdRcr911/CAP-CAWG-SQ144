@@ -2409,9 +2409,9 @@ namespace CAPSquadron_Shared.Services
         /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<MeetingInfoDto> NextMeetingInfoAsync()
+        public virtual System.Threading.Tasks.Task<MeetingInfoDto> NextMeetingInfoAsync(System.DateOnly? meetingDate)
         {
-            return NextMeetingInfoAsync(System.Threading.CancellationToken.None);
+            return NextMeetingInfoAsync(meetingDate, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -2420,7 +2420,7 @@ namespace CAPSquadron_Shared.Services
         /// </summary>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<MeetingInfoDto> NextMeetingInfoAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MeetingInfoDto> NextMeetingInfoAsync(System.DateOnly? meetingDate, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2435,6 +2435,12 @@ namespace CAPSquadron_Shared.Services
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "api/Meeting/next-meeting"
                     urlBuilder_.Append("api/Meeting/next-meeting");
+                    urlBuilder_.Append('?');
+                    if (meetingDate != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("meetingDate")).Append('=').Append(System.Uri.EscapeDataString(meetingDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2574,11 +2580,12 @@ namespace CAPSquadron_Shared.Services
         /// Get call downs by date
         /// </summary>
         /// <param name="meetingDate">Date only in the format of YYYY-MM-DD</param>
+        /// <param name="capId">Cadet's CAPID</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CallDownResponse>> GetCallDownsAsync(System.DateOnly? meetingDate)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CallDownResponse>> GetCallDownsAsync(System.DateOnly? meetingDate, int? capId)
         {
-            return GetCallDownsAsync(meetingDate, System.Threading.CancellationToken.None);
+            return GetCallDownsAsync(meetingDate, capId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -2586,9 +2593,10 @@ namespace CAPSquadron_Shared.Services
         /// Get call downs by date
         /// </summary>
         /// <param name="meetingDate">Date only in the format of YYYY-MM-DD</param>
+        /// <param name="capId">Cadet's CAPID</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CallDownResponse>> GetCallDownsAsync(System.DateOnly? meetingDate, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CallDownResponse>> GetCallDownsAsync(System.DateOnly? meetingDate, int? capId, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2607,6 +2615,10 @@ namespace CAPSquadron_Shared.Services
                     if (meetingDate != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("meetingDate")).Append('=').Append(System.Uri.EscapeDataString(meetingDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (capId != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("capId")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(capId, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
