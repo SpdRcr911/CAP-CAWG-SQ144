@@ -1,0 +1,26 @@
+﻿@page "/download-reports"
+@using CAPSquadron_Shared.Services.DownloadFiles
+@inject IDownloadFilesService DownloadFilesService
+@inject IJSRuntime JSRuntime
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Download Reports</h3>
+            <ul class="list-group">
+            @* <button type="button" class="btn btn-primary" @onclick="DownloadFile">Download Fitness Report</button> *@
+                <li class="list-group-item"><a href="#" @onclick="DownloadFile">Download Fitness Report</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@code {
+    private async Task DownloadFile()
+    {
+        // Fetch the file data
+        var fileData = await DownloadFilesService.GetCadetPhysicalFitnessTrainingFlightWorkSheetAsync();
+
+        // Call JavaScript function to trigger the download
+        await JSRuntime.InvokeVoidAsync("downloadFile", "CadetPhysicalFitnessTrainingFlightWorkSheet.xlsx", fileData);
+    }
+}

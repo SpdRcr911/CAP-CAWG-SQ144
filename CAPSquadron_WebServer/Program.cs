@@ -1,6 +1,7 @@
 using CAPSquadron_Shared.Services;
 using CAPSquadron_Shared.Services.Attendance;
 using CAPSquadron_Shared.Services.CadetTracker;
+using CAPSquadron_Shared.Services.DownloadFiles;
 using CAPSquadron_Shared.Services.FileHandling;
 using CAPSquadron_Shared.Services.Flight;
 using CAPSquadron_Shared.Services.Meeting;
@@ -21,6 +22,7 @@ builder.Services.AddScoped<IMemberServcie, MemberService>();
 builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IMeetingService, MeetingService>();
+builder.Services.AddScoped<IDownloadFilesService, DownloadFilesService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
@@ -29,6 +31,11 @@ builder.Services.AddScoped<IFileHandler, CadetTrackerFileHandler>();
 builder.Services.AddScoped<IFileHandlerFactory, FileHandlerFactory>();
 builder.Services.AddLogging();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("CadetAPI", client =>
+{
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("ApiClientBaseUrl") ?? throw new NullReferenceException("ApiClientBaseUrl not found in configuration"));
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 builder.Services.AddScoped<ApiClient>(sp => new ApiClient(Environment.GetEnvironmentVariable("ApiClientBaseUrl"), sp.GetRequiredService<HttpClient>()));
 
 var app = builder.Build();
