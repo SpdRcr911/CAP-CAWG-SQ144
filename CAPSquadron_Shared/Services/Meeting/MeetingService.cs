@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
 
 namespace CAPSquadron_Shared.Services.Meeting;
 
 public class MeetingService (ApiClient apiClient) : IMeetingService
-{
-    public async Task<MeetingInfoDto> GetNextMeeting(DateOnly? meetingDate = null)
+{    public async Task<MeetingInfoDto> GetNextMeeting(DateOnly? meetingDate = null)
     {
         return await apiClient.NextMeetingInfoAsync(meetingDate);
     }
@@ -26,9 +27,20 @@ public class MeetingService (ApiClient apiClient) : IMeetingService
     {
         return await apiClient.GetCallDownDatesAsync();
     }
-    public async Task<IEnumerable<CallDownResponse>> GetCallDownsAsync(DateOnly meetingDate, int? capId = null)
+    public async Task<IEnumerable<CallDownResponse>> GetCallDownsAsync(DateOnly meetingDate)
     {
-        return await apiClient.GetCallDownsAsync(meetingDate, capId);
+        return await apiClient.GetCallDownsAsync(meetingDate, null);
+    }
+    public async Task<CallDownResponse?> GetCallDownsAsync(DateOnly meetingDate, int capId)
+    {
+        try
+        {
+            return (await apiClient.GetCallDownsAsync(meetingDate, capId)).First();
 
+        }
+        catch 
+        {
+            return default;
+        }
     }
 }

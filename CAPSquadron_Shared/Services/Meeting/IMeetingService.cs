@@ -7,5 +7,6 @@ public interface IMeetingService
     Task<IEnumerable<DateOnly>> GetCallDownDatesAsync();
     Task<MeetingInfoDto> GetNextMeeting(DateOnly? meetingDate = null);
     Task RecordCallDownAsync(CallDownResponse callDownResponse);
-    Task<IEnumerable<CallDownResponse>> GetCallDownsAsync(DateOnly meetingDate, int? capId = null);
+    Task<IEnumerable<CallDownResponse>> GetCallDownsAsync(DateOnly meetingDate);
+    Task<CallDownResponse?> GetCallDownsAsync(DateOnly meetingDate, int capId);
 }

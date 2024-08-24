@@ -1,4 +1,5 @@
 ﻿@page "/call-down"
+@using CAPSquadron_Shared.Models
 @using CAPSquadron_Shared.Services.CadetTracker
 @using CAPSquadron_Shared.Services.Meeting
 @using Microsoft.AspNetCore.Components.Forms
@@ -9,23 +10,58 @@
 @inject IRetrieveDataService<Member> MemberService
 @inject ICadetTrackerService CadetTrackerService
 @inject IMeetingService meetingService
+<div class="container">
+    <div class="row">
+        <div class="col">
+            @if (string.IsNullOrEmpty(capid))
+            {
+                <p>No CAPID found. Please log in.</p>
+            }
+            else if (Cadet == null)
+            {
+                <p>Loading your information...</p>
+            }
+            else
+            {
 
-@if (string.IsNullOrEmpty(capid))
-{
-    <p>No CAPID found. Please log in.</p>
-}
-else if (Cadet == null)
-{
-    <p>Loading your information...</p>
-}
-else
-{
-    <div class="container">
-        <div class="row">
-            <div class="col">
                 <div class="fs-2">Squadron 144 - Call Down Reply</div>
                 <CallDownResponseComponent cadet="Cadet" callDownResponse="CallDownResposne" OnCallDownUpdated="HandleCallDownUpdated" />
-            </div>
+
+            }
+            @if (showAlert)
+            {
+                <div class="alert alert-success alert-dismissible fade show m-2" role="alert">
+                    Thank you for responding to your call down.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
         </div>
     </div>
+</div>
+@code {
+    private Member? Cadet;
+    private CallDownModel FormModel = new();
+    private CallDownResponse? CallDownResposne = null;
+    private bool showAlert = false;
+
+    private MeetingInfoDto? MeetingInfo { get; set; } = null;
+
+    protected override async Task OnCapidRetrievedAsync()
+    {
+        if (!string.IsNullOrEmpty(capid))
+        {
+            var capId = Convert.ToInt32(capid);
+            Cadet = await MemberService.GetAsync(capId);
+            MeetingInfo = await meetingService.GetNextMeeting();
+            CallDownResposne = await meetingService.GetCallDownsAsync(MeetingInfo!.Date!.Value, capId);
+        }
+    }
+
+    protected async Task HandleCallDownUpdated()
+    {
+        var capId = Convert.ToInt32(capid);
+
+        CallDownResposne = await meetingService.GetCallDownsAsync(MeetingInfo!.Date!.Value, capId);
+        showAlert = true;
+    }
 }
