@@ -1,0 +1,62 @@
+﻿<!-- Pages/AchievementSummary.razor -->
+@page "/reports/phases/{phase}/achievements"
+@using CAPSquadron_Shared.Services
+@using CAPSquadron_Shared.Services.Reports
+
+@inject NavigationManager NavigationManager
+@inject IReportsService reportService
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Achievements for @Phase</h3>
+
+            @if (achievementSummaries == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Achievement Name</th>
+                            <th>Rank</th>
+                            <th>Total Cadets</th>
+                            <th>Completed</th>
+                            <th>In Progress</th>
+                            <th>Overdue Promotions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var achievement in achievementSummaries)
+                        {
+                            <tr @onclick="() => NavigateToCadetDetails(achievement.Phase, achievement.AchievementName)">
+                                <td>@achievement.AchievementName</td>
+                                <td>@achievement.Rank</td>
+                                <td>@achievement.TotalCadets</td>
+                                <td>@achievement.Completed</td>
+                                <td>@achievement.InProgress</td>
+                                <td>@achievement.OverduePromotions</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public string Phase { get; set; }
+    private IEnumerable<AchievementSummaryDto> achievementSummaries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        achievementSummaries = await reportService.GetAchievementReportAsync(Phase);
+    }
+
+    private void NavigateToCadetDetails(string phase, string achievementName)
+    {
+        NavigationManager.NavigateTo($"/phases/{phase}/achievements/{achievementName}/cadets");
+    }
+}
