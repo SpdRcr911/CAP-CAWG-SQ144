@@ -7,6 +7,7 @@ using CAPSquadron_Shared.Services.Flight;
 using CAPSquadron_Shared.Services.Meeting;
 using CAPSquadron_Shared.Services.MemberAttribute;
 using CAPSquadron_Shared.Services.QualityCadetUnit;
+using CAPSquadron_Shared.Services.Reports;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddScoped<IRetrieveDataService<Member>, MemberService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddScoped<IDownloadFilesService, DownloadFilesService>();
+builder.Services.AddScoped<IReportsService, ReportsService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();

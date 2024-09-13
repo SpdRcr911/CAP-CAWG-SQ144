@@ -1,0 +1,59 @@
+﻿@using CAPSquadron_Shared.Services
+@using CAPSquadron_Shared.Services.Reports
+
+@page "/reports/phases"
+
+@inject IReportsService reportService
+@inject NavigationManager navigationManager
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Phase Summary</h3>
+
+            @if (phaseSummaries == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Total Cadets</th>
+                            <th>Completed</th>
+                            <th>In Progress</th>
+                            <th>Overdue Promotions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var phase in phaseSummaries)
+                        {
+                            <tr @onclick="() => NavigateToAchievements(phase.Phase)">
+                                <td><a @onclick="() => NavigateToAchievements(phase.Phase)" href="javascript:void(0);">@phase.Phase</a></td>
+                                <td>@phase.TotalCadets</td>
+                                <td>@phase.Completed</td>
+                                <td>@phase.InProgress</td>
+                                <td>@phase.OverduePromotions</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+@code {
+    private IEnumerable<PhaseSummaryDto> phaseSummaries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        phaseSummaries = await reportService.GetPhaseReportAsync();
+    }
+
+    private void NavigateToAchievements(string phase)
+    {
+        navigationManager.NavigateTo($"/reports/phases/{phase}/achievements");
+    }
+}
